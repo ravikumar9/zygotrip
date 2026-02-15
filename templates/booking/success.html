@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div style="text-align: center; padding: var(--space-16) 0;">
+      <div style="font-size: 4rem; margin-bottom: var(--space-6);">✅</div>
+      <h1 style="color: var(--color-success); margin-bottom: var(--space-4);">Booking Confirmed!</h1>
+      <p style="font-size: var(--fs-lg); color: var(--color-text-secondary); margin-bottom: var(--space-12);">
+        Your reservation has been successfully booked. A confirmation email has been sent.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-8 max-width: 800px; margin: 0 auto;">
+        <!-- Booking Details -->
+        <div class="card" style="text-align: left;">
+          <h3 class="card-title">Booking Details</h3>
+          
+          <div style="margin-bottom: var(--space-6);">
+            <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Property</p>
+            <p style="margin: 0; font-weight: 600; font-size: var(--fs-lg);">{{ booking.property.name }}</p>
+          </div>
+
+          <div style="margin-bottom: var(--space-6);">
+            <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Confirmation #</p>
+            <p style="margin: 0; font-family: monospace; font-weight: 600; color: var(--color-accent);">{{ booking.uuid }}</p>
+          </div>
+
+          <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-lg); margin-bottom: var(--space-6);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-3);">
+              <span>Check In:</span>
+              <strong>{{ booking.check_in }}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-3);">
+              <span>Check Out:</span>
+              <strong>{{ booking.check_out }}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding-top: var(--space-3); border-top: 1px solid rgba(0,0,0,0.1);">
+              <span>Rooms:</span>
+              <strong>{{ booking.quantity }}</strong>
+            </div>
+          </div>
+
+          <div style="padding: var(--space-4); background: var(--color-accent-lighter); border-radius: var(--radius-lg); border-left: 4px solid var(--color-accent);">
+            <p style="font-size: var(--fs-sm); color: var(--color-accent); margin: 0;">Total Paid: <strong>₹{{ booking.total_amount }}</strong></p>
+          </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="card" style="text-align: left;">
+          <h3 class="card-title">What's Next?</h3>
+          
+          <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-6);">
+            <div style="font-size: 1.5rem; flex-shrink: 0;">📧</div>
+            <div>
+              <h4 style="margin: 0 0 var(--space-2) 0;">Confirmation Email</h4>
+              <p style="margin: 0; font-size: var(--fs-sm); color: var(--color-text-secondary);">Check your email for full booking details</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-6);">
+            <div style="font-size: 1.5rem; flex-shrink: 0;">📋</div>
+            <div>
+              <h4 style="margin: 0 0 var(--space-2) 0;">Invoice Available</h4>
+              <p style="margin: 0; font-size: var(--fs-sm); color: var(--color-text-secondary);">View your invoice in your profile</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: var(--space-4);">
+            <div style="font-size: 1.5rem; flex-shrink: 0;">🏨</div>
+            <div>
+              <h4 style="margin: 0 0 var(--space-2) 0;">Hotel Confirmation</h4>
+              <p style="margin: 0; font-size: var(--fs-sm); color: var(--color-text-secondary);">The property will send check-in details separately</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: var(--space-4); justify-content: center; margin-top: var(--space-12); flex-wrap: wrap;">
+        <a href="/accounts/profile/" class="button button-primary button-lg">View Invoice</a>
+        <a href="/hotels/" class="button button-secondary button-lg">Browse More Hotels</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

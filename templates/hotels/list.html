@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 style="margin-bottom: var(--space-8);">Browse Hotels</h1>
+    
+    <div class="dashboard-layout">
+      <a href="#filters-drawer" class="button button-secondary filters-toggle">Filters</a>
+
+      <div id="filters-drawer" class="filters-drawer">
+        <div class="filters-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6);">
+            <h3 style="margin: 0;">Filters</h3>
+            <a href="#" class="button button-secondary">Close</a>
+          </div>
+          <div class="sidebar">
+            <div class="sidebar-title">Filter</div>
+            <div class="form-group">
+              <label>Search</label>
+              <input type="text" placeholder="Hotel name..." class="filter-input" data-filter-group="search" />
+            </div>
+
+            <details open>
+              <summary style="font-weight: 600; margin-bottom: var(--space-3);">Location</summary>
+              <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="delhi" /> Delhi</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="mumbai" /> Mumbai</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="bangalore" /> Bangalore</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="chennai" /> Chennai</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="goa" /> Goa</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="jaipur" /> Jaipur</label>
+              </div>
+            </details>
+
+            <details open>
+              <summary style="font-weight: 600; margin-bottom: var(--space-3);">Price Range</summary>
+              <input type="range" min="0" max="20000" value="8000" class="filter-input" data-filter-group="price" />
+              <div style="font-size: var(--fs-sm); color: var(--color-text-secondary); margin-top: var(--space-2);">₹0 - ₹20,000</div>
+            </details>
+
+            <details open>
+              <summary style="font-weight: 600; margin-bottom: var(--space-3);">Rating</summary>
+              <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="rating" value="4.5" /> 4.5+ ⭐</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="rating" value="4.0" /> 4.0+ ⭐</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="rating" value="3.5" /> 3.5+ ⭐</label>
+              </div>
+            </details>
+
+            <details open>
+              <summary style="font-weight: 600; margin-bottom: var(--space-3);">Amenities</summary>
+              <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="amenities" value="wifi" /> Free WiFi</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="amenities" value="breakfast" /> Breakfast Included</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="amenities" value="pool" /> Pool</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="amenities" value="parking" /> Parking</label>
+              </div>
+            </details>
+
+            <details open>
+              <summary style="font-weight: 600; margin-bottom: var(--space-3);">Property Type</summary>
+              <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="type" value="hotel" /> Hotel</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="type" value="resort" /> Resort</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="type" value="villa" /> Villa</label>
+              </div>
+            </details>
+
+            <details open>
+              <summary style="font-weight: 600; margin-bottom: var(--space-3);">Meal Type</summary>
+              <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="meal" value="breakfast" /> Breakfast</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="meal" value="half" /> Half Board</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="meal" value="full" /> Full Board</label>
+              </div>
+            </details>
+
+            <details open>
+              <summary style="font-weight: 600; margin-bottom: var(--space-3);">Cancellation Policy</summary>
+              <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="cancel" value="free" /> Free Cancellation</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="cancel" value="partial" /> Partial Refund</label>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="cancel" value="none" /> Non Refundable</label>
+              </div>
+            </details>
+
+            <details open>
+              <summary style="font-weight: 600; margin-bottom: var(--space-3);">Instant Booking</summary>
+              <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;">
+                <input type="checkbox" class="filter-input" data-filter-group="instant" value="true" /> Only show instant confirmation
+              </label>
+            </details>
+
+            <button class="button button-secondary button-block">Reset Filters</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Filters -->
+      <div class="sidebar filter-sidebar">
+        <div class="sidebar-title">Filter</div>
+        <div class="form-group">
+          <label>Search</label>
+          <input type="text" placeholder="Hotel name..." class="filter-input" data-filter-group="search" />
+        </div>
+        <details open>
+          <summary style="font-weight: 600; margin-bottom: var(--space-3);">Location</summary>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="delhi" /> Delhi</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="mumbai" /> Mumbai</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="bangalore" /> Bangalore</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="chennai" /> Chennai</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="goa" /> Goa</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="location" value="jaipur" /> Jaipur</label>
+          </div>
+        </details>
+        <details open>
+          <summary style="font-weight: 600; margin-bottom: var(--space-3);">Price Range</summary>
+          <input type="range" min="0" max="20000" value="8000" class="filter-input" data-filter-group="price" />
+          <div style="font-size: var(--fs-sm); color: var(--color-text-secondary); margin-top: var(--space-2);">₹0 - ₹20,000</div>
+        </details>
+        <details open>
+          <summary style="font-weight: 600; margin-bottom: var(--space-3);">Rating</summary>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="rating" value="4.5" /> 4.5+ ⭐</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="rating" value="4.0" /> 4.0+ ⭐</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="rating" value="3.5" /> 3.5+ ⭐</label>
+          </div>
+        </details>
+        <details open>
+          <summary style="font-weight: 600; margin-bottom: var(--space-3);">Amenities</summary>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="amenities" value="wifi" /> Free WiFi</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="amenities" value="breakfast" /> Breakfast Included</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="amenities" value="pool" /> Pool</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="amenities" value="parking" /> Parking</label>
+          </div>
+        </details>
+        <details open>
+          <summary style="font-weight: 600; margin-bottom: var(--space-3);">Property Type</summary>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="type" value="hotel" /> Hotel</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="type" value="resort" /> Resort</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="type" value="villa" /> Villa</label>
+          </div>
+        </details>
+        <details open>
+          <summary style="font-weight: 600; margin-bottom: var(--space-3);">Meal Type</summary>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="meal" value="breakfast" /> Breakfast</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="meal" value="half" /> Half Board</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="meal" value="full" /> Full Board</label>
+          </div>
+        </details>
+        <details open>
+          <summary style="font-weight: 600; margin-bottom: var(--space-3);">Cancellation Policy</summary>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="cancel" value="free" /> Free Cancellation</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="cancel" value="partial" /> Partial Refund</label>
+            <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;"><input type="checkbox" class="filter-input" data-filter-group="cancel" value="none" /> Non Refundable</label>
+          </div>
+        </details>
+        <details open>
+          <summary style="font-weight: 600; margin-bottom: var(--space-3);">Instant Booking</summary>
+          <label style="display: flex; align-items: center; gap: var(--space-2); margin: 0; font-weight: normal; cursor: pointer;">
+            <input type="checkbox" class="filter-input" data-filter-group="instant" value="true" /> Only show instant confirmation
+          </label>
+        </details>
+        <button class="button button-secondary button-block">Reset Filters</button>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+          <p style="margin: 0;">Showing all verified properties</p>
+          <select style="cursor: pointer;">
+            <option>Sort: Popularity</option>
+            <option>Sort: Price Low to High</option>
+            <option>Sort: Price High to Low</option>
+            <option>Sort: Rating</option>
+          </select>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3">
+          {% for item in property_cards %}
+            {% with property=item.property %}
+              <div class="card" data-city="{{ property.city|lower }}" data-rating="{{ property.rating }}" data-price="{% if item.price_per_night %}{{ item.price_per_night }}{% else %}0{% endif %}" data-type="hotel" data-meal="breakfast" data-cancel="free" data-instant="true" data-amenities="{% for amenity in property.amenities.all %}{{ amenity.name|lower }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                {% with featured=property.images.first %}
+                  {% if featured %}
+                    <div class="card-image" style="background-image: url('{{ featured.image_url }}'); background-size: cover; background-position: center;"></div>
+                  {% else %}
+                    <div class="card-image" style="background: var(--gradient-secondary);"></div>
+                  {% endif %}
+                {% endwith %}
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                  <span class="tag">Verified</span>
+                  <span class="badge badge-warning">10% Off</span>
+                </div>
+                <h3 class="card-title">{{ property.name }}</h3>
+                <p class="card-meta">📍 {{ property.city }}, {{ property.country }}</p>
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3);">
+                  <span style="color: var(--color-warning);">★</span>
+                  <strong>{{ property.rating }}</strong>
+                  <span style="font-size: var(--fs-xs); color: var(--color-text-muted);">({{ item.review_count }} reviews)</span>
+                </div>
+                <p style="margin: var(--space-4) 0; line-height: var(--lh-relaxed);">{{ property.description|truncatewords:15 }}</p>
+                <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-4) 0;">
+                  {% for amenity in property.amenities.all|slice:":3" %}
+                    <span class="badge badge-info">{{ amenity.name }}</span>
+                  {% empty %}
+                    <span class="badge badge-info">Breakfast Included</span>
+                    <span class="badge badge-success">Free WiFi</span>
+                  {% endfor %}
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin-bottom: var(--space-1);">Price/Night</p>
+                    <strong style="font-size: var(--fs-xl); color: var(--color-primary);">
+                      {% if item.price_per_night %}
+                        ₹{{ item.price_per_night }}
+                      {% else %}
+                        ₹--
+                      {% endif %}
+                    </strong>
+                  </div>
+                  <a href="/hotels/{{ property.id }}/" class="button button-accent">Proceed to Booking</a>
+                </div>
+              </div>
+            {% endwith %}
+          {% empty %}
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <div class="empty-state-icon">🔍</div>
+              <h3 class="empty-state-title">No Hotels Found</h3>
+              <p class="empty-state-text">Try adjusting your filters or search criteria</p>
+              <button class="button button-secondary">Reset Filters</button>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{% static 'js/hotel-filters.js' %}"></script>
+{% endblock %}

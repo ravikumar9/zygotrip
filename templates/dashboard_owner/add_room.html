@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h1 style="margin-bottom: var(--space-4);">Add Room Type</h1>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-12);">
+        Define a room type for {{ property.name }}
+      </p>
+
+      <div class="card">
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <label>Room Type Name</label>
+            {{ form.name }}
+            <p class="form-hint">E.g., Deluxe Suite, Standard Room</p>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            {{ form.description }}
+            <p class="form-hint">Describe amenities and features</p>
+          </div>
+
+          <div class="form-group">
+            <label>Base Price Per Night</label>
+            {{ form.base_price }}
+            <p class="form-hint">Starting price before meals and fees</p>
+          </div>
+
+          <div class="form-group">
+            <label>Max Guests</label>
+            {{ form.max_guests }}
+            <p class="form-hint">Maximum number of guests</p>
+          </div>
+
+          <button type="submit" class="button button-accent button-block button-lg" style="margin-top: var(--space-8);">
+            Create Room Type
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

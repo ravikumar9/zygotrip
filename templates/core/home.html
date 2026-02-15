@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="section" style="background: linear-gradient(135deg, var(--color-primary) 0%, #1a5c99 100%); color: var(--color-white); padding: var(--space-20) 0;">
+  <div class="container">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h1 style="margin-bottom: var(--space-6); line-height: var(--lh-tight); color: var(--color-white); font-size: var(--fs-5xl);">
+          Your Complete Travel Companion
+        </h1>
+        <p style="font-size: var(--fs-lg); margin-bottom: var(--space-8); line-height: var(--lh-relaxed); color: rgba(255,255,255,0.9);">
+          Book hotels, buses, and holiday packages all in one place. Trusted by millions of travelers across India.
+        </p>
+        <div style="display: flex; gap: var(--space-4);">
+          <a href="/hotels/" class="button" style="background: var(--color-accent); color: var(--color-white); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); text-decoration: none; font-weight: 600;">Explore Hotels</a>
+          <a href="/buses/" class="button" style="background: rgba(255,255,255,0.2); color: var(--color-white); padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); text-decoration: none; font-weight: 600; border: 2px solid rgba(255,255,255,0.4);">Book Buses</a>
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 6rem; letter-spacing: 0.5rem;">✈️🏨🚌</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Booking Categories -->
+<section class="section">
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: var(--space-12);">What would you like to book?</h2>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Hotels -->
+      <a href="/hotels/" class="card" style="text-decoration: none; color: inherit; cursor: pointer; transition: var(--transition-normal); display: flex; flex-direction: column;">
+        <div style="font-size: 4rem; margin-bottom: var(--space-4);">🏨</div>
+        <h3 class="card-title">Hotels & Stays</h3>
+        <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6); flex-grow: 1;">Find and book from verified hotels across India with 100% admin verification.</p>
+        <div style="display: flex; align-items: center; color: var(--color-accent); font-weight: 600;">
+          Browse Hotels →
+        </div>
+      </a>
+
+      <!-- Buses -->
+      <a href="/buses/" class="card" style="text-decoration: none; color: inherit; cursor: pointer; transition: var(--transition-normal); display: flex; flex-direction: column;">
+        <div style="font-size: 4rem; margin-bottom: var(--space-4);">🚌</div>
+        <h3 class="card-title">Bus Tickets</h3>
+        <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6); flex-grow: 1;">Book intercity and intracity buses with seat selection and real-time tracking.</p>
+        <div style="display: flex; align-items: center; color: var(--color-accent); font-weight: 600;">
+          Book Buses →
+        </div>
+      </a>
+
+      <!-- Packages -->
+      <a href="/packages/" class="card" style="text-decoration: none; color: inherit; cursor: pointer; transition: var(--transition-normal); display: flex; flex-direction: column;">
+        <div style="font-size: 4rem; margin-bottom: var(--space-4);">📦</div>
+        <h3 class="card-title">Holiday Packages</h3>
+        <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6); flex-grow: 1;">All-inclusive holiday packages with accommodation, transport, meals, and activities.</p>
+        <div style="display: flex; align-items: center; color: var(--color-accent); font-weight: 600;">
+          Explore Packages →
+        </div>
+      </a>
+    </div>
+
+    <!-- Coming Soon -->
+    <div style="margin-top: var(--space-16); padding-top: var(--space-16); border-top: 1px solid var(--color-border);">
+      <h3 style="text-align: center; margin-bottom: var(--space-8);">Coming Soon</h3>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="card" style="opacity: 0.6; cursor: not-allowed;">
+          <div style="font-size: 4rem; margin-bottom: var(--space-4);">✈️</div>
+          <h3 class="card-title">Flights</h3>
+          <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">Find and book domestic and international flights at best prices.</p>
+          <span class="badge badge-warning" style="display: inline-block;">Coming Soon</span>
+        </div>
+
+        <div class="card" style="opacity: 0.6; cursor: not-allowed;">
+          <div style="font-size: 4rem; margin-bottom: var(--space-4);">🚆</div>
+          <h3 class="card-title">Trains</h3>
+          <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">Book train tickets with seat class selection and real-time availability.</p>
+          <span class="badge badge-warning" style="display: inline-block;">Coming Soon</span>
+        </div>
+
+        <div class="card" style="opacity: 0.6; cursor: not-allowed;">
+          <div style="font-size: 4rem; margin-bottom: var(--space-4);">🚕</div>
+          <h3 class="card-title">Cabs</h3>
+          <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">Convenient cab bookings for intercity and local travel with multiple car types.</p>
+          <span class="badge badge-warning" style="display: inline-block;">Coming Soon</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Zygotrip -->
+<section class="section" style="background: var(--color-bg-tertiary);">
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: var(--space-12);">Why Choose Zygotrip?</h2>
+    
+    <div class="grid md:grid-cols-4 gap-8">
+      <div style="text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: var(--space-4);">✓</div>
+        <h4>100% Verified</h4>
+        <p style="color: var(--color-text-secondary);">All listings verified by admin</p>
+      </div>
+
+      <div style="text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: var(--space-4);">💰</div>
+        <h4>Best Prices</h4>
+        <p style="color: var(--color-text-secondary);">Competitive rates and discounts</p>
+      </div>
+
+      <div style="text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: var(--space-4);">🛡️</div>
+        <h4>Secure Bookings</h4>
+        <p style="color: var(--color-text-secondary);">Safe payments with protection</p>
+      </div>
+
+      <div style="text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: var(--space-4);">📱</div>
+        <h4>Easy Booking</h4>
+        <p style="color: var(--color-text-secondary);">Simple 3-step booking process</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Hotels -->
+<section class="section">
+  <div class="container">
+    <h2 style="margin-bottom: var(--space-12);">Featured Hotels</h2>
+    
+    {% if properties %}
+      <div class="grid md:grid-cols-3 gap-6">
+        {% for property in properties|slice:":6" %}
+          <a href="/hotels/{{ property.id }}/" class="card" style="text-decoration: none; color: inherit; cursor: pointer;">
+            <div style="width: 100%; height: 200px; background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: -16px -16px 0 -16px; display: flex; align-items: center; justify-content: center; font-size: 3rem; background-size: cover; background-position: center;">🏨</div>
+            
+            <div style="margin-top: var(--space-6);">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-4);">
+                <h3 class="card-title">{{ property.name|truncatewords:4 }}</h3>
+                <span class="badge badge-success">Verified</span>
+              </div>
+
+              <p style="color: var(--color-text-secondary); font-size: var(--fs-sm); margin: 0 0 var(--space-4) 0;">📍 {{ property.city }}, {{ property.country }}</p>
+
+              <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4);">
+                <span style="color: var(--color-accent);">★</span>
+                <strong>{{ property.rating|default:"4.5" }}</strong>
+              </div>
+
+              <div style="padding-top: var(--space-4); border-top: 1px solid var(--color-border); text-align: right;">
+                <p style="font-size: var(--fs-2xl); font-weight: 700; color: var(--color-accent); margin: 0;">₹1,500<span style="font-size: var(--fs-sm); color: var(--color-text-secondary);">/night</span></p>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align: center; padding: var(--space-16) 0;">
+        <p style="color: var(--color-text-secondary);">No hotels available yet. Check back soon!</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h1 style="margin-bottom: var(--space-4);">Add Meal Plan</h1>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-12);">
+        Create a meal plan for {{ property.name }}
+      </p>
+
+      <div class="card">
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <label>Meal Plan Name</label>
+            {{ form.name }}
+            <p class="form-hint">E.g., Breakfast Included, All-Inclusive</p>
+          </div>
+
+          <div class="form-group">
+            <label>Price Per Person Per Night</label>
+            {{ form.price }}
+            <p class="form-hint">Added to room rate if selected</p>
+          </div>
+
+          <button type="submit" class="button button-accent button-block button-lg" style="margin-top: var(--space-8);">
+            Create Meal Plan
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

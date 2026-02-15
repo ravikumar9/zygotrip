@@ -1,0 +1,17 @@
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import render
+from accounts.selectors import user_has_role
+from accounts.permissions import login_required_403
+from payments.models import Payment
+from wallet.models import Wallet
+
+
+@login_required_403
+def dashboard(request):
+	if not user_has_role(request.user, 'finance_admin'):
+		raise PermissionDenied
+	payments = Payment.objects.order_by('-created_at')[:20]
+	wallets = Wallet.objects.order_by('-updated_at')[:20]
+	return render(request, 'dashboard_finance/dashboard.html', {'payments': payments, 'wallets': wallets})
+
+# Create your views here.

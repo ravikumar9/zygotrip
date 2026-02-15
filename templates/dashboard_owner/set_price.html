@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h1 style="margin-bottom: var(--space-4);">Set Pricing</h1>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-12);">
+        Configure pricing for {{ room.name }}
+      </p>
+
+      <div class="card">
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <label>Base Price Per Night</label>
+            {{ form.base_price }}
+            <p class="form-hint">Core room rate before add-ons</p>
+          </div>
+
+          <div style="padding: var(--space-6); background: var(--color-bg-tertiary); border-radius: var(--radius-lg); margin-bottom: var(--space-8);">
+            <h4 style="margin: 0 0 var(--space-4) 0;">Pricing Breakdown</h4>
+            <div style="font-size: var(--fs-sm); color: var(--color-text-secondary);">
+              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span>Base Rate</span>
+                <span id="base-display">₹0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span>Service Fee (8%)</span>
+                <span id="fee-display">₹0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding-top: var(--space-2); border-top: 1px solid rgba(0,0,0,0.1); font-weight: 600; color: var(--color-text-primary);">
+                <span>Total Per Night</span>
+                <span id="total-display">₹0</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="button button-accent button-block button-lg" style="margin-top: var(--space-8);">
+            Save Pricing
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

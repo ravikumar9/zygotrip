@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h1 style="margin-bottom: var(--space-4);">Add New Property</h1>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-12);">
+        List your first property and start hosting guests. Complete all required fields.
+      </p>
+
+      <div class="card">
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <label>Property Name</label>
+            {{ form.name }}
+            <p class="form-hint">Catchy name that stands out</p>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            {{ form.description }}
+            <p class="form-hint">Describe what makes your property special</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8">
+            <div class="form-group">
+              <label>City</label>
+              {{ form.city }}
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              {{ form.country }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Address</label>
+            {{ form.address }}
+            <p class="form-hint">Full street address</p>
+          </div>
+
+          <div class="form-group">
+            <label>Rating</label>
+            {{ form.rating }}
+            <p class="form-hint">Property rating (1-5 stars)</p>
+          </div>
+
+          <button type="submit" class="button button-accent button-block button-lg" style="margin-top: var(--space-8);">
+            Create Property
+          </button>
+        </form>
+      </div>
+
+      <p style="text-align: center; color: var(--color-text-muted); font-size: var(--fs-sm); margin-top: var(--space-8);">
+        💡 After creation, you'll add rooms and meal plans
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 style="margin-bottom: var(--space-12);">Complete Your Payment</h1>
+
+    <!-- Booking Timer -->
+    {% if booking.timer_expires_at %}
+    <div class="booking-timer" data-booking-timer data-expires-at="{{ booking.timer_expires_at|date:'c' }}" data-booking-id="{{ booking.uuid }}">
+      <div class="booking-timer-label">
+        <span>⏰ Time Remaining:</span>
+      </div>
+      <div class="booking-timer-display">
+        <span data-timer-minutes>10</span>
+        <span class="booking-timer-separator">:</span>
+        <span data-timer-seconds>00</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Payment Details (Left) -->
+        <div class="md:col-span-2">
+          <div class="card">
+            <h3 class="card-title">Payment Method</h3>
+          
+          <!-- Payment Options -->
+          <div style="margin-bottom: var(--space-8);">
+            <label style="display: flex; align-items: center; padding: var(--space-4); border: 2px solid var(--color-accent); border-radius: var(--radius-lg); cursor: pointer; margin-bottom: var(--space-4);">
+              <input type="radio" name="payment_method" value="wallet" checked style="margin-right: var(--space-4);" />
+              <div>
+                <p style="margin: 0 0 var(--space-1) 0; font-weight: 600;">💰 Wallet + Card</p>
+                <p style="margin: 0; font-size: var(--fs-sm); color: var(--color-text-secondary);">Use wallet balance, then charge card</p>
+              </div>
+            </label>
+
+            <label style="display: flex; align-items: center; padding: var(--space-4); border: 2px solid var(--color-border); border-radius: var(--radius-lg); cursor: pointer;">
+              <input type="radio" name="payment_method" value="card" style="margin-right: var(--space-4);" />
+              <div>
+                <p style="margin: 0 0 var(--space-1) 0; font-weight: 600;">💳 Credit/Debit Card</p>
+                <p style="margin: 0; font-size: var(--fs-sm); color: var(--color-text-secondary);">Pay full amount with card</p>
+              </div>
+            </label>
+          </div>
+
+          <!-- Wallet Info -->
+          <div style="background: var(--color-bg-tertiary); border-radius: var(--radius-lg); padding: var(--space-6); margin-bottom: var(--space-8);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0;">Wallet Balance</p>
+                <p style="margin: 0; font-size: var(--fs-2xl); font-weight: 700;">₹{{ wallet.balance }}</p>
+                <label style="display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-3); font-size: var(--fs-sm);">
+                  <input type="checkbox" name="use_wallet" checked /> Use wallet balance
+                </label>
+              </div>
+              <div style="text-align: right;">
+                <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0;">Amount to Charge</p>
+                <p style="margin: 0; font-size: var(--fs-2xl); font-weight: 700; color: var(--color-accent);">₹{{ booking.total_amount }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security Info -->
+          <div class="alert alert-info">
+            <div>
+              <strong>🔒 Secure Payment</strong>
+              <p style="margin: var(--space-2) 0 0 0; font-size: var(--fs-sm);">Your payment information is encrypted and secured by industry-standard protocols.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Order Summary (Right) -->
+        <div>
+          <div class="card">
+            <h3 class="card-title">Booking Summary</h3>
+          
+          <div style="padding: var(--space-6); background: var(--color-bg-tertiary); border-radius: var(--radius-lg); margin-bottom: var(--space-8);">
+            <h4 style="margin: 0 0 var(--space-4) 0;">{{ booking.property.name }}</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-3);">
+              <span style="color: var(--color-text-secondary);">Check In</span>
+              <strong>{{ booking.check_in }}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-3);">
+              <span style="color: var(--color-text-secondary);">Check Out</span>
+              <strong>{{ booking.check_out }}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding-top: var(--space-4); border-top: 1px solid rgba(0,0,0,0.1);">
+              <span style="color: var(--color-text-secondary);">Total</span>
+              <strong style="color: var(--color-accent); font-size: var(--fs-lg);">₹{{ booking.total_amount }}</strong>
+            </div>
+          </div>
+
+            <button type="submit" class="button button-accent button-block button-lg">
+              Complete Payment
+            </button>
+
+          <p style="text-align: center; font-size: var(--fs-xs); color: var(--color-text-muted); margin-top: var(--space-4);">
+            By proceeding, you agree to our terms and conditions
+          </p>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+<script src="{% static 'js/booking-timer.js' %}"></script>
+{% endblock %}

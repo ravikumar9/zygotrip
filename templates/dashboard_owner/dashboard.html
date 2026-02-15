@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-12);">
+      <div>
+        <h1>Property Management</h1>
+        <p style="color: var(--color-text-secondary);">Manage your properties and inventory</p>
+      </div>
+      <a href="/owner/dashboard/properties/add/" class="button button-accent button-lg">+ Add Property</a>
+    </div>
+
+    <div class="dashboard-layout">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-title">Navigation</div>
+        <a href="/owner/dashboard/" class="sidebar-link active">Properties</a>
+        <a href="#" class="sidebar-link">Bookings</a>
+        <a href="#" class="sidebar-link">Reviews</a>
+        <a href="#" class="sidebar-link">Earnings</a>
+        
+        <div style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--color-border);">
+          <div class="sidebar-title">Quick Stats</div>
+          <div style="font-size: var(--fs-sm);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-4);">
+              <span>Properties</span>
+              <strong>{{ properties|length }}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Bookings</span>
+              <strong>24</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        {% if properties %}
+          {% for property in properties %}
+            <div class="card" style="margin-bottom: var(--space-8);">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-6);">
+                <div>
+                  <h3 class="card-title">{{ property.name }}</h3>
+                  <p class="card-meta">📍 {{ property.city }}, {{ property.country }}</p>
+                </div>
+                {% if property.approval.status == 'approved' %}
+                  <span class="badge badge-success">Approved</span>
+                {% elif property.approval.status == 'pending' %}
+                  <span class="badge badge-warning">Pending Review</span>
+                {% else %}
+                  <span class="badge badge-danger">Rejected</span>
+                {% endif %}
+              </div>
+
+              <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">{{ property.description|truncatewords:30 }}</p>
+
+              <!-- Room Types -->
+              {% if property.room_types.all %}
+                <h4 style="margin: var(--space-6) 0 var(--space-4) 0;">Room Types</h4>
+                <div class="grid md:grid-cols-2 gap-4" style="margin-bottom: var(--space-8);">
+                  {% for room in property.room_types.all %}
+                    <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center;">
+                      <div>
+                        <p style="margin: 0 0 var(--space-1) 0; font-weight: 600;">{{ room.name }}</p>
+                        <p style="margin: 0; font-size: var(--fs-sm); color: var(--color-text-secondary);">₹{{ room.base_price }}/night</p>
+                      </div>
+                      <a href="/owner/dashboard/rooms/{{ room.id }}/price/" class="button button-sm button-secondary">Edit</a>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="alert alert-info">
+                  ℹ️ <strong>No rooms added yet</strong> — Create rooms to enable bookings
+                </div>
+              {% endif %}
+
+              <!-- Action Buttons -->
+              <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                <a href="/owner/dashboard/properties/{{ property.id }}/rooms/add/" class="button button-secondary button-block" style="flex: 1;">
+                  + Room Type
+                </a>
+                <a href="/owner/dashboard/properties/{{ property.id }}/meals/add/" class="button button-secondary button-block" style="flex: 1;">
+                  + Meal Plan
+                </a>
+                <a href="/owner/dashboard/properties/{{ property.id }}/submit/" class="button button-primary button-block" style="flex: 1;">
+                  Submit for Approval
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-state-icon">🏨</div>
+            <h3 class="empty-state-title">No Properties Yet</h3>
+            <p class="empty-state-text">Get started by creating your first property listing</p>
+            <a href="/owner/dashboard/properties/add/" class="button button-primary">Create First Property</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

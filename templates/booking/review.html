@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 style="margin-bottom: var(--space-12);">Review Your Booking</h1>
+
+    <!-- Booking Timer -->
+    {% if booking.timer_expires_at %}
+    <div class="booking-timer" data-booking-timer data-expires-at="{{ booking.timer_expires_at|date:'c' }}" data-booking-id="{{ booking.uuid }}">
+      <div class="booking-timer-label">
+        <span>⏰ Time Remaining:</span>
+      </div>
+      <div class="booking-timer-display">
+        <span data-timer-minutes>10</span>
+        <span class="booking-timer-separator">:</span>
+        <span data-timer-seconds>00</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Booking Summary (Left) -->
+      <div class="md:col-span-2">
+        <div class="card">
+          <h3 class="card-title">Booking Details</h3>
+          
+          <!-- Property Info -->
+          <div style="padding: var(--space-6); background: var(--color-bg-tertiary); border-radius: var(--radius-lg); margin-bottom: var(--space-8);">
+            <h4 style="margin: 0 0 var(--space-2) 0;">{{ booking.property.name }}</h4>
+            <p style="margin: 0 0 var(--space-4) 0; color: var(--color-text-secondary);">{{ booking.property.city }}, {{ booking.property.country }}</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-4);">
+              <div>
+                <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Check In</p>
+                <p style="margin: 0; font-weight: 600;">{{ booking.check_in }}</p>
+              </div>
+              <div>
+                <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Check Out</p>
+                <p style="margin: 0; font-weight: 600;">{{ booking.check_out }}</p>
+              </div>
+              <div>
+                <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Duration</p>
+                <p style="margin: 0; font-weight: 600;">{{ nights }} night{{ nights|pluralize }}</p>
+              </div>
+              <div>
+                <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Rooms</p>
+                <p style="margin: 0; font-weight: 600;">{{ booking.quantity }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guest Info -->
+          <h4 style="margin: var(--space-6) 0 var(--space-4) 0;">Guest Information</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-8);">
+            <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md);">
+              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0;">Name</p>
+              <p style="margin: 0;">{{ booking.guests.0.full_name }}</p>
+            </div>
+            <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md);">
+              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0;">Age</p>
+              <p style="margin: 0;">{{ booking.guests.0.age }} years</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Summary (Right) -->
+      <div>
+        <div class="card">
+          <h3 class="card-title">Price Summary</h3>
+
+          <div class="price-total-row">
+            <div>
+              <p class="price-total-label">Total (Taxes & Fees Included)</p>
+              <p class="price-total-amount">₹{{ booking.total_amount }}</p>
+            </div>
+            <button type="button" class="icon-button" data-toggle="price-breakdown" aria-expanded="false" aria-controls="price-breakdown-panel">ℹ</button>
+          </div>
+
+          <div id="price-breakdown-panel" class="price-breakdown-panel" aria-hidden="true">
+            <table class="price-table">
+              <tbody>
+                <tr>
+                  <td class="price-row-label">Base Rate</td>
+                  <td style="text-align: right;">₹{{ booking.price_breakdown.base_amount }}</td>
+                </tr>
+                {% if booking.price_breakdown.meal_amount %}
+                <tr>
+                  <td class="price-row-label">Meals</td>
+                  <td style="text-align: right;">₹{{ booking.price_breakdown.meal_amount }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <td class="price-row-label">Service Fee</td>
+                  <td style="text-align: right;">₹{{ booking.price_breakdown.service_fee }}</td>
+                </tr>
+                <tr>
+                  <td class="price-row-label">Tax (GST)</td>
+                  <td style="text-align: right;">₹{{ booking.price_breakdown.gst }}</td>
+                </tr>
+                {% if booking.price_breakdown.promo_discount %}
+                <tr class="price-row-highlight">
+                  <td class="price-row-label">Promo Discount</td>
+                  <td style="text-align: right;">-₹{{ booking.price_breakdown.promo_discount }}</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="button button-accent button-block button-lg">
+              Proceed to Payment
+            </button>
+          </form>
+
+          <p style="text-align: center; font-size: var(--fs-sm); color: var(--color-text-muted); margin-top: var(--space-4);">
+            ✓ You won't be charged until you confirm payment
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{% static 'js/booking-review.js' %}"></script>
+<script src="{% static 'js/booking-timer.js' %}"></script>
+{% endblock %}

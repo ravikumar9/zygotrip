@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 style="margin-bottom: var(--space-8);">Book Your Bus</h1>
+    
+    <div class="grid md:grid-cols-4 gap-4" style="margin-bottom: var(--space-12);">
+      <div>
+        <input type="text" placeholder="From City" class="form-input" style="width: 100%; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+      </div>
+      <div>
+        <input type="text" placeholder="To City" class="form-input" style="width: 100%; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+      </div>
+      <div>
+        <input type="date" class="form-input" style="width: 100%; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+      </div>
+      <button class="button button-accent" style="width: 100%; padding: var(--space-3);">Search Buses</button>
+    </div>
+
+    {% if buses %}
+      <div class="grid gap-6">
+        {% for bus in buses %}
+          <div class="card">
+            <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: var(--space-8); align-items: start;">
+              <div>
+                <h3 style="margin: 0 0 var(--space-2) 0; color: var(--color-primary);">{{ bus.operator_name }}</h3>
+                <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--fs-sm);">{{ bus.get_bus_type_display }}</p>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-4);">
+                  <div style="text-align: center;">
+                    <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0;">{{ bus.departure_time }}</p>
+                    <p style="font-weight: 600; margin: 0;">{{ bus.from_city }}</p>
+                  </div>
+                  <div style="flex: 1; border-top: 2px solid var(--color-accent);"></div>
+                  <div style="text-align: center;">
+                    <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0;">{{ bus.arrival_time }}</p>
+                    <p style="font-weight: 600; margin: 0;">{{ bus.to_city }}</p>
+                  </div>
+                </div>
+                <div>
+                  {% if bus.amenities %}
+                    <p style="font-size: var(--fs-sm); color: var(--color-text-secondary); margin: 0;">
+                      Amenities: {{ bus.amenities }}
+                    </p>
+                  {% endif %}
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0;">From</p>
+                <p style="font-size: var(--fs-3xl); font-weight: 700; color: var(--color-accent); margin: 0 0 var(--space-4) 0;">₹{{ bus.price_per_seat }}</p>
+                <a href="{% url 'buses:detail' bus.id %}" class="button button-accent">Select Seats</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align: center; padding: var(--space-16) 0;">
+        <p style="font-size: var(--fs-lg); color: var(--color-text-secondary);">No buses found. Try a different search.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

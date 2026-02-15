@@ -21,7 +21,6 @@ class RoomType(TimeStampedModel):
 	# Room details
 	bed_type = models.CharField(max_length=20, choices=BED_TYPES, default='double')
 	room_size_sqm = models.PositiveIntegerField(null=True, blank=True, help_text="Room size in square meters")
-	amenities = models.TextField(blank=True, help_text="Comma-separated list of amenities")
 
 	def __str__(self):
 		return f"{self.property.name} - {self.name}"
@@ -39,6 +38,18 @@ class RoomImage(TimeStampedModel):
 
 	def __str__(self):
 		return f"Room Image - {self.room_type.name}"
+
+
+class RoomAmenity(TimeStampedModel):
+	room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name='amenities')
+	name = models.CharField(max_length=120)
+	icon = models.CharField(max_length=40, blank=True)
+
+	class Meta:
+		ordering = ['name']
+
+	def __str__(self):
+		return f"{self.room_type.name} - {self.name}"
 
 
 class RoomInventory(TimeStampedModel):

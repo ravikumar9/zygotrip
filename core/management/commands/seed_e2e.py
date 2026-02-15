@@ -8,7 +8,7 @@ from dashboard_admin.models import PropertyApproval
 from hotels.models import Property
 from meals.models import MealPlan
 from promos.models import Promo
-from rooms.models import RoomInventory, RoomType
+from rooms.models import RoomInventory, RoomType, RoomAmenity
 from wallet.models import Wallet
 from buses.models import Bus, BusType, BusSeat
 from packages.models import Package, PackageCategory, PackageItinerary
@@ -182,9 +182,25 @@ class Command(BaseCommand):
                         'max_guests': 2,
                         'bed_type': bed_type,
                         'room_size_sqm': room_size,
-                        'amenities': 'WiFi, AC, Hot Water, TV, Mini Bar, Safe, Work Desk',
                     },
                 )
+                
+                # Add room amenities
+                amenities_list = [
+                    ('WiFi', '📶'),
+                    ('Air Conditioning', '❄️'),
+                    ('Hot Water', '🚿'),
+                    ('Television', '📺'),
+                    ('Mini Bar', '🍹'),
+                    ('Safe Box', '🔒'),
+                    ('Work Desk', '💼'),
+                ]
+                for amenity_name, icon in amenities_list:
+                    RoomAmenity.objects.get_or_create(
+                        room_type=room,
+                        name=amenity_name,
+                        defaults={'icon': icon},
+                    )
                 
                 # Create 4 meal plans per property
                 for meal_type, meal_name, meal_price, icon in meal_templates:

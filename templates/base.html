@@ -37,11 +37,12 @@
           {% if is_finance %}
             <a href="/finance/dashboard/" class="nav-link">💰 Finance</a>
           {% endif %}
-          {% if user.is_authenticated %}
+          {% if request.user.is_authenticated %}
             <a href="/accounts/profile/" class="nav-link">👤 Profile</a>
             <a href="/accounts/logout/" class="nav-link">Logout</a>
           {% else %}
             <a href="/accounts/login/" class="nav-link">Login</a>
+            <a href="/accounts/register/" class="nav-link">Register</a>
           {% endif %}
         </div>
       </div>

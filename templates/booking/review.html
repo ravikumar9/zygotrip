@@ -53,14 +53,18 @@
 
           <!-- Guest Info -->
           <h4 style="margin: var(--space-6) 0 var(--space-4) 0;">Guest Information</h4>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-8);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-8);">
             <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md);">
-              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0;">Name</p>
-              <p style="margin: 0;">{{ booking.guests.0.full_name }}</p>
+              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Name</p>
+              <p style="margin: 0; font-weight: 600;">{% if booking.guests.0 %}{{ booking.guests.0.full_name }}{% else %}N/A{% endif %}</p>
             </div>
             <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md);">
-              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0;">Age</p>
-              <p style="margin: 0;">{{ booking.guests.0.age }} years</p>
+              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Age</p>
+              <p style="margin: 0; font-weight: 600;">{% if booking.guests.0 %}{{ booking.guests.0.age }} years{% else %}N/A{% endif %}</p>
+            </div>
+            <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md);">
+              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Email</p>
+              <p style="margin: 0; font-weight: 600; word-break: break-all; font-size: var(--fs-sm);">{% if booking.guests.0 %}{{ booking.guests.0.email }}{% else %}N/A{% endif %}</p>
             </div>
           </div>
         </div>

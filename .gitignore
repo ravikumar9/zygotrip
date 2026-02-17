@@ -60,3 +60,15 @@ Thumbs.db
 # Secrets
 # -------------------------
 .env
+
+
+
+.pytest_cache/
+.redis/
+logs/
+test-results/
+celerybeat-schedule
+dump.rdb
+*.log
+*_report.json
+*_results.json

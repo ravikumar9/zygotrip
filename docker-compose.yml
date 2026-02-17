@@ -1,0 +1,130 @@
+services:
+
+  redis:
+    image: redis:7-alpine
+    container_name: zygotrip_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - zygotrip_network
+
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: zygotrip_postgres
+    environment:
+      POSTGRES_DB: zygotrip_db
+      POSTGRES_USER: zygotrip_user
+      POSTGRES_PASSWORD: zygotrip_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zygotrip_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - zygotrip_network
+
+
+  web:
+    build: .
+    container_name: zygotrip_web
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      DJANGO_SETTINGS_MODULE: zygotrip_project.settings
+      POSTGRES_DB: zygotrip_db
+      POSTGRES_USER: zygotrip_user
+      POSTGRES_PASSWORD: zygotrip_password
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - zygotrip_network
+
+
+  celery_worker:
+    build: .
+    container_name: zygotrip_celery_worker
+    command: celery -A zygotrip_project worker -l info
+    volumes:
+      - .:/app
+    environment:
+      DJANGO_SETTINGS_MODULE: zygotrip_project.settings
+      POSTGRES_DB: zygotrip_db
+      POSTGRES_USER: zygotrip_user
+      POSTGRES_PASSWORD: zygotrip_password
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
+    networks:
+      - zygotrip_network
+
+
+  celery_beat:
+    build: .
+    container_name: zygotrip_celery_beat
+    command: celery -A zygotrip_project beat -l info
+    volumes:
+      - .:/app
+    environment:
+      DJANGO_SETTINGS_MODULE: zygotrip_project.settings
+      POSTGRES_DB: zygotrip_db
+      POSTGRES_USER: zygotrip_user
+      POSTGRES_PASSWORD: zygotrip_password
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
+    networks:
+      - zygotrip_network
+
+
+volumes:
+  postgres_data:
+  redis_data:
+
+
+networks:
+  zygotrip_network:
+    driver: bridge

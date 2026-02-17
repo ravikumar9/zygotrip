@@ -1,0 +1,62 @@
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+
+# virtual env
+.venv/
+env/
+venv/
+
+# pytest
+.pytest_cache/
+
+# logs
+*.log
+logs/
+
+# redis
+.redis/
+dump.rdb
+
+# -------------------------
+# Node / frontend
+# -------------------------
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# build outputs
+staticfiles/
+dist/
+build/
+
+# -------------------------
+# Test / reports
+# -------------------------
+test-results/
+*.json
+*_report.*
+*_results.*
+*_output.*
+
+# playwright
+playwright-report/
+playwright_results.json
+
+# -------------------------
+# OS / editor junk
+# -------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# -------------------------
+# Secrets
+# -------------------------
+.env

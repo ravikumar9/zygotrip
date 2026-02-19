@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-12);">
+    <div class="d-flex justify-between align-center mb-12">
       <div>
         <h1>Admin Dashboard</h1>
-        <p style="color: var(--color-text-secondary);">Review and approve property listings</p>
+        <p class="text-secondary">Review and approve property listings</p>
       </div>
       <div class="badge badge-warning">
         {{ pending|length }} Pending
@@ -21,14 +21,14 @@
         <a href="#" class="sidebar-link">Approved ({{ approved|length }})</a>
         <a href="#" class="sidebar-link">Rejected ({{ rejected|length }})</a>
         
-        <div style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--color-border);">
+        <div class="mt-8 pt-8 border-top">
           <div class="sidebar-title">Stats</div>
-          <div style="font-size: var(--fs-sm);">
-            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-4);">
+          <div class="text-sm">
+            <div class="d-flex justify-between mb-4">
               <span>Total Properties</span>
               <strong>{{ total_properties }}</strong>
             </div>
-            <div style="display: flex; justify-content: space-between;">
+            <div class="d-flex justify-between">
               <span>Approval Rate</span>
               <strong>95%</strong>
             </div>
@@ -39,12 +39,12 @@
       <!-- Main Content -->
       <div class="main-content">
         {% if pending %}
-          <div style="margin-bottom: var(--space-8);">
-            <h2 class="section-title" style="margin: 0 0 var(--space-6) 0;">Pending Reviews</h2>
+          <div class="mb-8">
+            <h2 class="section-title m-6">Pending Reviews</h2>
             <div class="grid md:grid-cols-2">
-              {% for approval in pending %}
+              {% for approval in pending|default_if_none:"" %}
                 <div class="card">
-                  <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-4);">
+                  <div class="d-flex justify-between mb-4 align-start" >
                     <div>
                       <h3 class="card-title">{{ approval.property.name }}</h3>
                       <p class="card-meta">📍 {{ approval.property.city }}, {{ approval.property.country }}</p>
@@ -52,21 +52,21 @@
                     <span class="badge badge-warning">Pending</span>
                   </div>
 
-                  <p style="margin: var(--space-4) 0;">{{ approval.property.description|truncatewords:20 }}</p>
+                  <p class="m-4">{{ approval.property.description|truncatewords:20 }}</p>
 
-                  <div style="background: var(--color-bg-tertiary); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-6); font-size: var(--fs-sm);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                  <div class="rounded-lg p-4 mb-6 bg-tertiary text-sm" >
+                    <div class="d-flex justify-between mb-2">
                       <span>Owner</span>
                       <strong>{{ approval.property.owner.full_name }}</strong>
                     </div>
-                    <div style="display: flex; justify-content: space-between;">
+                    <div class="d-flex justify-between">
                       <span>Rating</span>
                       <strong>{{ approval.property.rating }} ⭐</strong>
                     </div>
                   </div>
 
-                  <div class="card-footer" style="gap: var(--space-2);">
-                    <a href="/admin/dashboard/approvals/{{ approval.id }}/approve/" class="button button-success button-block" style="background: var(--color-success); color: white;">
+                  <div class="card-footer gap-2">
+                    <a href="/admin/dashboard/approvals/{{ approval.id }}/approve/" class="button button-success button-block bg-success" >
                       ✓ Approve
                     </a>
                     <a href="/admin/dashboard/approvals/{{ approval.id }}/reject/" class="button button-danger button-block">
@@ -89,3 +89,4 @@
   </div>
 </section>
 {% endblock %}
+

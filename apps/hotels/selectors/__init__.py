@@ -10,11 +10,11 @@ def public_properties_queryset():
 			approval__status=PropertyApproval.STATUS_APPROVED,
 			approval__is_active=True,
 		)
-		.select_related("approval", "owner")
+		.select_related("approval", "owner", "city", "locality")
 		.prefetch_related("images", "amenities", "policies", "offers")
 		.annotate(
 			min_room_price=Min("room_types__base_price"),
-			review_count=Count("reviews", distinct=True),
+			# review_count is now a model field, not an annotation
 		)
 	)
 
@@ -52,7 +52,10 @@ def apply_hotel_filters(queryset, params):
 	if search_query:
 		queryset = queryset.filter(
 			Q(name__icontains=search_query)
-			| Q(city__icontains=search_query)
+			| Q(city__name__icontains=search_query)
+			| Q(city__display_name__icontains=search_query)
+			| Q(city_text__icontains=search_query)
+			| Q(legacy_city__icontains=search_query)
 			| Q(area__icontains=search_query)
 			| Q(landmark__icontains=search_query)
 			| Q(slug__icontains=search_query)
@@ -61,7 +64,10 @@ def apply_hotel_filters(queryset, params):
 	if selected_cities:
 		city_query = Q()
 		for city in selected_cities:
-			city_query |= Q(city__iexact=city)
+			city_query |= Q(city__name__iexact=city)
+			city_query |= Q(city__display_name__iexact=city)
+			city_query |= Q(city_text__iexact=city)
+			city_query |= Q(legacy_city__iexact=city)
 		queryset = queryset.filter(city_query)
 
 	if selected_ratings:

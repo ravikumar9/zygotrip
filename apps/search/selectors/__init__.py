@@ -10,8 +10,8 @@ def searchable_properties():
 			approval__status=PropertyApproval.STATUS_APPROVED,
 			approval__is_active=True,
 		)
-		.select_related("approval")
-		.annotate(review_count=Count("reviews", distinct=True))
+		.select_related("approval", "city", "locality")
+		# review_count is now a model field, not annotation
 	)
 
 
@@ -20,7 +20,8 @@ def filter_search(queryset, query):
 		return queryset.none()
 	return queryset.filter(
 		Q(name__icontains=query)
-		| Q(city__icontains=query)
+		| Q(city__name__icontains=query)  # FK lookup
+		| Q(city_text__icontains=query)  # Fallback to old text field
 		| Q(area__icontains=query)
 		| Q(landmark__icontains=query)
 		| Q(slug__icontains=query)

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Zygotrip - Book Hotels, Buses & Cabs{% endblock %}
+
+{% block hero %}
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Plan Your Perfect Journey</h1>
+    <p class="hero-subtitle">Book hotels, buses, cabs, flights and trains all in one place</p>
+    <div class="search-card">
+      {% include "components/searchbar.html" with show_dates=True %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<!-- Main content compensates for hero overlap -->
+<div style="padding-top: 120px;">
+  
+  <!-- Featured Services -->
+  <section style="padding: 60px 0;">
+    <div class="ota-container">
+      <h2 class="heading-lg" style="margin-bottom: 32px;">Popular Services</h2>
+      
+      <div class="home-grid">
+        <!-- Hotels -->
+        <article class="home-card">
+          <div class="home-card-icon">🏨</div>
+          <h3 class="heading-md">Hotels & Stays</h3>
+          <p class="body" style="color: var(--color-text-secondary); margin-bottom: 16px;">Find and book the perfect accommodation from luxury to budget options.</p>
+          <a href="{% url 'hotels:list' %}" class="btn btn-secondary">Browse Hotels</a>
+        </article>
+        
+        <!-- Buses -->
+        <article class="home-card">
+          <div class="home-card-icon">🚌</div>
+          <h3 class="heading-md">Bus Tickets</h3>
+          <p class="body" style="color: var(--color-text-secondary); margin-bottom: 16px;">Comfortable and affordable bus travel to thousands of destinations.</p>
+          <a href="{% url 'buses:list' %}" class="btn btn-secondary">Book Buses</a>
+        </article>
+        
+        <!-- Cabs -->
+        <article class="home-card">
+          <div class="home-card-icon">🚕</div>
+          <h3 class="heading-md">Cab Rentals</h3>
+          <p class="body" style="color: var(--color-text-secondary); margin-bottom: 16px;">Convenient cab rentals for your local and outstation trips.</p>
+          <a href="{% url 'cabs:list' %}" class="btn btn-secondary">Rent Cabs</a>
+        </article>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Why Choose Section -->
+  <section style="padding: 80px 0; background: var(--color-surface-secondary);">
+    <div class="ota-container">
+      <h2 class="heading-lg" style="text-align: center; margin-bottom: 16px;">Why Choose Zygotrip?</h2>
+      <p class="body" style="text-align: center; color: var(--color-text-secondary); margin-bottom: 48px;">The most trusted travel booking platform in India</p>
+      
+      <div class="benefits-grid">
+        <div class="benefit-item">
+          <div class="benefit-icon">✅</div>
+          <h3 class="heading-md">Best Prices</h3>
+          <p class="body" style="color: var(--color-text-secondary);">Guaranteed lowest prices with price matching guarantee</p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🛡️</div>
+          <h3 class="heading-md">Secure Booking</h3>
+          <p class="body" style="color: var(--color-text-secondary);">100% secure payment processing with SSL encryption</p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">📞</div>
+          <h3 class="heading-md">24/7 Support</h3>
+          <p class="body" style="color: var(--color-text-secondary);">Round-the-clock customer support for all your needs</p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">✈️</div>
+          <h3 class="heading-md">Easy Booking</h3>
+          <p class="body" style="color: var(--color-text-secondary);">Fast and simple booking process in just a few clicks</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+</div>
+{% endblock %}

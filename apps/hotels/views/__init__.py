@@ -45,6 +45,18 @@ def hotel_list(request):
 		if 'results' in dto:
 			dto['cards'] = dto['results']
 			del dto['results']
+
+		# Normalize card fields for template compatibility
+		for card in dto.get('cards', []):
+			if 'price' not in card:
+				card['price'] = card.get('price_current') or card.get('price_original')
+			if 'city' not in card:
+				card['city'] = card.get('location')
+			if 'min_room_price' not in card:
+				card['min_room_price'] = card.get('price') or card.get('price_current') or card.get('price_original')
+
+		# Provide hotels alias for template loop
+		dto['hotels'] = dto.get('cards', [])
 		# Set empty_state flag
 		dto['empty_state'] = len(dto.get('cards', [])) == 0
 		return render(request, "hotels/list.html", dto)

@@ -2,7 +2,7 @@
 
 {% block content %}
 <section class="section bg-surface">
-  <div class="container">
+  <div class="ota-container">
     
     <!-- Page Header -->
     <div class="mb-8">
@@ -93,7 +93,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary w-full mb-2">Apply Filters</button>
-            <button type="button" onclick="window.location.href='{% url 'hotel_list' %}'" class="btn btn-primary w-full">Reset</button>
+            <button type="button" onclick="window.location.href='{% url 'hotels:list' %}'" class="btn btn-primary w-full">Reset</button>
           </form>
         </div>
       </aside>
@@ -121,7 +121,7 @@
           <div class="row">
             {% for hotel in results %}
             <div class="col-12 col-md-6 mb-6">
-              <a href="{% url 'hotel_detail' hotel.id %}" class="card card-hover text-inherit">
+              <a href="{% url 'hotels:detail' hotel.id %}" class="card card-hover text-inherit">
                 
                 <!-- Hotel Image -->
                 {% if hotel.image_url %}
@@ -170,7 +170,7 @@
                     <div class="d-flex justify-between align-items-end">
                       <div>
                         <p class="text-xs text-muted mb-1">Starting from</p>
-                        <p class="text-2xl font-bold text-primary mb-0">₹{{ hotel.base_price|floatformat:0 }}</p>
+                        <p class="text-2xl font-bold text-primary mb-0">₹{{ hotel.min_room_price|floatformat:0 }}</p>
                         <p class="text-xs text-muted">per night + taxes</p>
                       </div>
                       <span class="btn btn-sm btn-primary">View Details</span>
@@ -194,7 +194,7 @@
             <div class="text-5xl mb-4">🔍</div>
             <h3 class="text-xl font-semibold mb-2">No hotels found</h3>
             <p class="text-secondary mb-4">Try adjusting your search filters</p>
-            <a href="{% url 'hotel_list' %}" class="btn btn-secondary">Clear Filters</a>
+            <a href="{% url 'hotels:list' %}" class="btn btn-secondary">Clear Filters</a>
           </div>
         {% endif %}
 

@@ -1,18 +1,18 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 <section class="section">
-  <div class="container">
-    <div style="text-align: center; padding: var(--space-16) 0;">
-      <div style="font-size: 4rem; margin-bottom: var(--space-6);">🔍</div>
-      <h1 style="color: var(--color-warning); margin-bottom: var(--space-4);">Property Not Available</h1>
-      <p style="font-size: var(--fs-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8); max-width: 500px; margin-left: auto; margin-right: auto;">
+  <div class="ota-container">
+    <div class="text-center p-16">
+      <div class="mb-6" >🔍</div>
+      <h1 class="mb-4" >Property Not Available</h1>
+      <p class="mb-8 text-secondary ml-auto mr-auto text-lg" >
         The property you're looking for is either not yet approved or no longer available. Browse our collection of verified listings instead.
       </p>
       
-      <div class="card" style="max-width: 500px; margin: 0 auto var(--space-8); padding: var(--space-8); text-align: left;">
-        <h3 style="margin: 0 0 var(--space-4) 0;">Why properties aren't available:</h3>
-        <ul style="color: var(--color-text-secondary); line-height: var(--lh-relaxed); padding-left: var(--space-6);">
+      <div class="card p-8 text-left m-8" >
+        <h3 class="m-4">Why properties aren't available:</h3>
+        <ul class="pl-6 text-secondary" >
           <li>Under admin review</li>
           <li>Not yet approved</li>
           <li>Temporarily unlisted</li>
@@ -25,3 +25,4 @@
   </div>
 </section>
 {% endblock %}
+

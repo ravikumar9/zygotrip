@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from core.models import TimeStampedModel
 from accounts.models import User
+from core.validators import validate_future_date
 
 
 class PackageCategory(TimeStampedModel):
@@ -20,6 +21,7 @@ class PackageCategory(TimeStampedModel):
 class Package(TimeStampedModel):
 	"""Holiday package with duration, itinerary, and pricing"""
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+	provider = models.ForeignKey(User, on_delete=models.CASCADE, related_name='packages', null=True, blank=True)
 	name = models.CharField(max_length=150)
 	description = models.TextField()
 	category = models.ForeignKey(PackageCategory, on_delete=models.PROTECT, related_name='packages')
@@ -87,16 +89,26 @@ class PackageBooking(TimeStampedModel):
 	]
 
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+	public_booking_id = models.CharField(max_length=50, unique=True, editable=False, db_index=True, null=True, blank=True)
+	idempotency_key = models.CharField(max_length=64, unique=True, null=True, blank=True, db_index=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='package_bookings')
 	package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name='bookings')
-	start_date = models.DateField()
-	end_date = models.DateField()
+	start_date = models.DateField(validators=[validate_future_date])
+	end_date = models.DateField(validators=[validate_future_date])
 	number_of_travelers = models.PositiveIntegerField()
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
 	total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 	promo_code = models.CharField(max_length=30, blank=True)
 	special_requests = models.TextField(blank=True)
 
+	def save(self, *args, **kwargs):
+		# Generate public_booking_id on first creation
+		if not self.pk and not self.public_booking_id:
+			date_str = timezone.now().strftime('%Y%m%d')
+			short_id = str(self.uuid)[:8].upper()
+			self.public_booking_id = f"BK-{date_str}-PKG-{short_id}"
+		super().save(*args, **kwargs)
+	
 	def __str__(self):
 		return f"Package Booking - {self.uuid}"
 

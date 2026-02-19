@@ -1,17 +1,17 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block content %}
 <section class="section section-soft">
-  <div class="container">
+  <div class="ota-container">
     <!-- Property Header -->
-    <div style="margin-bottom: var(--space-12);">
-      <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-6);">
+    <div class="mb-12">
+      <div class="d-flex gap-4 mb-6">
         <span class="tag">Verified & Approved</span>
         <span class="badge badge-success">⭐ 4.8</span>
       </div>
-      <h1 style="margin-bottom: var(--space-4);">{{ property.name }}</h1>
-      <p style="font-size: var(--fs-lg); color: var(--color-text-secondary);">📍 {{ property.address }}, {{ property.city }}, {{ property.country }}</p>
+      <h1 class="mb-4">{{ property.name }}</h1>
+      <p class="text-lg text-secondary" >📍 {{ property.address }}, {{ property.city }}, {{ property.country }}</p>
     </div>
 
     <!-- Property Details & Booking Form -->
@@ -21,52 +21,52 @@
         <!-- About Section -->
         <div class="card">
           <h3 class="card-title">About This Property</h3>
-          <p style="line-height: var(--lh-relaxed);">{{ property.description }}</p>
+          <p >{{ property.description }}</p>
           
           {% if property.latitude and property.longitude %}
-          <div style="margin: var(--space-8) 0;">
-            <h4 style="margin-bottom: var(--space-4);">📍 Location</h4>
-            <div style="border-radius: var(--radius-lg); overflow: hidden; height: 300px; background: var(--color-bg-tertiary); display: flex; align-items: center; justify-content: center;">
+          <div class="m-8">
+            <h4 class="mb-4">📍 Location</h4>
+            <div class="rounded-lg overflow-hidden d-flex align-center justify-center bg-tertiary" >
               <iframe 
                 width="100%" 
                 height="100%" 
                 frameborder="0" 
-                style="border: none;" 
+                class="border-none" 
                 src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDummyKeyForProd&q={{ property.latitude }},{{ property.longitude }}&zoom=15"
                 allowfullscreen="" 
                 loading="lazy">
               </iframe>
             </div>
-            <p style="margin-top: var(--space-4); font-size: var(--fs-sm); color: var(--color-text-secondary);">
+            <p class="mt-4 text-secondary text-sm" >
               {{ property.address }} • {{ property.city }}, {{ property.country }}
             </p>
           </div>
           {% endif %}
           
-          <h4 style="margin-top: var(--space-8); margin-bottom: var(--space-4);">🏊 Amenities</h4>
-          <div class="grid grid-cols-2 gap-3" style="margin-bottom: var(--space-8);">
-            <label style="display: flex; align-items: center; gap: var(--space-3); margin: 0; font-weight: normal; cursor: pointer;">
-              <span style="font-size: 1.25rem;">🏊</span> <span>Swimming Pool</span>
+          <h4 class="mt-8 mb-4">🏊 Amenities</h4>
+          <div class="grid grid-cols-2 gap-3 mb-8">
+            <label class="d-flex align-center gap-3 font-normal m-0" >
+              <span >🏊</span> <span>Swimming Pool</span>
             </label>
-            <label style="display: flex; align-items: center; gap: var(--space-3); margin: 0; font-weight: normal; cursor: pointer;">
-              <span style="font-size: 1.25rem;">🍽️</span> <span>Restaurant</span>
+            <label class="d-flex align-center gap-3 font-normal m-0" >
+              <span >🍽️</span> <span>Restaurant</span>
             </label>
-            <label style="display: flex; align-items: center; gap: var(--space-3); margin: 0; font-weight: normal; cursor: pointer;">
-              <span style="font-size: 1.25rem;">📶</span> <span>Free WiFi</span>
+            <label class="d-flex align-center gap-3 font-normal m-0" >
+              <span >📶</span> <span>Free WiFi</span>
             </label>
-            <label style="display: flex; align-items: center; gap: var(--space-3); margin: 0; font-weight: normal; cursor: pointer;">
-              <span style="font-size: 1.25rem;">🚗</span> <span>Parking</span>
+            <label class="d-flex align-center gap-3 font-normal m-0" >
+              <span >🚗</span> <span>Parking</span>
             </label>
-            <label style="display: flex; align-items: center; gap: var(--space-3); margin: 0; font-weight: normal; cursor: pointer;">
-              <span style="font-size: 1.25rem;">🎒</span> <span>Luggage Storage</span>
+            <label class="d-flex align-center gap-3 font-normal m-0" >
+              <span >🎒</span> <span>Luggage Storage</span>
             </label>
-            <label style="display: flex; align-items: center; gap: var(--space-3); margin: 0; font-weight: normal; cursor: pointer;">
-              <span style="font-size: 1.25rem;">💼</span> <span>Business Center</span>
+            <label class="d-flex align-center gap-3 font-normal m-0" >
+              <span >💼</span> <span>Business Center</span>
             </label>
           </div>
 
-          <h4 style="margin-bottom: var(--space-4);">📋 House Rules</h4>
-          <ul style="color: var(--color-text-secondary); line-height: var(--lh-relaxed);">
+          <h4 class="mb-4">📋 House Rules</h4>
+          <ul class="text-secondary">
             <li>Check-in: 2:00 PM</li>
             <li>Check-out: 11:00 AM</li>
             <li>Pets: Not allowed</li>
@@ -75,62 +75,62 @@
         </div>
 
         <!-- Rooms Section -->
-        <div class="card" style="margin-top: var(--space-8);">
+        <div class="card mt-8">
           <h3 class="card-title">🛏️ Available Rooms</h3>
-          <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">Choose your perfect room</p>
+          <p class="mb-6 text-secondary" >Choose your perfect room</p>
           
           <div class="grid md:grid-cols-2 gap-6">
             {% for room_type in property.rooms.all|dictsort:"name" %}
-              <div style="border: 2px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); transition: all var(--transition-base);">
-                <div style="display: flex; align-items: start; justify-content: space-between; margin-bottom: var(--space-4);">
+              <div class="rounded-lg p-6 border" >
+                <div class="d-flex justify-between mb-4 align-start" >
                   <div>
-                    <h4 style="margin: 0 0 var(--space-2) 0;">{{ room_type.name }}</h4>
-                    <p style="font-size: var(--fs-sm); color: var(--color-text-secondary); margin: 0;">{{ room_type.get_bed_type_display }}</p>
+                    <h4 class="m-2">{{ room_type.name }}</h4>
+                    <p class="text-sm m-0 text-secondary" >{{ room_type.get_bed_type_display }}</p>
                   </div>
                   {% if room_type.images.first %}
-                    <div style="width: 80px; height: 80px; border-radius: var(--radius-lg); background-image: url('{{ room_type.images.first.image_url }}'); background-size: cover; background-position: center;"></div>
+                    <div class="rounded-lg" ></div>
                   {% else %}
-                    <div style="width: 80px; height: 80px; border-radius: var(--radius-lg); background: var(--gradient-secondary);"></div>
+                    <div class="rounded-lg" ></div>
                   {% endif %}
                 </div>
-                <p style="color: var(--color-text-secondary); font-size: var(--fs-sm); margin: var(--space-3) 0;">{{ room_type.room_size_sqm|default:"25" }}m² • Max {{ room_type.max_guests }} guests</p>
+                <p class="m-3 text-secondary text-sm" >{{ room_type.room_size_sqm|default:"25" }}m² • Max {{ room_type.max_guests }} guests</p>
                 {% if room_type.amenities.all %}
-                  <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-4) 0;">
+                  <div class="d-flex flex-wrap gap-2 m-4">
                     {% for amenity in room_type.amenities.all|slice:":4" %}
-                      <span class="badge badge-info" style="font-size: var(--fs-xs);">{{ amenity.name }}</span>
+                      <span class="badge badge-info text-xs">{{ amenity.name }}</span>
                     {% endfor %}
                   </div>
                 {% endif %}
               </div>
             {% empty %}
-              <p style="color: var(--color-text-muted); font-style: italic;">No room types configured yet. Contact property owner.</p>
+              <p class="text-muted">No room types configured yet. Contact property owner.</p>
             {% endfor %}
           </div>
         </div>
 
         <!-- Meals Section -->
-        <div class="card" style="margin-top: var(--space-8);">
+        <div class="card mt-8">
           <h3 class="card-title">🍽️ Meal Plans Available</h3>
-          <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">Add meals to your stay</p>
+          <p class="mb-6 text-secondary" >Add meals to your stay</p>
           
           <div class="grid md:grid-cols-2 gap-6">
             {% for meal in property.meals.all|dictsort:"name" %}
-              <div style="border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); background: linear-gradient(135deg, rgba(255, 122, 24, 0.05), transparent);">
-                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
-                  <span style="font-size: 2rem;">{{ meal.icon|default:"🍽️" }}</span>
+              <div class="border rounded-lg p-6 bg-secondary" >
+                <div class="d-flex align-center gap-3 mb-4">
+                  <span >{{ meal.icon|default:"🍽️" }}</span>
                   <div>
-                    <h4 style="margin: 0 0 var(--space-1) 0;">{{ meal.name }}</h4>
+                    <h4 class="m-1">{{ meal.name }}</h4>
                   </div>
                 </div>
-                <p style="color: var(--color-text-secondary); font-size: var(--fs-sm); margin: var(--space-3) 0; line-height: var(--lh-normal);">{{ meal.description|default:"Delicious meal option for your stay" }}</p>
-                <div style="padding-top: var(--space-4); border-top: 1px solid var(--color-border);">
-                  <p style="display: flex; justify-content: space-between; margin: var(--space-2) 0; align-items: center;">
-                    <strong style="font-size: var(--fs-lg); color: var(--color-primary);">{{ meal.name }} — ₹{{ meal.price|default:"500" }}</strong>
+                <p class="m-3 text-secondary text-sm" >{{ meal.description|default:"Delicious meal option for your stay" }}</p>
+                <div class="pt-4 border-top">
+                  <p class="d-flex justify-between m-2 align-center">
+                    <strong class="text-lg" >{{ meal.name }} — ₹{{ meal.price|default:"500" }}</strong>
                   </p>
                 </div>
               </div>
             {% empty %}
-              <p style="color: var(--color-text-muted); font-style: italic;">No meal plans configured yet. Property provides standard breakfast.</p>
+              <p class="text-muted">No meal plans configured yet. Property provides standard breakfast.</p>
             {% endfor %}
           </div>
         </div>
@@ -139,8 +139,8 @@
       <!-- Booking Form (Right) -->
       <div>
         <div class="card">
-          <h3 class="card-title">✈️ Reserve Your Stay</h3>
-          <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">Complete your booking in 3 steps</p>
+          <h3 class="card-title">🌍 Reserve Your Stay</h3>
+          <p class="mb-6 text-secondary" >Complete your booking in 3 steps</p>
 
           <form method="post">
             {% csrf_token %}
@@ -194,41 +194,41 @@
               <p class="form-hint">Have a discount code?</p>
             </div>
 
-            <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-6); background: linear-gradient(135deg, rgba(255, 122, 24, 0.1), transparent); border: 2px solid var(--color-border);">
-              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin-bottom: var(--space-2); text-transform: uppercase; font-weight: 600;">💰 Price Summary</p>
-              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
-                <span style="color: var(--color-text-secondary);">Nights</span>
+            <div class="card bg-secondary p-4 mb-6 border" >
+              <p class="mb-2 font-semibold text-muted text-xs" >💰 Price Summary</p>
+              <div class="d-flex justify-between mb-2">
+                <span class="text-secondary">Nights</span>
                 <strong id="price-preview-nights">0</strong>
               </div>
-              <div style="display: flex; justify-content: space-between; padding-top: var(--space-3); border-top: 1px dashed var(--color-border);">
-                <span style="font-weight: 600;">Total</span>
-                <strong id="price-preview-total" style="color: var(--color-primary); font-size: var(--fs-lg);">₹0</strong>
+              <div class="d-flex justify-between pt-3 border-top">
+                <span class="font-semibold">Total</span>
+                <strong id="price-preview-total" class="text-lg" >₹0</strong>
               </div>
             </div>
 
-            <button type="submit" class="button button-accent button-block button-lg" style="margin-bottom: var(--space-4);">
+            <button type="submit" class="button button-accent button-block button-lg mb-4">
               ✓ Proceed to Booking
             </button>
-            <p style="text-align: center; font-size: var(--fs-sm); color: var(--color-text-muted);">
+            <p class="text-center text-muted text-sm" >
               🛡️ Secure booking • ✓ No charges yet
             </p>
           </form>
         </div>
 
         <!-- Trust Indicators -->
-        <div class="card" style="margin-top: var(--space-4);">
-          <div style="display: flex; gap: var(--space-3); margin-bottom: var(--space-4);">
-            <span style="font-size: 1.5rem;">🛡️</span>
+        <div class="card mt-4">
+          <div class="d-flex gap-3 mb-4">
+            <span >🛡️</span>
             <div>
-              <h4 style="margin: 0 0 var(--space-2) 0;">Payment Protection</h4>
-              <p style="font-size: var(--fs-sm); margin: 0;">Secure transactions with buyer protection</p>
+              <h4 class="m-2">Payment Protection</h4>
+              <p class="text-sm m-0">Secure transactions with buyer protection</p>
             </div>
           </div>
-          <div style="display: flex; gap: var(--space-3);">
-            <span style="font-size: 1.5rem;">✓</span>
+          <div class="d-flex gap-3">
+            <span >✓</span>
             <div>
-              <h4 style="margin: 0 0 var(--space-2) 0;">Verified Property</h4>
-              <p style="font-size: var(--fs-sm); margin: 0;">Admin-approved with transparent pricing</p>
+              <h4 class="m-2">Verified Property</h4>
+              <p class="text-sm m-0">Admin-approved with transparent pricing</p>
             </div>
           </div>
         </div>
@@ -240,3 +240,4 @@
 <script type="application/json" id="meal-prices-data">{{ meal_prices_json|safe }}</script>
 <script src="{% static 'js/hotel-detail.js' %}"></script>
 {% endblock %}
+

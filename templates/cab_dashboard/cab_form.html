@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <div class="ota-container auth-container">
+    <div class="card auth-card">
+      <h1 class="mb-4">Add Cab</h1>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label class="auth-label">Cab Name</label>
+          {{ form.name }}
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">City</label>
+          {{ form.city }}
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Seats</label>
+          {{ form.seats }}
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Fuel Type</label>
+          {{ form.fuel_type }}
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Base Price Per KM</label>
+          {{ form.base_price_per_km }}
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Create Cab</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

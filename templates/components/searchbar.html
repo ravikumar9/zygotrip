@@ -1,0 +1,130 @@
+{% comment %}
+  SEARCH BAR COMPONENT - Enterprise UI
+  Professional 5-column grid architecture
+  
+  Optional context:
+  - search_type: 'hotel', 'bus', 'cab', etc.
+  - show_dates: boolean
+{% endcomment %}
+
+<form method="get" action="{% url 'search:list' %}" class="search-form" onsubmit="return validateSearchDates()">
+  <div class="search-field">
+    <label for="search-location" class="search-label">Location</label>
+    <input 
+      type="text" 
+      id="search-location" 
+      name="q" 
+      class="search-input"
+      placeholder="Where to?"
+      value="{{ request.GET.q|default:'' }}"
+    />
+  </div>
+  
+  {% if show_dates %}
+    <div class="search-field">
+      <label for="search-checkin" class="search-label">Check-in</label>
+      <input 
+        type="date" 
+        id="search-checkin" 
+        name="checkin"
+        class="search-input"
+        value="{{ request.GET.checkin|default:'' }}"
+        min=""
+      />
+    </div>
+    
+    <div class="search-field">
+      <label for="search-checkout" class="search-label">Check-out</label>
+      <input 
+        type="date" 
+        id="search-checkout" 
+        name="checkout"
+        class="search-input"
+        value="{{ request.GET.checkout|default:'' }}"
+        min=""
+      />
+    </div>
+  {% endif %}
+  
+  <div class="search-field">
+    <label for="search-guests" class="search-label">Guests</label>
+    <select id="search-guests" name="guests" class="search-input">
+      <option value="1">1 Guest</option>
+      <option value="2" selected>2 Guests</option>
+      <option value="3">3 Guests</option>
+      <option value="4">4 Guests</option>
+      <option value="5+">5+ Guests</option>
+    </select>
+  </div>
+  
+  <div class="search-field">
+    <label class="search-label">&nbsp;</label>
+    <button type="submit" class="search-button">Search</button>
+  </div>
+</form>
+
+<script>
+  function validateSearchDates() {
+    const checkinInput = document.getElementById('search-checkin');
+    const checkoutInput = document.getElementById('search-checkout');
+    
+    if (checkinInput && checkoutInput) {
+      const checkin = new Date(checkinInput.value);
+      const checkout = new Date(checkoutInput.value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // Validate checkin >= today
+      if (checkinInput.value && checkin < today) {
+        alert('Check-in date cannot be in the past');
+        return false;
+      }
+      
+      // Validate checkout > checkin
+      if (checkinInput.value && checkoutInput.value && checkout <= checkin) {
+        alert('Check-out date must be after check-in date');
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  // Set min date to today on page load
+  function initializeDateValidation() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const minDate = `${year}-${month}-${day}`;
+    
+    const checkinInput = document.getElementById('search-checkin');
+    const checkoutInput = document.getElementById('search-checkout');
+    
+    if (checkinInput) checkinInput.setAttribute('min', minDate);
+    if (checkoutInput) checkoutInput.setAttribute('min', minDate);
+    
+    // Update checkout min when checkin changes
+    if (checkinInput && checkoutInput) {
+      checkinInput.addEventListener('change', function() {
+        const checkinDate = new Date(this.value);
+        const nextDay = new Date(checkinDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        
+        const year = nextDay.getFullYear();
+        const month = String(nextDay.getMonth() + 1).padStart(2, '0');
+        const day = String(nextDay.getDate()).padStart(2, '0');
+        const minCheckoutDate = `${year}-${month}-${day}`;
+        
+        checkoutInput.setAttribute('min', minCheckoutDate);
+      });
+    }
+  }
+  
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeDateValidation);
+  } else {
+    initializeDateValidation();
+  }
+</script>

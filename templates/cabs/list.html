@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block hero %}
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Rent a Cab</h1>
+    <p class="hero-subtitle">Affordable cab rentals for local and outstation trips</p>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="ota-container">
+  {% include "components/searchbar.html" %}
+  
+  <section class="section">
+    <div class="grid grid-auto">
+      {% for cab in cabs %}
+      <article class="card cab-card">
+        <div class="cab-icon">🚕</div>
+        
+        <div class="cab-details">
+          <h3 class="cab-type">{{ cab.vehicle_type }}</h3>
+          <div class="cab-capacity">{{ cab.capacity }} passengers</div>
+          <div class="card-features">
+            {% if cab.ac %}
+              <span class="badge">AC</span>
+            {% endif %}
+            {% if cab.luggage_space %}
+              <span class="badge">Luggage Space</span>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="cab-pricing">
+          <div class="cab-rate">₹{{ cab.rate_per_km }}/km</div>
+          <div class="card-price">
+            ₹{{ cab.base_fare }}
+            <div class="card-price-label">base fare</div>
+          </div>
+          <a href="{% url 'cabs:booking' cab.id %}" class="btn btn-primary mt-4">Book Now</a>
+        </div>
+      </article>
+      {% empty %}
+      <div class="col-span-full text-center p-8">
+        <p class="text-muted">No cabs available at the moment. Please try again later.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

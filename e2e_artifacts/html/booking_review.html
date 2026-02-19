@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Zygotrip - Premium travel booking platform">
+    <title>Zygotrip</title>
+    <link rel="icon" href="/static/img/globe.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/utilities.css">
+    <link rel="stylesheet" href="/static/css/pages/home.css">
+    
+  </head>
+  <body class="site-body">
+    <header class="site-header">
+  <nav class="site-nav">
+    <a href="/" class="site-logo">Zygotrip</a>
+    
+    <div class="site-nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/hotels/" class="nav-link">Hotels</a>
+      <a href="/buses/" class="nav-link">Buses</a>
+<a href="/cabs/" class="nav-link">Cabs</a>
+      <a href="/packages/" class="nav-link">Packages</a>
+      <a href="/flights/" class="nav-link">Flights</a>
+      <a href="/trains/" class="nav-link">Trains</a>
+    </div>
+    
+    <div class="site-nav-actions">
+      
+        <span class="nav-user">Customer</span>
+        
+        <a href="/logout/" class="btn btn-primary btn-sm">Logout</a>
+      
+    </div>
+  </nav>
+</header>
+
+    
+    
+    
+    <main class="page-main">
+      
+<section class="section">
+  <div class="container">
+    <h1 class="mb-12">Review Your Booking</h1>
+
+    <!-- Booking Timer -->
+    
+    <div class="booking-timer" data-booking-timer="" data-expires-at="2026-02-18T16:25:39.115182+05:30" data-booking-id="a12f29ba-7c5f-4ad2-b4f2-e9d2df734820">
+      <div class="booking-timer-label">
+        <span>⏰ Time Remaining:</span>
+      </div>
+      <div class="booking-timer-display">
+        <span data-timer-minutes="">9</span>
+        <span class="booking-timer-separator">:</span>
+        <span data-timer-seconds="">59</span>
+      </div>
+    </div>
+    
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Booking Summary (Left) -->
+      <div class="md:col-span-2">
+        <div class="card">
+          <h3 class="card-title">Booking Details</h3>
+          
+          <!-- Property Info -->
+          <div class="p-6 rounded-lg mb-8 bg-tertiary">
+            <h4 class="m-2">Taj Gardens Delhi</h4>
+            <p class="m-4 text-secondary">New Delhi (DEL), India</p>
+            
+            <div class="d-grid gap-4 mt-4">
+              <div>
+                <p class="m-2 text-xs text-muted">Check In</p>
+                <p class="font-semibold m-0">Feb. 19, 2026</p>
+              </div>
+              <div>
+                <p class="m-2 text-xs text-muted">Check Out</p>
+                <p class="font-semibold m-0">Feb. 20, 2026</p>
+              </div>
+              <div>
+                <p class="m-2 text-xs text-muted">Duration</p>
+                <p class="font-semibold m-0">1 night</p>
+              </div>
+              <div>
+                <p class="m-2 text-xs text-muted">Rooms</p>
+                <p class="font-semibold m-0"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guest Info -->
+          <h4 class="m-6">Guest Information</h4>
+          <div class="d-grid gap-4 mb-8">
+            <div class="p-4 rounded bg-tertiary">
+              <p class="m-2 text-xs text-muted">Name</p>
+              <p class="font-semibold m-0">N/A</p>
+            </div>
+            <div class="p-4 rounded bg-tertiary">
+              <p class="m-2 text-xs text-muted">Age</p>
+              <p class="font-semibold m-0">N/A</p>
+            </div>
+            <div class="p-4 rounded bg-tertiary">
+              <p class="m-2 text-xs text-muted">Email</p>
+              <p class="font-semibold text-sm m-0">N/A</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Summary (Right) -->
+      <div>
+        <div class="card">
+          <h3 class="card-title">Price Summary</h3>
+
+          <div class="price-total-row">
+            <div>
+              <p class="price-total-label">Total (Taxes &amp; Fees Included)</p>
+              <p class="price-total-amount">₹4950.00</p>
+            </div>
+            <button type="button" class="icon-button" data-toggle="price-breakdown" aria-expanded="false" aria-controls="price-breakdown-panel">ℹ</button>
+          </div>
+
+          <div id="price-breakdown-panel" class="price-breakdown-panel" aria-hidden="true">
+            <table class="price-table">
+              <tbody>
+                <tr>
+                  <td class="price-row-label">Base Rate</td>
+                  <td class="text-right">₹4500.00</td>
+                </tr>
+                
+                <tr>
+                  <td class="price-row-label">Service Fee</td>
+                  <td class="text-right">₹225.00</td>
+                </tr>
+                <tr>
+                  <td class="price-row-label">Tax (GST)</td>
+                  <td class="text-right">₹225.00</td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+
+          <form method="post">
+            <input type="hidden" name="csrfmiddlewaretoken" value="vs1l1mqXNrR0IiMi7Tuw6eKhjdzJ851JBNrX0ti3JkfQUcAo2VGY4ixDShLfHWqU" style="">
+            <button type="submit" class="button button-accent button-block button-lg">
+              Proceed to Payment
+            </button>
+          </form>
+
+          <p class="text-center mt-4 text-muted text-sm">
+            ✓ You won't be charged until you confirm payment
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="/static/js/booking-review.js"></script>
+<script src="/static/js/booking-timer.js"></script>
+
+    </main>
+
+    <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Zygotrip</h3>
+        <p>Your trusted travel booking platform</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/hotels/">Hotels</a></li>
+          <li><a href="/buses/">Buses</a></li>
+          <li><a href="/cabs/">Cabs</a></li>
+          <li><a href="/packages/">Packages</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <ul class="footer-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2026 Zygotrip. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+  
+
+</body></html>

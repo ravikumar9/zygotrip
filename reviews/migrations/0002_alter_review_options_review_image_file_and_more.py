@@ -8,7 +8,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hotels', '0002_property_base_price_property_discount_price_and_more'),
         ('reviews', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block hero %}
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Search Results</h1>
+    <p class="hero-subtitle">{% if query %}Results for "{{ query }}"{% else %}Explore all hotels{% endif %}</p>
+    <div class="search-card">
+      {% include "components/searchbar.html" with show_dates=True %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<!-- Compensate for hero overlap -->
+<div style="padding-top: 120px;">
+  <div class="ota-container">
+    <section style="padding: var(--space-8) 0;">
+      <div class="search-layout">
+        
+        <!-- Filter Sidebar -->
+        <aside class="search-sidebar">
+          <form method="get" class="filter-card">
+            <h3 class="heading-md" style="margin-bottom: var(--space-6);">Filters</h3>
+            
+            <!-- Search Query (Hidden) -->
+            <input type="hidden" name="q" value="{{ query }}" />
+            
+            <!-- Star Rating Filter -->
+            <div class="filter-section">
+              <h4 class="filter-heading">Star Rating</h4>
+              <div class="filter-options">
+                {% for rating, label in all_star_ratings %}
+                  <label class="filter-option">
+                    <input type="radio" name="star_rating" value="{{ rating }}" {% if selected_star_rating|stringformat:"s" == rating|stringformat:"s" %}checked{% endif %} />
+                    <span>{{ rating }} Star{{ rating|pluralize }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+            
+            <!-- Price Range Filter -->
+            <div class="filter-section">
+              <h4 class="filter-heading">Price Range</h4>
+              <div style="display: flex; gap: 12px;">
+                <input type="number" name="price_min" placeholder="Min" value="{{ selected_price_min }}" class="form-input" style="flex: 1;" />
+                <input type="number" name="price_max" placeholder="Max" value="{{ selected_price_max }}" class="form-input" style="flex: 1;" />
+              </div>
+            </div>
+            
+            <!-- Amenities Filter -->
+            <div class="filter-section">
+              <h4 class="filter-heading">Amenities</h4>
+              <div class="filter-options" style="max-height: 200px; overflow-y: auto;">
+                {% for amenity in all_amenities %}
+                  <label class="filter-option">
+                    <input type="checkbox" name="amenities" value="{{ amenity }}" {% if amenity in selected_amenities %}checked{% endif %} />
+                    <span>{{ amenity }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div style="margin-top: var(--space-6); display: flex; flex-direction: column; gap: 10px;">
+              <button type="submit" class="btn btn-primary">Apply Filters</button>
+              <a href="{% url 'search:list' %}?q={{ query }}" class="btn btn-secondary">Reset Filters</a>
+            </div>
+          </form>
+        </aside>
+        
+        <!-- Results List -->
+        <div class="search-results">
+          {% if results %}
+            <!-- Results Header -->
+            <div class="results-header" style="margin-bottom: var(--space-6);">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <p class="body">
+                    Found <strong>{{ result_count }}</strong> hotel{{ result_count|pluralize }}
+                    {% if query %}for <strong>"{{ query }}"</strong>{% endif %}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Hotel Cards -->
+            {% for hotel in results %}
+              {% include "partials/hotel_card.html" %}
+            {% endfor %}
+          {% else %}
+            <!-- Empty State -->
+            <div style="text-align: center; padding: var(--space-24) var(--space-8);">
+              <div style="font-size: 72px; margin-bottom: var(--space-4);">🏨</div>
+              <h2 class="heading-lg" style="margin-bottom: var(--space-3);">No hotels found</h2>
+              <p class="body" style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">
+                {% if query %}
+                  We couldn't find any hotels matching your search for "<strong>{{ query }}</strong>". 
+                  Try adjusting your filters or search criteria.
+                {% else %}
+                  No hotels match your current filters. Try adjusting your preferences.
+                {% endif %}
+              </p>
+              <a href="{% url 'hotels:list' %}" class="btn btn-primary">Browse All Hotels</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  // Filter form auto-submit
+  const filterForm = document.querySelector('.filter-card');
+  if (filterForm) {
+    filterForm.addEventListener('change', function (event) {
+      const target = event.target;
+      if (target && (target.matches('input') || target.matches('select'))) {
+        filterForm.submit();
+      }
+    });
+  }
+</script>
+{% endblock %}

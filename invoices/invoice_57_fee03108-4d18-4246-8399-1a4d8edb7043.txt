@@ -1,0 +1,14 @@
+
+INVOICE RECORD
+==============
+Invoice ID: 57
+Invoice UUID: fee03108-4d18-4246-8399-1a4d8edb7043
+Booking ID: 20
+Total Amount: 2750.00
+Status: paid
+Issued At: 2026-02-16T11:27:24.920599+00:00
+Created At: 2026-02-16T11:27:24.920496+00:00
+Updated At: 2026-02-16T11:27:24.920549+00:00
+
+Path: invoices/invoice_57_fee03108-4d18-4246-8399-1a4d8edb7043.txt
+Generated: 2026-02-16T17:21:29.334242

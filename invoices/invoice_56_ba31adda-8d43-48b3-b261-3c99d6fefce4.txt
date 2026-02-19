@@ -1,0 +1,14 @@
+
+INVOICE RECORD
+==============
+Invoice ID: 56
+Invoice UUID: ba31adda-8d43-48b3-b261-3c99d6fefce4
+Booking ID: 18
+Total Amount: 2750.00
+Status: paid
+Issued At: 2026-02-16T11:23:21.253069+00:00
+Created At: 2026-02-16T11:23:21.252991+00:00
+Updated At: 2026-02-16T11:23:21.253030+00:00
+
+Path: invoices/invoice_56_ba31adda-8d43-48b3-b261-3c99d6fefce4.txt
+Generated: 2026-02-16T17:21:29.335254

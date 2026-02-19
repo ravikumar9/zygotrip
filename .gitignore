@@ -72,3 +72,8 @@ dump.rdb
 *.log
 *_report.json
 *_results.json
+
+
+qa_docs_v2/
+baselines/
+*.md reports

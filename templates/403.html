@@ -1,16 +1,16 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <div style="text-align: center; padding: var(--space-16) 0;">
-      <div style="font-size: 5rem; margin-bottom: var(--space-6);">🔒</div>
-      <h1 style="color: var(--color-danger); margin-bottom: var(--space-4);">Access Denied</h1>
-      <p style="font-size: var(--fs-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8); max-width: 500px; margin-left: auto; margin-right: auto;">
+    <div class="text-center p-16">
+      <div class="mb-6" >🔒</div>
+      <h1 class="mb-4" >Access Denied</h1>
+      <p class="mb-8 text-secondary ml-auto mr-auto text-lg" >
         You do not have permission to access this resource. If you believe this is an error, please contact support.
       </p>
       
-      <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
+      <div class="d-flex gap-4 justify-center flex-wrap">
         <a href="/" class="button button-primary button-lg">Back to Home</a>
         <a href="/hotels/" class="button button-secondary button-lg">Browse Hotels</a>
       </div>
@@ -18,3 +18,4 @@
   </div>
 </section>
 {% endblock %}
+

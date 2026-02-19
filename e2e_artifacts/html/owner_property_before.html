@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Zygotrip - Premium travel booking platform">
+    <title>Zygotrip</title>
+    <link rel="icon" href="/static/img/globe.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/utilities.css">
+    <link rel="stylesheet" href="/static/css/pages/home.css">
+    
+  </head>
+  <body class="site-body">
+    <header class="site-header">
+  <nav class="site-nav">
+    <a href="/" class="site-logo">Zygotrip</a>
+    
+    <div class="site-nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/hotels/" class="nav-link">Hotels</a>
+      <a href="/buses/" class="nav-link">Buses</a>
+<a href="/cabs/" class="nav-link">Cabs</a>
+      <a href="/packages/" class="nav-link">Packages</a>
+      <a href="/flights/" class="nav-link">Flights</a>
+      <a href="/trains/" class="nav-link">Trains</a>
+    </div>
+    
+    <div class="site-nav-actions">
+      
+        <span class="nav-user">Owner</span>
+        
+        <a href="/logout/" class="btn btn-primary btn-sm">Logout</a>
+      
+    </div>
+  </nav>
+</header>
+
+    
+    
+    
+    <main class="page-main">
+      
+<section class="section">
+  <div class="container">
+    <div>
+      <h1 class="mb-4">Add New Property</h1>
+      <p class="mb-12 text-secondary">
+        List your first property and start hosting guests. Complete all required fields.
+      </p>
+
+      <div class="card">
+        <form method="post">
+          <input type="hidden" name="csrfmiddlewaretoken" value="segPb5LbBIwvFtZ6VQsYJi3DpnvYnEQ3ki2RHYfMs8qQI8LpLXX9f5aSJPZiYElj" style="">
+          
+          <div class="form-group">
+            <label>Property Name</label>
+            <input type="text" name="name" maxlength="140" required="" id="id_name" style="">
+            <p class="form-hint">Catchy name that stands out</p>
+          </div>
+
+          <div class="form-group">
+            <label>Property Type</label>
+            <input type="text" name="property_type" value="Hotel" maxlength="80" required="" id="id_property_type" style="">
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" cols="40" rows="4" required="" id="id_description" style=""></textarea>
+            <p class="form-hint">Describe what makes your property special</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8">
+            <div class="form-group">
+              <label>City</label>
+              <select name="city" required="" id="id_city">
+  <option value="" selected="">---------</option>
+
+  <option value="1">Bangalore (BLR)</option>
+
+  <option value="2">Coorg (COORG)</option>
+
+  <option value="3">Mysore (MYS)</option>
+
+  <option value="4">North Goa (GOA_NORTH)</option>
+
+  <option value="5">South Goa (GOA_SOUTH)</option>
+
+  <option value="6">Mumbai (BOM)</option>
+
+  <option value="7">Pune (PUN)</option>
+
+  <option value="8">New Delhi (DEL)</option>
+
+  <option value="9">Jaipur (JAI)</option>
+
+  <option value="10">Udaipur (UDR)</option>
+
+  <option value="11">New Delhi (DELHI)</option>
+
+</select>
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              <input type="text" name="country" value="India" maxlength="80" required="" id="id_country" style="">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8">
+            <div class="form-group">
+              <label>Area</label>
+              <input type="text" name="area" maxlength="120" id="id_area" style="">
+            </div>
+            <div class="form-group">
+              <label>Landmark</label>
+              <input type="text" name="landmark" maxlength="120" id="id_landmark" style="">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" name="address" maxlength="200" required="" id="id_address" style="">
+            <p class="form-hint">Full street address</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8">
+            <div class="form-group">
+              <label>Latitude</label>
+              <input type="number" name="latitude" step="0.000001" required="" id="id_latitude" style="">
+            </div>
+            <div class="form-group">
+              <label>Longitude</label>
+              <input type="number" name="longitude" step="0.000001" required="" id="id_longitude" style="">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Rating</label>
+            <input type="number" name="rating" value="0" step="0.1" required="" id="id_rating" style="">
+            <p class="form-hint">Property rating (1-5 stars)</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8">
+            <div class="form-group">
+              <label>Base Price</label>
+              <input type="number" name="base_price" value="0" step="0.01" required="" id="id_base_price" style="">
+            </div>
+            <div class="form-group">
+              <label>Discount Price</label>
+              <input type="number" name="discount_price" step="0.01" id="id_discount_price" style="">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="url" name="image_url" placeholder="https://" style="">
+            <p class="form-hint">Primary image URL for listing</p>
+          </div>
+
+          <button type="submit" class="button button-accent button-block button-lg mt-8">
+            Create Property
+          </button>
+        </form>
+      </div>
+
+      <p class="text-center mt-8 text-muted text-sm">
+        💡 After creation, you'll add rooms and meal plans
+      </p>
+    </div>
+  </div>
+</section>
+
+    </main>
+
+    <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Zygotrip</h3>
+        <p>Your trusted travel booking platform</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/hotels/">Hotels</a></li>
+          <li><a href="/buses/">Buses</a></li>
+          <li><a href="/cabs/">Cabs</a></li>
+          <li><a href="/packages/">Packages</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <ul class="footer-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2026 Zygotrip. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+  
+
+</body></html>

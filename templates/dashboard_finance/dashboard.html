@@ -1,39 +1,39 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 <section class="section">
-  <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-12);">
+  <div class="ota-container">
+    <div class="d-flex justify-between align-center mb-12">
       <div>
         <h1>Finance Dashboard</h1>
-        <p style="color: var(--color-text-secondary);">Monitor payments and wallet balances</p>
+        <p class="text-secondary">Monitor payments and wallet balances</p>
       </div>
     </div>
 
     <!-- KPI Cards -->
     <div class="grid md:grid-cols-4 gap-6 mb-12">
-      <div class="card" style="text-align: center;">
-        <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Total Revenue</p>
-        <p style="margin: 0; font-size: var(--fs-3xl); font-weight: 700; color: var(--color-accent);">₹125,430</p>
-        <p style="font-size: var(--fs-xs); color: var(--color-success); margin: var(--space-2) 0 0 0;">↑ 12% this month</p>
+      <div class="card text-center">
+        <p class="m-2 text-sm text-muted" >Total Revenue</p>
+        <p class="font-bold text-3xl m-0" >₹125,430</p>
+        <p class="m-2 text-xs" >↑ 12% this month</p>
       </div>
       
-      <div class="card" style="text-align: center;">
-        <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Pending Payments</p>
-        <p style="margin: 0; font-size: var(--fs-3xl); font-weight: 700; color: var(--color-warning);">₹8,940</p>
-        <p style="font-size: var(--fs-xs); color: var(--color-warning); margin: var(--space-2) 0 0 0;">5 transactions</p>
+      <div class="card text-center">
+        <p class="m-2 text-sm text-muted" >Pending Payments</p>
+        <p class="font-bold text-3xl m-0" >₹8,940</p>
+        <p class="m-2 text-xs" >5 transactions</p>
       </div>
       
-      <div class="card" style="text-align: center;">
-        <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Total Wallets</p>
-        <p style="margin: 0; font-size: var(--fs-3xl); font-weight: 700; color: var(--color-info);">₹45,300</p>
-        <p style="font-size: var(--fs-xs); color: var(--color-text-secondary); margin: var(--space-2) 0 0 0;">Across 234 users</p>
+      <div class="card text-center">
+        <p class="m-2 text-sm text-muted" >Total Wallets</p>
+        <p class="font-bold text-3xl m-0" >₹45,300</p>
+        <p class="m-2 text-secondary text-xs" >Across 234 users</p>
       </div>
       
-      <div class="card" style="text-align: center;">
-        <p style="font-size: var(--fs-sm); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Conversion Rate</p>
-        <p style="margin: 0; font-size: var(--fs-3xl); font-weight: 700; color: var(--color-success);">82%</p>
-        <p style="font-size: var(--fs-xs); color: var(--color-success); margin: var(--space-2) 0 0 0;">↑ 3% from last week</p>
+      <div class="card text-center">
+        <p class="m-2 text-sm text-muted" >Conversion Rate</p>
+        <p class="font-bold text-3xl m-0" >82%</p>
+        <p class="m-2 text-xs" >↑ 3% from last week</p>
       </div>
     </div>
 
@@ -46,9 +46,9 @@
         <a href="#" class="sidebar-link">Settlements</a>
         <a href="#" class="sidebar-link">Disputes</a>
         
-        <div style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--color-border);">
+        <div class="mt-8 pt-8 border-top">
           <div class="sidebar-title">Period</div>
-          <select style="width: 100%; padding: var(--space-2) var(--space-3);">
+          <select class="w-full p-2">
             <option>This Month</option>
             <option>Last Month</option>
             <option>Last 3 Months</option>
@@ -60,11 +60,11 @@
       <!-- Main Content -->
       <div class="main-content">
         <!-- Payments Section -->
-        <div class="card" style="margin-bottom: var(--space-8);">
+        <div class="card mb-8">
           <h3 class="card-title">Recent Payments</h3>
           
           {% if payments %}
-            <div style="overflow-x: auto;">
+            <div class="overflow-x-auto">
               <table class="price-table">
                 <thead>
                   <tr>
@@ -78,16 +78,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for payment in payments %}
+                  {% for payment in payments|default_if_none:"" %}
                     <tr>
                       <td>
-                        <code style="background: var(--color-bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: var(--fs-xs);">
+                        <code class="text-xs bg-tertiary" >
                           {{ payment.booking.uuid|truncatechars:12 }}
                         </code>
                       </td>
                       <td>{{ payment.booking.user.full_name }}</td>
                       <td>{{ payment.booking.property.name|truncatewords:2 }}</td>
-                      <td style="font-weight: 600;">₹{{ payment.amount }}</td>
+                      <td class="font-semibold">₹{{ payment.amount }}</td>
                       <td>
                         {% if payment.method == 'wallet' %}
                           <span class="badge badge-info">Wallet</span>
@@ -104,7 +104,7 @@
                           <span class="badge badge-warning">⏳ Pending</span>
                         {% endif %}
                       </td>
-                      <td style="font-size: var(--fs-sm);">{{ payment.created_at|date:"M d, Y" }}</td>
+                      <td class="text-sm">{{ payment.created_at|date:"M d, Y" }}</td>
                     </tr>
                   {% endfor %}
                 </tbody>
@@ -124,14 +124,14 @@
           
           {% if wallets %}
             <div class="grid md:grid-cols-2 gap-4">
-              {% for wallet in wallets|slice:":10" %}
-                <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center;">
+              {% for wallet in wallets|default_if_none:""|slice:":10" %}
+                <div class="p-4 rounded-lg d-flex justify-between align-center bg-tertiary" >
                   <div>
-                    <p style="margin: 0 0 var(--space-1) 0; font-weight: 600;">{{ wallet.user.full_name }}</p>
-                    <p style="margin: 0; font-size: var(--fs-sm); color: var(--color-text-secondary);">{{ wallet.user.email|truncatechars:25 }}</p>
+                    <p class="font-semibold m-1">{{ wallet.user.full_name }}</p>
+                    <p class="text-sm m-0 text-secondary" >{{ wallet.user.email|truncatechars:25 }}</p>
                   </div>
-                  <div style="text-align: right;">
-                    <p style="margin: 0; font-weight: 700; color: var(--color-accent); font-size: var(--fs-lg);">₹{{ wallet.balance }}</p>
+                  <div class="text-right">
+                    <p class="font-bold m-0 text-lg" >₹{{ wallet.balance }}</p>
                   </div>
                 </div>
               {% endfor %}
@@ -148,3 +148,4 @@
   </div>
 </section>
 {% endblock %}
+

@@ -1,0 +1,305 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Zygotrip - Premium travel booking platform">
+    <title>Zygotrip</title>
+    <link rel="icon" href="/static/img/globe.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/utilities.css">
+    <link rel="stylesheet" href="/static/css/pages/home.css">
+    
+  </head>
+  <body class="site-body">
+    <header class="site-header">
+  <nav class="site-nav">
+    <a href="/" class="site-logo">Zygotrip</a>
+    
+    <div class="site-nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/hotels/" class="nav-link">Hotels</a>
+      <a href="/buses/" class="nav-link">Buses</a>
+<a href="/cabs/" class="nav-link">Cabs</a>
+      <a href="/packages/" class="nav-link">Packages</a>
+      <a href="/flights/" class="nav-link">Flights</a>
+      <a href="/trains/" class="nav-link">Trains</a>
+    </div>
+    
+    <div class="site-nav-actions">
+      
+        <span class="nav-user">Customer</span>
+        
+        <a href="/logout/" class="btn btn-primary btn-sm">Logout</a>
+      
+    </div>
+  </nav>
+</header>
+
+    
+    
+    
+    <main class="page-main">
+      
+<section class="section section-soft">
+  <div class="container">
+    <!-- Property Header -->
+    <div class="mb-12">
+      <div class="d-flex gap-4 mb-6">
+        <span class="tag">Verified &amp; Approved</span>
+        <span class="badge badge-success">⭐ 4.8</span>
+      </div>
+      <h1 class="mb-4">Taj Gardens Delhi</h1>
+      <p class="text-lg text-secondary">📍 New Delhi, India, New Delhi (DEL), India</p>
+    </div>
+
+    <!-- Property Details & Booking Form -->
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Property Details (Left) -->
+      <div class="md:col-span-2">
+        <!-- About Section -->
+        <div class="card">
+          <h3 class="card-title">About This Property</h3>
+          <p>Luxury hotel with world-class amenities in the heart of Delhi.</p>
+          
+          
+          <div class="m-8">
+            <h4 class="mb-4">📍 Location</h4>
+            <div class="rounded-lg overflow-hidden d-flex align-center justify-center bg-tertiary">
+              <iframe width="100%" height="100%" frameborder="0" class="border-none" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDummyKeyForProd&amp;q=28.613900,77.209000&amp;zoom=15" allowfullscreen="" loading="lazy">
+              </iframe>
+            </div>
+            <p class="mt-4 text-secondary text-sm">
+              New Delhi, India • New Delhi (DEL), India
+            </p>
+          </div>
+          
+          
+          <h4 class="mt-8 mb-4">🏊 Amenities</h4>
+          <div class="grid grid-cols-2 gap-3 mb-8">
+            <label class="d-flex align-center gap-3 font-normal m-0">
+              <span>🏊</span> <span>Swimming Pool</span>
+            </label>
+            <label class="d-flex align-center gap-3 font-normal m-0">
+              <span>🍽️</span> <span>Restaurant</span>
+            </label>
+            <label class="d-flex align-center gap-3 font-normal m-0">
+              <span>📶</span> <span>Free WiFi</span>
+            </label>
+            <label class="d-flex align-center gap-3 font-normal m-0">
+              <span>🚗</span> <span>Parking</span>
+            </label>
+            <label class="d-flex align-center gap-3 font-normal m-0">
+              <span>🎒</span> <span>Luggage Storage</span>
+            </label>
+            <label class="d-flex align-center gap-3 font-normal m-0">
+              <span>💼</span> <span>Business Center</span>
+            </label>
+          </div>
+
+          <h4 class="mb-4">📋 House Rules</h4>
+          <ul class="text-secondary">
+            <li>Check-in: 2:00 PM</li>
+            <li>Check-out: 11:00 AM</li>
+            <li>Pets: Not allowed</li>
+            <li>Smoking: Designated areas only</li>
+          </ul>
+        </div>
+
+        <!-- Rooms Section -->
+        <div class="card mt-8">
+          <h3 class="card-title">🛏️ Available Rooms</h3>
+          <p class="mb-6 text-secondary">Choose your perfect room</p>
+          
+          <div class="grid md:grid-cols-2 gap-6">
+            
+              <p class="text-muted">No room types configured yet. Contact property owner.</p>
+            
+          </div>
+        </div>
+
+        <!-- Meals Section -->
+        <div class="card mt-8">
+          <h3 class="card-title">🍽️ Meal Plans Available</h3>
+          <p class="mb-6 text-secondary">Add meals to your stay</p>
+          
+          <div class="grid md:grid-cols-2 gap-6">
+            
+              <p class="text-muted">No meal plans configured yet. Property provides standard breakfast.</p>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Form (Right) -->
+      <div>
+        <div class="card">
+          <h3 class="card-title">🌍 Reserve Your Stay</h3>
+          <p class="mb-6 text-secondary">Complete your booking in 3 steps</p>
+
+          <form method="post">
+            <input type="hidden" name="csrfmiddlewaretoken" value="6grW2TbRkbHcsfJnY3BgfvtLCgZdZ6DicBRy103Xg452E9xtT5NIdzg7bkbJyX2t" style="">
+            
+            <div class="form-group">
+              <label>🛏️ Room Type</label>
+              <select name="room_type" required="" id="id_room_type">
+  <option value="" selected="">---------</option>
+
+  <option value="127">Taj Gardens Delhi - Deluxe Room</option>
+
+</select>
+            </div>
+
+            <div class="form-group">
+              <label>🍽️ Meal Plan (Optional)</label>
+              <select name="meal_plan" id="id_meal_plan">
+  <option value="" selected="">---------</option>
+
+  <option value="142">Taj Gardens Delhi - Breakfast Only</option>
+
+  <option value="143">Taj Gardens Delhi - Half Board (B+L or B+D)</option>
+
+  <option value="144">Taj Gardens Delhi - Full Board (B+L+D)</option>
+
+  <option value="145">Taj Gardens Delhi - All Inclusive</option>
+
+</select>
+              <p class="form-hint">Add meals to enhance your stay</p>
+            </div>
+
+            <div class="form-group">
+              <label>📅 Check In</label>
+              <input type="date" name="check_in" min="2026-02-18" required="" id="id_check_in" style="">
+            </div>
+
+            <div class="form-group">
+              <label>📅 Check Out</label>
+              <input type="date" name="check_out" min="2026-02-19" required="" id="id_check_out" style="">
+            </div>
+
+            <div class="form-group">
+              <label>🏠 Number of Rooms</label>
+              <input type="number" name="quantity" value="1" min="1" required="" id="id_quantity" style="">
+              <p class="form-hint">How many rooms do you need?</p>
+            </div>
+
+            <div class="form-group">
+              <label>👤 Guest Name</label>
+              <input type="text" name="guest_full_name" maxlength="120" required="" id="id_guest_full_name" style="">
+            </div>
+
+            <div class="form-group">
+              <label>🎂 Guest Age</label>
+              <input type="number" name="guest_age" value="25" min="1" required="" id="id_guest_age" style="">
+            </div>
+
+            <div class="form-group">
+              <label>📧 Email Address</label>
+              <input type="email" name="guest_email" maxlength="320" id="id_guest_email" style="">
+              <p class="form-hint">Confirmation will be sent here</p>
+            </div>
+
+            <div class="form-group">
+              <label>🎟️ Promo Code (Optional)</label>
+              <input type="text" name="promo_code" maxlength="20" id="id_promo_code" style="">
+              <p class="form-hint">Have a discount code?</p>
+            </div>
+
+            <div class="card bg-secondary p-4 mb-6 border">
+              <p class="mb-2 font-semibold text-muted text-xs">💰 Price Summary</p>
+              <div class="d-flex justify-between mb-2">
+                <span class="text-secondary">Nights</span>
+                <strong id="price-preview-nights">1</strong>
+              </div>
+              <div class="d-flex justify-between pt-3 border-top">
+                <span class="font-semibold">Total</span>
+                <strong id="price-preview-total" class="text-lg">₹0</strong>
+              </div>
+            </div>
+
+            <button type="submit" class="button button-accent button-block button-lg mb-4">
+              ✓ Proceed to Booking
+            </button>
+            <p class="text-center text-muted text-sm">
+              🛡️ Secure booking • ✓ No charges yet
+            </p>
+          </form>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="card mt-4">
+          <div class="d-flex gap-3 mb-4">
+            <span>🛡️</span>
+            <div>
+              <h4 class="m-2">Payment Protection</h4>
+              <p class="text-sm m-0">Secure transactions with buyer protection</p>
+            </div>
+          </div>
+          <div class="d-flex gap-3">
+            <span>✓</span>
+            <div>
+              <h4 class="m-2">Verified Property</h4>
+              <p class="text-sm m-0">Admin-approved with transparent pricing</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script type="application/json" id="room-prices-data">{"127": "4500.00"}</script>
+<script type="application/json" id="meal-prices-data">{"142": "500.00", "143": "1200.00", "144": "1800.00", "145": "2300.00"}</script>
+<script src="/static/js/hotel-detail.js"></script>
+
+    </main>
+
+    <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Zygotrip</h3>
+        <p>Your trusted travel booking platform</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/hotels/">Hotels</a></li>
+          <li><a href="/buses/">Buses</a></li>
+          <li><a href="/cabs/">Cabs</a></li>
+          <li><a href="/packages/">Packages</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <ul class="footer-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2026 Zygotrip. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+  
+
+</body></html>

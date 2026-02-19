@@ -1,0 +1,28 @@
+<header class="site-header">
+  <nav class="site-nav">
+    <a href="/" class="site-logo">Zygotrip</a>
+    
+    <div class="site-nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/hotels/" class="nav-link">Hotels</a>
+      <a href="/buses/" class="nav-link">Buses</a>
+<a href="/cabs/" class="nav-link">Cabs</a>
+      <a href="/packages/" class="nav-link">Packages</a>
+      <a href="/flights/" class="nav-link">Flights</a>
+      <a href="/trains/" class="nav-link">Trains</a>
+    </div>
+    
+    <div class="site-nav-actions">
+      {% if user.is_authenticated %}
+        <span class="nav-user">{{ user.full_name|default:user.email }}</span>
+        {% if user.is_staff %}
+          <a href="/admin/" class="btn btn-ghost btn-sm">Admin</a>
+        {% endif %}
+        <a href="{% url 'account_logout' %}" class="btn btn-primary btn-sm">Logout</a>
+      {% else %}
+        <a href="{% url 'account_login' %}" class="btn btn-primary btn-sm">Login</a>
+        <a href="{% url 'account_register' %}" class="btn btn-primary btn-sm">Register</a>
+      {% endif %}
+    </div>
+  </nav>
+</header>

@@ -8,9 +8,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('hotels', '0001_initial'),
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Bookings - Zygotrip{% endblock %}
+
+{% block content %}
+<div class="ota-container" style="margin-top: 40px; margin-bottom: 40px;">
+  <h1 style="margin-bottom: 30px;">My Bookings</h1>
+  
+  <!-- Statistics Cards -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;">
+    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 0.9rem;">Total Bookings</p>
+      <p style="margin: 0; font-size: 2rem; font-weight: 700; color: #dd2476;">{{ total_bookings }}</p>
+    </div>
+    
+<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 0.9rem;">Confirmed</p>
+      <p style="margin: 0; font-size: 2rem; font-weight: 700; color: #10b981;">{{ confirmed_bookings }}</p>
+    </div>
+    
+    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 0.9rem;">Cancelled</p>
+      <p style="margin: 0; font-size: 2rem; font-weight: 700; color: #ef4444;">{{ cancelled_bookings }}</p>
+    </div>
+  </div>
+  
+  <!-- Bookings List -->
+  {% if bookings %}
+  <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div style="padding: 20px; border-bottom: 1px solid #e5e7eb;">
+      <h2 style="margin: 0; font-size: 1.5rem;">Your Bookings</h2>
+    </div>
+    
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+          <th style="padding: 12px 20px; text-align: left; font-weight: 600;">Property</th>
+          <th style="padding: 12px 20px; text-align: left; font-weight: 600;">Check-in</th>
+          <th style="padding: 12px 20px; text-align: left; font-weight: 600;">Check-out</th>
+          <th style="padding: 12px 20px; text-align: left; font-weight: 600;">Amount</th>
+          <th style="padding: 12px 20px; text-align: left; font-weight: 600;">Status</th>
+          <th style="padding: 12px 20px; text-align: left; font-weight: 600;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 20px;">{{ booking.property.name }}</td>
+          <td style="padding: 12px 20px;">{{ booking.check_in|date:"M d, Y" }}</td>
+          <td style="padding: 12px 20px;">{{ booking.check_out|date:"M d, Y" }}</td>
+          <td style="padding: 12px 20px; font-weight: 600;">₹{{ booking.total_amount }}</td>
+          <td style="padding: 12px 20px;">
+            {% if booking.status == 'confirmed' %}
+            <span style="background: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem;">✓ Confirmed</span>
+            {% elif booking.status == 'payment' %}
+            <span style="background: #fef08a; color: #92400e; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem;">⏳ Payment</span>
+            {% elif booking.status == 'review' %}
+            <span style="background: #dbeafe; color: #0c4a6e; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem;">📋 Review</span>
+            {% elif booking.status == 'cancelled' %}
+            <span style="background: #fee2e2; color: #7f1d1d; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem;">✗ Cancelled</span>
+            {% else %}
+            <span style="background: #f3f4f6; color: #374151; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem;">{{ booking.get_status_display }}</span>
+            {% endif %}
+          </td>
+          <td style="padding: 12px 20px;">
+            {% if booking.status in 'review,payment' %}
+            <a href="{% url 'booking:review' booking.uuid %}" style="color: #dd2476; text-decoration: none; font-weight: 500;">View</a>
+            {% elif booking.status == 'confirmed' %}
+            <a href="{% url 'booking:review' booking.uuid %}" style="color: #10b981; text-decoration: none; font-weight: 500;">Details</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="background: #f9fafb; padding: 40px; border-radius: 12px; text-align: center;">
+    <p style="color: #6b7280; font-size: 1.1rem; margin-bottom: 20px;">No bookings found</p>
+    <a href="{% url 'search:list' %}" style="
+      display: inline-block;
+      background: linear-gradient(135deg, #ff512f 0%, #dd2476 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+    ">Browse Hotels</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

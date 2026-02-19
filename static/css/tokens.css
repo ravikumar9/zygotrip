@@ -1,0 +1,171 @@
+/**
+ * DESIGN TOKENS - Production Design System
+ * 
+ * Single source of truth for all UI values.
+ * All colors, spacing, typography, shadows defined here.
+ * 
+ * Rules:
+ * 1. No inline color values anywhere in templates/CSS
+ * 2. All colors must reference a token
+ * 3. All spacing must reference scale
+ * 4. All shadows from this file
+ * 5. All typography sizes from define scale
+ */
+
+:root {
+  /* ========== COLOR SYSTEM ========== */
+  
+  /* Brand colors */
+  --color-primary: #ff6b3d;
+  --color-primary-dark: #e5532f;
+  --color-primary-hover: #ff7d52;
+  --color-primary-light: #fff3f0;
+  --color-primary-25: #fff9f8;
+  
+  /* Semantic colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+  
+  /* Neutral scale */
+  --color-bg: #f6f7fb;
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f9fafb;
+  --color-border: #e6e8ef;
+  --color-border-light: #f0f1f5;
+  --color-text: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-muted: #d1d5db;
+  
+  /* Legacy aliases for now */
+  --primary: var(--color-primary);
+  --primary-hover: var(--color-primary-hover);
+  --primary-light: var(--color-primary-light);
+  --secondary: var(--color-primary);
+  --secondary-hover: var(--color-primary-hover);
+  --text: var(--color-text);
+  --text-muted: var(--color-text-secondary);
+  --text-light: var(--color-text-tertiary);
+  --bg: var(--color-bg);
+  --bg-alt: var(--color-surface);
+  --surface: var(--color-surface);
+  --border: var(--color-border);
+  --success: var(--color-success);
+  --error: var(--color-danger);
+  --warning: var(--color-warning);
+  --info: var(--color-info);
+  
+  /* ========== TYPOGRAPHY ========== */
+  
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Menlo', 'Courier New', monospace;
+  
+  /* Font sizes */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 22px;
+  --text-3xl: 28px;
+  --text-4xl: 32px;
+  --text-5xl: 40px;
+  
+  /* Font weights */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+  
+  /* Line heights */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+  
+  /* ========== SPACING SCALE (8px base) ========== */
+  
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  
+  /* ========== BORDER RADIUS ========== */
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  
+  /* ========== SHADOWS ========== */
+  
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Card shadows */
+  --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 12px 28px rgba(0, 0, 0, 0.12);
+  
+  /* ========== TRANSITIONS ========== */
+  
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+  --transition-elastic: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* ========== LAYOUT CONSTANTS ========== */
+  
+  --container-max: 1320px;
+  --container-padding: 24px;
+  --sidebar-width: 280px;
+  --booking-panel-width: 360px;
+  --header-height: 80px;
+  
+  /* ========== Z-INDEX SCALE ========== */
+  
+  --z-hide: -1;
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 10;
+  --z-fixed: 20;
+  --z-modal: 100;
+  --z-tooltip: 1100;
+  
+  /* Typography */
+  --font-hero: 40px;
+  --font-section: 28px;
+  --font-subsection: 22px;
+  --font-card: 18px;
+  --font-body: 16px;
+  --font-meta: 13px;
+  
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  
+  /* Transitions */
+  --transition: 0.25s ease;
+  --transition-fast: 0.15s ease;
+}

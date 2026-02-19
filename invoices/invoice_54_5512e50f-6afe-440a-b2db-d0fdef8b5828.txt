@@ -1,0 +1,14 @@
+
+INVOICE RECORD
+==============
+Invoice ID: 54
+Invoice UUID: 5512e50f-6afe-440a-b2db-d0fdef8b5828
+Booking ID: 14
+Total Amount: 2750.00
+Status: paid
+Issued At: 2026-02-16T10:55:24.171162+00:00
+Created At: 2026-02-16T10:55:24.171065+00:00
+Updated At: 2026-02-16T10:55:24.171118+00:00
+
+Path: invoices/invoice_54_5512e50f-6afe-440a-b2db-d0fdef8b5828.txt
+Generated: 2026-02-16T17:21:29.337258

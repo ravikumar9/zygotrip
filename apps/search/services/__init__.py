@@ -51,21 +51,32 @@ class SearchService:
 					continue
 				seen.add(prop.id)
 				score = 0
-				for value in [prop.name, prop.city, prop.area, prop.landmark, prop.slug]:
+				
+				# Access city name via FK or fallback to city_text
+				city_name = prop.city.name if prop.city else (prop.city_text or "")
+				
+				for value in [prop.name, city_name, prop.area, prop.landmark, prop.slug]:
 					score += _score_field(query_lower, value)
+				
 				rating_boost = float(getattr(prop, "rating", 0) or 0)
 				review_count = getattr(prop, "review_count", 0) or 0
 				review_boost = math.log1p(review_count)
 				score += rating_boost + review_boost
+				
 				results.append({
 					"id": prop.id,
 					"name": prop.name,
 					"slug": prop.slug,
-					"city": prop.city,
+					"city": city_name,
 					"area": prop.area,
 					"landmark": prop.landmark,
 					"rating": float(getattr(prop, "rating", 0) or 0),
+					"base_price": float(prop.base_price) if prop.base_price else 0.0,
 					"review_count": review_count,
+					"popularity_score": prop.popularity_score or 0,
+					"bookings_today": prop.bookings_today or 0,
+					"is_trending": prop.is_trending or False,
+					"has_free_cancellation": prop.has_free_cancellation if prop.has_free_cancellation is not None else True,
 					"cta_url": f"/hotels/{prop.id}/",
 					"score": score,
 				})

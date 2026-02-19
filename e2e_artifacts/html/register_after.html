@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Zygotrip - Premium travel booking platform">
+    <title>Zygotrip</title>
+    <link rel="icon" href="/static/img/globe.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/utilities.css">
+    <link rel="stylesheet" href="/static/css/pages/home.css">
+    
+<link rel="stylesheet" href="/static/css/pages/home.css">
+
+  </head>
+  <body class="site-body">
+    <header class="site-header">
+  <nav class="site-nav">
+    <a href="/" class="site-logo">Zygotrip</a>
+    
+    <div class="site-nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/hotels/" class="nav-link">Hotels</a>
+      <a href="/buses/" class="nav-link">Buses</a>
+<a href="/cabs/" class="nav-link">Cabs</a>
+      <a href="/packages/" class="nav-link">Packages</a>
+      <a href="/flights/" class="nav-link">Flights</a>
+      <a href="/trains/" class="nav-link">Trains</a>
+    </div>
+    
+    <div class="site-nav-actions">
+      
+        <span class="nav-user">Test User</span>
+        
+        <a href="/logout/" class="btn btn-primary btn-sm">Logout</a>
+      
+    </div>
+  </nav>
+</header>
+
+    
+    
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Discover Your Perfect Journey</h1>
+    <p class="hero-subtitle">Book hotels, buses, cabs &amp; travel packages across India</p>
+  </div>
+</section>
+
+    
+    <main class="page-main">
+      
+<div class="container">
+  
+
+<div class="search-panel">
+  <form method="get" action="" class="search-form search-bar">
+    <div class="search-field">
+      <label for="search-location">Location</label>
+      <input type="text" id="search-location" name="q" placeholder="Enter city or destination" value="" style="">
+    </div>
+    
+    
+      <div class="search-field">
+        <label for="search-checkin">Check-in</label>
+        <input type="date" id="search-checkin" name="checkin" value="" style="">
+      </div>
+      
+      <div class="search-field">
+        <label for="search-checkout">Check-out</label>
+        <input type="date" id="search-checkout" name="checkout" value="" style="">
+      </div>
+    
+    
+    <div class="search-field">
+      <label for="search-guests">Guests</label>
+      <select id="search-guests" name="guests">
+        <option value="1">1 Guest</option>
+        <option value="2" selected="">2 Guests</option>
+        <option value="3">3 Guests</option>
+        <option value="4">4 Guests</option>
+        <option value="5+">5+ Guests</option>
+      </select>
+    </div>
+    
+    <div class="search-field">
+      <label>&nbsp;</label>
+      <button type="submit" class="btn btn-primary w-full">Search</button>
+    </div>
+  </form>
+</div>
+
+  
+  <section class="home-sections">
+    <div class="section-header">
+      <h2 class="section-title">Popular Travel Services</h2>
+      <p class="section-subtitle">Explore our wide range of travel booking options</p>
+    </div>
+    
+    <div class="grid grid-3">
+      <article class="card">
+        <div class="card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 64px;">
+          🏨
+        </div>
+        <h3 class="card-title">Hotels &amp; Resorts</h3>
+        <p class="text-muted mb-4">Find and book verified hotels across India with best prices guaranteed</p>
+        <div class="card-footer">
+          <a href="/hotels/" class="btn btn-primary w-full">Browse Hotels</a>
+        </div>
+      </article>
+      
+      <article class="card">
+        <div class="card-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 64px;">
+          🚌
+        </div>
+        <h3 class="card-title">Bus Tickets</h3>
+        <p class="text-muted mb-4">Book intercity bus tickets with live seat availability and instant confirmation</p>
+        <div class="card-footer">
+          <a href="/buses/" class="btn btn-primary w-full">Find Buses</a>
+        </div>
+      </article>
+      
+      <article class="card">
+        <div class="card-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 64px;">
+          🚕
+        </div>
+        <h3 class="card-title">Cab Services</h3>
+        <p class="text-muted mb-4">Rent cars and cabs for local or outstation trips with flexible pricing</p>
+        <div class="card-footer">
+          <a href="/cabs/" class="btn btn-primary w-full">Book Cabs</a>
+        </div>
+      </article>
+      
+      <article class="card">
+        <div class="card-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 64px;">
+          📦
+        </div>
+        <h3 class="card-title">Travel Packages</h3>
+        <p class="text-muted mb-4">Curated tour packages with hotels, transport, and sightseeing included</p>
+        <div class="card-footer">
+          <a href="/packages/" class="btn btn-primary w-full">View Packages</a>
+        </div>
+      </article>
+      
+      <article class="card">
+        <div class="card-image" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 64px;">
+          ✈️
+        </div>
+        <h3 class="card-title">Flights</h3>
+        <p class="text-muted mb-4">Compare and book domestic and international flights at competitive rates</p>
+        <div class="card-footer">
+          <a href="/flights/" class="btn btn-primary w-full">Search Flights</a>
+        </div>
+      </article>
+      
+      <article class="card">
+        <div class="card-image" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 64px;">
+          🚂
+        </div>
+        <h3 class="card-title">Train Tickets</h3>
+        <p class="text-muted mb-4">Book train tickets with PNR status tracking and e-ticket downloads</p>
+        <div class="card-footer">
+          <a href="/trains/" class="btn btn-primary w-full">Book Trains</a>
+        </div>
+      </article>
+    </div>
+  </section>
+  
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">Why Choose Zygotrip?</h2>
+    </div>
+    
+    <div class="grid grid-3">
+      <div class="text-center p-6">
+        <div style="font-size: 48px; margin-bottom: var(--space-4);">✓</div>
+        <h3 class="font-semibold mb-2">Verified Listings</h3>
+        <p class="text-muted">All hotels and services are verified by our team</p>
+      </div>
+      
+      <div class="text-center p-6">
+        <div style="font-size: 48px; margin-bottom: var(--space-4);">💰</div>
+        <h3 class="font-semibold mb-2">Best Price Guarantee</h3>
+        <p class="text-muted">Get the lowest prices or we'll refund the difference</p>
+      </div>
+      
+      <div class="text-center p-6">
+        <div style="font-size: 48px; margin-bottom: var(--space-4);">🔒</div>
+        <h3 class="font-semibold mb-2">Secure Payments</h3>
+        <p class="text-muted">Your payment information is always protected</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+    </main>
+
+    <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Zygotrip</h3>
+        <p>Your trusted travel booking platform</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/hotels/">Hotels</a></li>
+          <li><a href="/buses/">Buses</a></li>
+          <li><a href="/cabs/">Cabs</a></li>
+          <li><a href="/packages/">Packages</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <ul class="footer-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2026 Zygotrip. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+  
+
+</body></html>

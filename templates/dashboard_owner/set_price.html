@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 <section class="section">
-  <div class="container">
-    <div style="max-width: 600px; margin: 0 auto;">
-      <h1 style="margin-bottom: var(--space-4);">Set Pricing</h1>
-      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-12);">
+  <div class="ota-container">
+    <div >
+      <h1 class="mb-4">Set Pricing</h1>
+      <p class="mb-12 text-secondary" >
         Configure pricing for {{ room.name }}
       </p>
 
@@ -19,25 +19,25 @@
             <p class="form-hint">Core room rate before add-ons</p>
           </div>
 
-          <div style="padding: var(--space-6); background: var(--color-bg-tertiary); border-radius: var(--radius-lg); margin-bottom: var(--space-8);">
-            <h4 style="margin: 0 0 var(--space-4) 0;">Pricing Breakdown</h4>
-            <div style="font-size: var(--fs-sm); color: var(--color-text-secondary);">
-              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+          <div class="p-6 rounded-lg mb-8 bg-tertiary" >
+            <h4 class="m-4">Pricing Breakdown</h4>
+            <div class="text-sm text-secondary" >
+              <div class="d-flex justify-between mb-2">
                 <span>Base Rate</span>
                 <span id="base-display">₹0</span>
               </div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+              <div class="d-flex justify-between mb-2">
                 <span>Service Fee (8%)</span>
                 <span id="fee-display">₹0</span>
               </div>
-              <div style="display: flex; justify-content: space-between; padding-top: var(--space-2); border-top: 1px solid rgba(0,0,0,0.1); font-weight: 600; color: var(--color-text-primary);">
+              <div class="d-flex justify-between pt-2 font-semibold text-primary" >
                 <span>Total Per Night</span>
                 <span id="total-display">₹0</span>
               </div>
             </div>
           </div>
 
-          <button type="submit" class="button button-accent button-block button-lg" style="margin-top: var(--space-8);">
+          <button type="submit" class="button button-accent button-block button-lg mt-8">
             Save Pricing
           </button>
         </form>
@@ -46,3 +46,4 @@
   </div>
 </section>
 {% endblock %}
+

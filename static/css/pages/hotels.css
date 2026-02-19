@@ -1,0 +1,97 @@
+/**
+ * HOTELS PAGE STYLES
+ */
+
+.hotels-filters {
+  background: white;
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 100px;
+}
+
+.filter-group {
+  margin-bottom: var(--space-5);
+}
+
+.filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-title {
+  font-size: 16px;
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-checkbox input {
+  cursor: pointer;
+}
+
+.hotels-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.hotel-card {
+  display: grid;
+  grid-template-columns: 280px 1fr auto;
+  gap: var(--space-5);
+  background: white;
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.hotel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hotel-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.hotel-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hotel-price-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  min-width: 180px;
+}
+
+@media (max-width: 900px) {
+  .hotel-card {
+    grid-template-columns: 1fr;
+  }
+  
+  .hotel-price-section {
+    align-items: flex-start;
+  }
+}

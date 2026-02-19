@@ -22,6 +22,16 @@ def hotel_list(request):
 		dto['cards'] = dto['results']
 		# Remove raw results from template context
 		del dto['results']
+
+	# Normalize card fields for template compatibility
+	for card in dto.get('cards', []):
+		if 'price' not in card:
+			card['price'] = card.get('price_current') or card.get('price_original')
+		if 'city' not in card:
+			card['city'] = card.get('location')
+
+	# Provide hotels alias for template loop
+	dto['hotels'] = dto.get('cards', [])
 	
 	# Preserve filters from service and add filter options
 	service_filters = dto.get('filters', {})

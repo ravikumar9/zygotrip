@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="mb-4">Bus Bookings</h1>
+    {% if bookings %}
+      <div class="grid grid-cols-1 gap-4">
+        {% for booking in bookings %}
+          <div class="card">
+            <h3 class="card-title">Booking #{{ booking.id }}</h3>
+            <p class="text-muted">{{ booking.bus.registration_number }} - {{ booking.status }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card text-center p-6">
+        <p class="text-muted">No bookings yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

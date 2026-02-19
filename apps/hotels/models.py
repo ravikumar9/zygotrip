@@ -11,31 +11,86 @@ class Property(TimeStampedModel):
 	name = models.CharField(max_length=140)
 	slug = models.SlugField(unique=True, blank=True, null=True)
 	property_type = models.CharField(max_length=80, default='Hotel')
-	city = models.CharField(max_length=80)
+	
+	# LOCATION ARCHITECTURE: Hierarchical FKs (not text strings)
+	# This enables: geo search, distance sorting, contextual navigation
+	city = models.ForeignKey('core.City', on_delete=models.PROTECT, related_name='hotels')
+	locality = models.ForeignKey('core.Locality', on_delete=models.SET_NULL, null=True, blank=True, related_name='hotels')
+	
+	# Legacy fields for backwards compatibility (DEPRECATED - use FKs above)
+	city_text = models.CharField(max_length=80, blank=True, help_text="DEPRECATED: Use city FK")
 	area = models.CharField(max_length=120, blank=True)
 	landmark = models.CharField(max_length=120, blank=True)
-	country = models.CharField(max_length=80)
+	country = models.CharField(max_length=80, default='India')
 	address = models.CharField(max_length=200)
 	description = models.TextField()
+	
+	# INTELLIGENCE SIGNALS (what makes cards feel informative)
 	rating = models.DecimalField(max_digits=3, decimal_places=1, default=0)
+	review_count = models.IntegerField(default=0, help_text="Total reviews")
+	popularity_score = models.IntegerField(default=0, help_text="Booking velocity + search rank")
 	
-	# Google Maps
-	latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-	longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+	# Geo coordinates (REQUIRED for distance sorting)
+	latitude = models.DecimalField(max_digits=9, decimal_places=6)
+	longitude = models.DecimalField(max_digits=9, decimal_places=6)
 	
-	# Pricing
-	base_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-	discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-	dynamic_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+	# PRICING: Moved to RoomType model (domain-driven design)
+	# Property pricing is now COMPUTED from room types, not stored
+	# Legacy fields removed - use @property base_price instead
+	
+	# BOOKING SIGNALS (displayed on card)
+	bookings_today = models.IntegerField(default=0, help_text="Bookings in last 24h")
+	bookings_this_week = models.IntegerField(default=0)
+	is_trending = models.BooleanField(default=False, help_text="Hot property indicator")
+	
+	# POLICY SIGNALS (filter criteria)
+	has_free_cancellation = models.BooleanField(default=True)
+	cancellation_hours = models.IntegerField(default=24, help_text="Free cancellation window")
+	
+	def get_distance_from(self, lat, lng):
+		"""Calculate distance from given coordinates (km)"""
+		from math import radians, cos, sin, asin, sqrt
+		
+		# Haversine formula
+		lon1, lat1, lon2, lat2 = map(radians, [float(self.longitude), float(self.latitude), lng, lat])
+		dlon = lon2 - lon1
+		dlat = lat2 - lat1
+		a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+		c = 2 * asin(sqrt(a))
+		km = 6371 * c  # Earth radius in km
+		return round(km, 1)
+	
+	@property
+	def base_price(self):
+		"""
+		COMPUTED PROPERTY: Returns minimum room price
+		Pricing is now sourced from RoomType model (domain-driven design)
+		This property provides backward compatibility for existing code
+		"""
+		from django.db.models import Min
+		import logging
+		
+		logger = logging.getLogger(__name__)
+		logger.warning(
+			f"DEPRECATION: Property.base_price accessed for {self.name}. "
+			"Migrate to using room_types queryset with annotations."
+		)
+		
+		min_price = self.room_types.aggregate(Min('base_price'))['base_price__min']
+		return min_price if min_price is not None else 0
+	
+	@property
+	def discount_price(self):
+		"""DEPRECATED: Use RoomType pricing with date-based RoomInventory"""
+		return None
+	
+	@property
+	def dynamic_price(self):
+		"""DEPRECATED: Use RoomType pricing with date-based RoomInventory"""
+		return None
 
 	def clean(self):
-		"""Validation firewall: reject negative prices and invalid ratings"""
-		if self.base_price and self.base_price < 0:
-			raise ValidationError({'base_price': 'Price cannot be negative'})
-		if self.discount_price and self.discount_price < 0:
-			raise ValidationError({'discount_price': 'Discount price cannot be negative'})
-		if self.dynamic_price and self.dynamic_price < 0:
-			raise ValidationError({'dynamic_price': 'Dynamic price cannot be negative'})
+		"""Validation firewall: reject invalid ratings"""
 		if self.rating < 0 or self.rating > 5:
 			raise ValidationError({'rating': 'Rating must be between 0 and 5'})
 

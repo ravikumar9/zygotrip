@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from core.models import TimeStampedModel
 from accounts.models import User
+from core.validators import validate_future_date
 
 
 class BusType(TimeStampedModel):
@@ -36,6 +37,7 @@ class BusType(TimeStampedModel):
 class Bus(TimeStampedModel):
 	"""Bus model with routes and schedules"""
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+	operator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buses', null=True, blank=True)
 	registration_number = models.CharField(max_length=20, unique=True)
 	bus_type = models.ForeignKey(BusType, on_delete=models.PROTECT)
 	operator_name = models.CharField(max_length=100)
@@ -43,6 +45,7 @@ class Bus(TimeStampedModel):
 	to_city = models.CharField(max_length=50)
 	departure_time = models.TimeField()
 	arrival_time = models.TimeField()
+	journey_date = models.DateField(null=True, blank=True, validators=[validate_future_date], help_text="Date of the bus journey")
 	price_per_seat = models.DecimalField(max_digits=8, decimal_places=2)
 	available_seats = models.PositiveIntegerField()
 	is_active = models.BooleanField(default=True)
@@ -102,13 +105,23 @@ class BusBooking(TimeStampedModel):
 	]
 
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+	public_booking_id = models.CharField(max_length=50, unique=True, editable=False, db_index=True, null=True, blank=True)
+	idempotency_key = models.CharField(max_length=64, unique=True, null=True, blank=True, db_index=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bus_bookings')
 	bus = models.ForeignKey(Bus, on_delete=models.CASCADE, related_name='bookings')
-	journey_date = models.DateField()
+	journey_date = models.DateField(validators=[validate_future_date])
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
 	total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 	promo_code = models.CharField(max_length=30, blank=True)
 
+	def save(self, *args, **kwargs):
+		# Generate public_booking_id on first creation
+		if not self.pk and not self.public_booking_id:
+			date_str = timezone.now().strftime('%Y%m%d')
+			short_id = str(self.uuid)[:8].upper()
+			self.public_booking_id = f"BK-{date_str}-BUS-{short_id}"
+		super().save(*args, **kwargs)
+	
 	def __str__(self):
 		return f"Bus Booking - {self.uuid}"
 

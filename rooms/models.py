@@ -1,6 +1,8 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from core.models import TimeStampedModel
 from hotels.models import Property
+from apps.hotels.validators import validate_https_image_url, validate_uploaded_image
 
 
 class RoomType(TimeStampedModel):
@@ -35,6 +37,15 @@ class RoomImage(TimeStampedModel):
 
 	class Meta:
 		ordering = ['display_order']
+
+	def clean(self):
+		if self.image_url:
+			validate_https_image_url(self.image_url)
+		validate_uploaded_image(self.image_file)
+
+	def save(self, *args, **kwargs):
+		self.full_clean()
+		super().save(*args, **kwargs)
 
 	def __str__(self):
 		return f"Room Image - {self.room_type.name}"

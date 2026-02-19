@@ -1,5 +1,5 @@
 from django.contrib import messages
-from accounts.permissions import login_required_403
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 from accounts.selectors import user_has_role
@@ -11,14 +11,14 @@ def _ensure_admin(user):
 		raise PermissionDenied
 
 
-@login_required_403
+@login_required
 def dashboard(request):
 	_ensure_admin(request.user)
 	pending = PropertyApproval.objects.filter(status=PropertyApproval.STATUS_PENDING)
 	return render(request, 'dashboard_admin/dashboard.html', {'pending': pending})
 
 
-@login_required_403
+@login_required
 def approve_property(request, approval_id):
 	_ensure_admin(request.user)
 	approval = get_object_or_404(PropertyApproval, id=approval_id)
@@ -29,7 +29,7 @@ def approve_property(request, approval_id):
 	return redirect('dashboard_admin:dashboard')
 
 
-@login_required_403
+@login_required
 def reject_property(request, approval_id):
 	_ensure_admin(request.user)
 	approval = get_object_or_404(PropertyApproval, id=approval_id)

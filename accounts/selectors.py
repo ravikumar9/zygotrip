@@ -3,13 +3,13 @@ from .models import Permission, RolePermission, UserRole
 
 
 def user_has_role(user, role_code):
-    if not user.is_authenticated:
+    if not hasattr(user, 'is_authenticated') or not user.is_authenticated:
         return False
     return UserRole.objects.filter(user=user, role__code=role_code, is_active=True, role__is_active=True).exists()
 
 
 def user_has_permission(user, permission_code):
-    if not user.is_authenticated:
+    if not hasattr(user, 'is_authenticated') or not user.is_authenticated:
         return False
     return RolePermission.objects.filter(
         role__userrole__user=user,

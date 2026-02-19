@@ -12,7 +12,12 @@ def process_payment(booking, use_wallet=True):
         remaining = Decimal(booking.total_amount)
         method = Payment.METHOD_CARD
         if use_wallet:
-            wallet_used = apply_wallet_payment(wallet, booking.total_amount, reference=str(booking.uuid))
+            wallet_result = apply_wallet_payment(
+                wallet,
+                booking.total_amount,
+                reference_id=str(booking.uuid),
+            )
+            wallet_used = Decimal(wallet_result.get('amount_debited', Decimal('0.00')))
             remaining = Decimal(booking.total_amount) - wallet_used
             method = Payment.METHOD_WALLET if remaining <= 0 else Payment.METHOD_MIXED
             if wallet_used == 0:

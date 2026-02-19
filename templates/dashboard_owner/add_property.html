@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <div style="max-width: 600px; margin: 0 auto;">
-      <h1 style="margin-bottom: var(--space-4);">Add New Property</h1>
-      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-12);">
+    <div >
+      <h1 class="mb-4">Add New Property</h1>
+      <p class="mb-12 text-secondary" >
         List your first property and start hosting guests. Complete all required fields.
       </p>
 
@@ -17,6 +17,11 @@
             <label>Property Name</label>
             {{ form.name }}
             <p class="form-hint">Catchy name that stands out</p>
+          </div>
+
+          <div class="form-group">
+            <label>Property Type</label>
+            {{ form.property_type }}
           </div>
 
           <div class="form-group">
@@ -36,10 +41,32 @@
             </div>
           </div>
 
+          <div class="grid grid-cols-2 gap-8">
+            <div class="form-group">
+              <label>Area</label>
+              {{ form.area }}
+            </div>
+            <div class="form-group">
+              <label>Landmark</label>
+              {{ form.landmark }}
+            </div>
+          </div>
+
           <div class="form-group">
             <label>Address</label>
             {{ form.address }}
             <p class="form-hint">Full street address</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8">
+            <div class="form-group">
+              <label>Latitude</label>
+              {{ form.latitude }}
+            </div>
+            <div class="form-group">
+              <label>Longitude</label>
+              {{ form.longitude }}
+            </div>
           </div>
 
           <div class="form-group">
@@ -48,16 +75,34 @@
             <p class="form-hint">Property rating (1-5 stars)</p>
           </div>
 
-          <button type="submit" class="button button-accent button-block button-lg" style="margin-top: var(--space-8);">
+          <div class="grid grid-cols-2 gap-8">
+            <div class="form-group">
+              <label>Base Price</label>
+              {{ form.base_price }}
+            </div>
+            <div class="form-group">
+              <label>Discount Price</label>
+              {{ form.discount_price }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="url" name="image_url" placeholder="https://" />
+            <p class="form-hint">Primary image URL for listing</p>
+          </div>
+
+          <button type="submit" class="button button-accent button-block button-lg mt-8">
             Create Property
           </button>
         </form>
       </div>
 
-      <p style="text-align: center; color: var(--color-text-muted); font-size: var(--fs-sm); margin-top: var(--space-8);">
+      <p class="text-center mt-8 text-muted text-sm" >
         💡 After creation, you'll add rooms and meal plans
       </p>
     </div>
   </div>
 </section>
 {% endblock %}
+

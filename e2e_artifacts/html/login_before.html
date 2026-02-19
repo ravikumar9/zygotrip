@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Zygotrip - Premium travel booking platform">
+    <title>Zygotrip</title>
+    <link rel="icon" href="/static/img/globe.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/utilities.css">
+    <link rel="stylesheet" href="/static/css/pages/home.css">
+    
+  </head>
+  <body class="site-body">
+    <header class="site-header">
+  <nav class="site-nav">
+    <a href="/" class="site-logo">Zygotrip</a>
+    
+    <div class="site-nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/hotels/" class="nav-link">Hotels</a>
+      <a href="/buses/" class="nav-link">Buses</a>
+<a href="/cabs/" class="nav-link">Cabs</a>
+      <a href="/packages/" class="nav-link">Packages</a>
+      <a href="/flights/" class="nav-link">Flights</a>
+      <a href="/trains/" class="nav-link">Trains</a>
+    </div>
+    
+    <div class="site-nav-actions">
+      
+        <a href="/login/" class="btn btn-primary btn-sm">Login</a>
+        <a href="/register/" class="btn btn-primary btn-sm">Register</a>
+      
+    </div>
+  </nav>
+</header>
+
+    
+    
+    
+    <main class="page-main">
+      
+<section class="section">
+  <div class="container auth-container">
+    <div class="card auth-card">
+      <h1 class="text-center mb-2">Welcome Back</h1>
+      <p class="text-center text-muted mb-6">Sign in to access your bookings and account</p>
+
+      <form method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="bmKzdjQsAN8TBkCuqR7NjSujBpjQ0zAJV1kyDdSdGiCBYNvnuswpjMcDwdbshU66" style="">
+        
+        
+        
+        <div class="mb-4">
+          <label class="auth-label">Email Address</label>
+          <input type="email" name="username" class="form-control" placeholder="Email address" autofocus="" required="" maxlength="254" id="id_username" style="">
+          
+        </div>
+
+        <div class="mb-4">
+          <label class="auth-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Password" required="" id="id_password" style="">
+          
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full btn-lg mb-4">
+          Sign In
+        </button>
+
+        <p class="text-center text-muted mb-2">
+          New to Zygotrip?
+        </p>
+        <a href="/register/" class="btn btn-secondary w-full">
+          Create Your Account
+        </a>
+      </form>
+
+      <!-- Security Note -->
+      <div class="mt-6 pt-4 auth-note">
+        <p class="text-muted auth-note-text">
+          Your login is secure and encrypted
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+    </main>
+
+    <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Zygotrip</h3>
+        <p>Your trusted travel booking platform</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/hotels/">Hotels</a></li>
+          <li><a href="/buses/">Buses</a></li>
+          <li><a href="/cabs/">Cabs</a></li>
+          <li><a href="/packages/">Packages</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <ul class="footer-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2026 Zygotrip. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+  
+
+</body></html>

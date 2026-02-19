@@ -1,12 +1,12 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 from accounts.selectors import user_has_role
-from accounts.permissions import login_required_403
+from django.contrib.auth.decorators import login_required
 from payments.models import Payment
 from wallet.models import Wallet
 
 
-@login_required_403
+@login_required
 def dashboard(request):
 	if not user_has_role(request.user, 'finance_admin'):
 		raise PermissionDenied

@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Zygotrip - Premium travel booking platform">
+    <title>Zygotrip</title>
+    <link rel="icon" href="/static/img/globe.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/utilities.css">
+    <link rel="stylesheet" href="/static/css/pages/home.css">
+    
+  </head>
+  <body class="site-body">
+    <header class="site-header">
+  <nav class="site-nav">
+    <a href="/" class="site-logo">Zygotrip</a>
+    
+    <div class="site-nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/hotels/" class="nav-link">Hotels</a>
+      <a href="/buses/" class="nav-link">Buses</a>
+<a href="/cabs/" class="nav-link">Cabs</a>
+      <a href="/packages/" class="nav-link">Packages</a>
+      <a href="/flights/" class="nav-link">Flights</a>
+      <a href="/trains/" class="nav-link">Trains</a>
+    </div>
+    
+    <div class="site-nav-actions">
+      
+        <span class="nav-user">Vendor</span>
+        
+        <a href="/logout/" class="btn btn-primary btn-sm">Logout</a>
+      
+    </div>
+  </nav>
+</header>
+
+    
+    
+    
+    <main class="page-main">
+      
+<section class="section">
+  <div class="container auth-container">
+    <div class="card auth-card">
+      <h1 class="mb-4">Add Bus</h1>
+      <form method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="mAqB6ZWmWYpz0N0VamVFJsXKVrzgVJS8AjOMxX0xL89ofy7m8uweQ2lCgZx0rqtP" style="">
+        <div class="mb-4">
+          <label class="auth-label">Registration Number</label>
+          <input type="text" name="registration_number" required="" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Operator Name</label>
+          <input type="text" name="operator_name" required="" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">From City</label>
+          <input type="text" name="from_city" required="" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">To City</label>
+          <input type="text" name="to_city" required="" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Departure Time</label>
+          <input type="time" name="departure_time" required="" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Arrival Time</label>
+          <input type="time" name="arrival_time" required="" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Price Per Seat</label>
+          <input type="number" step="0.01" name="price_per_seat" required="" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Available Seats</label>
+          <input type="number" name="available_seats" required="" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Amenities</label>
+          <input type="text" name="amenities" style="">
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Bus Type ID</label>
+          <input type="number" name="bus_type_id" style="">
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Create Bus</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+    </main>
+
+    <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Zygotrip</h3>
+        <p>Your trusted travel booking platform</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/hotels/">Hotels</a></li>
+          <li><a href="/buses/">Buses</a></li>
+          <li><a href="/cabs/">Cabs</a></li>
+          <li><a href="/packages/">Packages</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <ul class="footer-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2026 Zygotrip. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+  
+
+</body></html>

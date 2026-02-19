@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Zygotrip - Premium travel booking platform">
+    <title>Zygotrip</title>
+    <link rel="icon" href="/static/img/globe.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/utilities.css">
+    <link rel="stylesheet" href="/static/css/pages/home.css">
+    
+<link rel="stylesheet" href="/static/css/pages/hotels.css">
+
+  </head>
+  <body class="site-body">
+    <header class="site-header">
+  <nav class="site-nav">
+    <a href="/" class="site-logo">Zygotrip</a>
+    
+    <div class="site-nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/hotels/" class="nav-link">Hotels</a>
+      <a href="/buses/" class="nav-link">Buses</a>
+<a href="/cabs/" class="nav-link">Cabs</a>
+      <a href="/packages/" class="nav-link">Packages</a>
+      <a href="/flights/" class="nav-link">Flights</a>
+      <a href="/trains/" class="nav-link">Trains</a>
+    </div>
+    
+    <div class="site-nav-actions">
+      
+        <span class="nav-user">Customer</span>
+        
+        <a href="/logout/" class="btn btn-primary btn-sm">Logout</a>
+      
+    </div>
+  </nav>
+</header>
+
+    
+    
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Find Your Perfect Hotel</h1>
+    <p class="hero-subtitle">Discover and book from thousands of verified hotels across India</p>
+  </div>
+</section>
+
+    
+    <main class="page-main">
+      
+<div class="container">
+  
+
+<div class="search-panel">
+  <form method="get" action="" class="search-form search-bar">
+    <div class="search-field">
+      <label for="search-location">Location</label>
+      <input type="text" id="search-location" name="q" placeholder="Enter city or destination" value="" style="">
+    </div>
+    
+    
+      <div class="search-field">
+        <label for="search-checkin">Check-in</label>
+        <input type="date" id="search-checkin" name="checkin" value="" style="">
+      </div>
+      
+      <div class="search-field">
+        <label for="search-checkout">Check-out</label>
+        <input type="date" id="search-checkout" name="checkout" value="" style="">
+      </div>
+    
+    
+    <div class="search-field">
+      <label for="search-guests">Guests</label>
+      <select id="search-guests" name="guests">
+        <option value="1">1 Guest</option>
+        <option value="2" selected="">2 Guests</option>
+        <option value="3">3 Guests</option>
+        <option value="4">4 Guests</option>
+        <option value="5+">5+ Guests</option>
+      </select>
+    </div>
+    
+    <div class="search-field">
+      <label>&nbsp;</label>
+      <button type="submit" class="btn btn-primary w-full">Search</button>
+    </div>
+  </form>
+</div>
+
+  
+  <section class="section">
+    <div class="page-layout">
+      <!-- Filter Sidebar -->
+      <aside class="filter-sidebar">
+        
+<form method="get" class="hotels-filters filter-sidebar sticky top-24 bg-white rounded-lg border border-gray-200 p-6 space-y-6">
+  <h3 class="text-lg font-semibold text-gray-900">Filters</h3>
+  
+  <!-- Location Filter -->
+  <div>
+    <details open="" class="space-y-3">
+      <summary class="font-medium text-gray-700 cursor-pointer hover:text-gray-900">📍 Location</summary>
+      <div class="filters-group space-y-2 pt-3">
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="city" value="delhi" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Delhi</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="city" value="mumbai" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Mumbai</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="city" value="bangalore" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Bangalore</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="city" value="chennai" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Chennai</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="city" value="goa" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Goa</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="city" value="jaipur" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Jaipur</span>
+          </label>
+        
+      </div>
+    </details>
+  </div>
+  
+  <!-- Price Range Filter -->
+  <div>
+    <details open="" class="space-y-3">
+      <summary class="font-medium text-gray-700 cursor-pointer hover:text-gray-900">💰 Price Range</summary>
+      <div class="pt-3 space-y-3">
+        <input type="hidden" name="min_price" value="0" style="">
+        <input type="range" min="0" max="20000" value="20000" name="max_price" class="filter-input w-full" style="">
+        <div class="filters-range text-sm text-gray-600">₹0 - ₹20000</div>
+      </div>
+    </details>
+  </div>
+  
+  <!-- Rating Filter -->
+  <div>
+    <details open="" class="space-y-3">
+      <summary class="font-medium text-gray-700 cursor-pointer hover:text-gray-900">⭐ Rating</summary>
+      <div class="filters-group space-y-2 pt-3">
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="rating" value="4.5" checked="" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">4.5+</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="rating" value="4.0" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">4.0+</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="rating" value="3.5" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">3.5+</span>
+          </label>
+        
+      </div>
+    </details>
+  </div>
+  
+  <!-- Amenities Filter -->
+  <div>
+    <details open="" class="space-y-3">
+      <summary class="font-medium text-gray-700 cursor-pointer hover:text-gray-900">🏠 Amenities</summary>
+      <div class="filters-group space-y-2 pt-3 max-h-40 overflow-y-auto">
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="amenities" value="wifi" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Wifi</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="amenities" value="breakfast" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Breakfast</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="amenities" value="pool" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Pool</span>
+          </label>
+        
+          <label class="filters-option flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="amenities" value="parking" class="w-4 h-4 rounded border-gray-300 text-orange-500" style="">
+            <span class="text-gray-700">Parking</span>
+          </label>
+        
+      </div>
+    </details>
+  </div>
+  
+  <!-- Action Buttons -->
+  <div class="space-y-2 pt-4">
+    <button type="submit" class="button button-primary w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition">
+      ✓ Apply Filters
+    </button>
+    <a href="/hotels/" class="button button-secondary w-full block text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition">
+      ↻ Reset Filters
+    </a>
+  </div>
+</form>
+<script>
+  const filterForm = document.querySelector('.hotels-filters');
+  if (filterForm) {
+    filterForm.addEventListener('change', function (event) {
+      const target = event.target;
+      if (target && (target.matches('input') || target.matches('select'))) {
+        filterForm.submit();
+      }
+    });
+  }
+</script>
+
+      </aside>
+      
+      <!-- Listing Grid -->
+      <div class="listing-grid">
+        
+          <div class="hotel-card">
+  <h3>Taj Gardens Delhi</h3>
+  <p>New Delhi (DEL), India</p>
+  <span>₹4500.0</span>
+  <a href="/hotels/47/" class="btn btn-primary btn-sm">View Details</a>
+</div>
+
+        
+          <div class="hotel-card">
+  <h3>Marine Bay Mumbai</h3>
+  <p>Mumbai (BOM), India</p>
+  <span>₹5500.0</span>
+  <a href="/hotels/48/" class="btn btn-primary btn-sm">View Details</a>
+</div>
+
+        
+          <div class="hotel-card">
+  <h3>Goa Paradise Beach Resort</h3>
+  <p>North Goa (GOA_NORTH), India</p>
+  <span>₹3500.0</span>
+  <a href="/hotels/49/" class="btn btn-primary btn-sm">View Details</a>
+</div>
+
+        
+          <div class="hotel-card">
+  <h3>Bangalore Tech Park Hotel</h3>
+  <p>Bangalore (BLR), India</p>
+  <span>₹3000.0</span>
+  <a href="/hotels/50/" class="btn btn-primary btn-sm">View Details</a>
+</div>
+
+        
+      </div>
+    </div>
+  </section>
+</div>
+
+    </main>
+
+    <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Zygotrip</h3>
+        <p>Your trusted travel booking platform</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/hotels/">Hotels</a></li>
+          <li><a href="/buses/">Buses</a></li>
+          <li><a href="/cabs/">Cabs</a></li>
+          <li><a href="/packages/">Packages</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <ul class="footer-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2026 Zygotrip. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+  
+
+</body></html>

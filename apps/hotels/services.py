@@ -14,10 +14,14 @@ from booking.services import create_booking
 from core.date_utils import get_date_for_template
 from hotels.models import Category
 from .selectors import public_properties_queryset, apply_hotel_filters, get_property_detail
+from .search import SearchRankingService
+from .constants import (
+	CACHE_TTL_HOTEL_LIST,
+	CACHE_TTL_CATEGORIES,
+	DEFAULT_PAGE_SIZE,
+	AMENITIES_CARD_COUNT,
+)
 
-
-HOTEL_LIST_CACHE_TTL = 60
-CATEGORY_CACHE_TTL = 3600
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +43,7 @@ class CategoriesService:
 				"icon": category.icon,
 				"banner_url": f"/static/img/categories/{category.slug}.svg",
 			})
-		cache.set(cache_key, result, CATEGORY_CACHE_TTL)
+		cache.set(cache_key, result, CACHE_TTL_CATEGORIES)
 		return result
 
 
@@ -82,13 +86,18 @@ class HotelListService:
 			)
 			filter_data = apply_hotel_filters(base_qs, self.params)
 			queryset = filter_data["queryset"]
+			
+			# Apply intelligent ranking if not explicitly sorting
+			if not filter_data.get("sort_by"):
+				ranking_service = SearchRankingService(queryset, self.params)
+				queryset = ranking_service.apply_ranking()
 
 			cards = []
 			now = timezone.now().date()
 			for property_obj in queryset:
 				cards.append(self._build_card(property_obj, now))
 
-			paginator = Paginator(cards, 20)
+			paginator = Paginator(cards, DEFAULT_PAGE_SIZE)
 			page = self.params.get("page") or 1
 			try:
 				page_num = int(page)
@@ -126,7 +135,7 @@ class HotelListService:
 					"query": filter_data["search_query"],
 				},
 			}
-			cache.set(cache_key, response, HOTEL_LIST_CACHE_TTL)
+			cache.set(cache_key, response, CACHE_TTL_HOTEL_LIST)
 			return response
 		except Exception as exc:
 			logger.exception("HOTEL_LIST_CRASH", exc_info=exc)
@@ -176,15 +185,22 @@ class HotelListService:
 		featured_image = images[0] if images else ""
 		
 		# SIMPLIFIED FORMAT: STRING ARRAY FOR AMENITIES (template requirement)
-		amenities_list = [amenity.name for amenity in property_obj.amenities.all()[:6]]
+		amenities_list = [amenity.name for amenity in property_obj.amenities.all()[:AMENITIES_CARD_COUNT]]
 
-		# Pricing logic
-		base_price = property_obj.base_price
-		discount_price = property_obj.discount_price or property_obj.dynamic_price
+		# Pricing logic - use annotated min_room_price
+		base_price = property_obj.min_room_price if hasattr(property_obj, 'min_room_price') else None
+		discount_price = None  # Discounts moved to offers and room-level pricing
 		discount_percent = None
 		
-		if base_price and discount_price and discount_price < base_price:
-			discount_percent = round(((base_price - discount_price) / base_price) * 100, 1)
+		# Use PropertyOffer for discount calculations if active offers exist
+		active_offer = property_obj.offers.filter(is_active=True, valid_from__lte=today, valid_until__gte=today).first()
+		if active_offer and base_price:
+			if active_offer.discount_percentage:
+				discount_price = base_price * (1 - active_offer.discount_percentage / 100)
+				discount_percent = float(active_offer.discount_percentage)
+			elif active_offer.discount_amount:
+				discount_price = base_price - active_offer.discount_amount
+				discount_percent = round(((base_price - discount_price) / base_price) * 100, 1)
 
 		return {
 			"id": property_obj.id,

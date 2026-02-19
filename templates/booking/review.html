@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block content %}
 <section class="section">
   <div class="container">
-    <h1 style="margin-bottom: var(--space-12);">Review Your Booking</h1>
+    <h1 class="mb-12">Review Your Booking</h1>
 
     <!-- Booking Timer -->
     {% if booking.timer_expires_at %}
@@ -27,44 +27,44 @@
           <h3 class="card-title">Booking Details</h3>
           
           <!-- Property Info -->
-          <div style="padding: var(--space-6); background: var(--color-bg-tertiary); border-radius: var(--radius-lg); margin-bottom: var(--space-8);">
-            <h4 style="margin: 0 0 var(--space-2) 0;">{{ booking.property.name }}</h4>
-            <p style="margin: 0 0 var(--space-4) 0; color: var(--color-text-secondary);">{{ booking.property.city }}, {{ booking.property.country }}</p>
+          <div class="p-6 rounded-lg mb-8 bg-tertiary" >
+            <h4 class="m-2">{{ booking.property.name }}</h4>
+            <p class="m-4 text-secondary" >{{ booking.property.city }}, {{ booking.property.country }}</p>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-4);">
+            <div class="d-grid gap-4 mt-4" >
               <div>
-                <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Check In</p>
-                <p style="margin: 0; font-weight: 600;">{{ booking.check_in }}</p>
+                <p class="m-2 text-xs text-muted" >Check In</p>
+                <p class="font-semibold m-0">{{ booking.check_in }}</p>
               </div>
               <div>
-                <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Check Out</p>
-                <p style="margin: 0; font-weight: 600;">{{ booking.check_out }}</p>
+                <p class="m-2 text-xs text-muted" >Check Out</p>
+                <p class="font-semibold m-0">{{ booking.check_out }}</p>
               </div>
               <div>
-                <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Duration</p>
-                <p style="margin: 0; font-weight: 600;">{{ nights }} night{{ nights|pluralize }}</p>
+                <p class="m-2 text-xs text-muted" >Duration</p>
+                <p class="font-semibold m-0">{{ nights }} night{{ nights|pluralize }}</p>
               </div>
               <div>
-                <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Rooms</p>
-                <p style="margin: 0; font-weight: 600;">{{ booking.quantity }}</p>
+                <p class="m-2 text-xs text-muted" >Rooms</p>
+                <p class="font-semibold m-0">{{ booking.quantity }}</p>
               </div>
             </div>
           </div>
 
           <!-- Guest Info -->
-          <h4 style="margin: var(--space-6) 0 var(--space-4) 0;">Guest Information</h4>
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-8);">
-            <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md);">
-              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Name</p>
-              <p style="margin: 0; font-weight: 600;">{% if booking.guests.0 %}{{ booking.guests.0.full_name }}{% else %}N/A{% endif %}</p>
+          <h4 class="m-6">Guest Information</h4>
+          <div class="d-grid gap-4 mb-8" >
+            <div class="p-4 rounded bg-tertiary" >
+              <p class="m-2 text-xs text-muted" >Name</p>
+              <p class="font-semibold m-0">{{ booking.guest_name }}</p>
             </div>
-            <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md);">
-              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Age</p>
-              <p style="margin: 0; font-weight: 600;">{% if booking.guests.0 %}{{ booking.guests.0.age }} years{% else %}N/A{% endif %}</p>
+            <div class="p-4 rounded bg-tertiary" >
+              <p class="m-2 text-xs text-muted" >Email</p>
+              <p class="font-semibold text-sm m-0">{{ booking.guest_email }}</p>
             </div>
-            <div style="padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md);">
-              <p style="font-size: var(--fs-xs); color: var(--color-text-muted); margin: 0 0 var(--space-2) 0; text-transform: uppercase;">Email</p>
-              <p style="margin: 0; font-weight: 600; word-break: break-all; font-size: var(--fs-sm);">{% if booking.guests.0 %}{{ booking.guests.0.email }}{% else %}N/A{% endif %}</p>
+            <div class="p-4 rounded bg-tertiary" >
+              <p class="m-2 text-xs text-muted" >Phone</p>
+              <p class="font-semibold text-sm m-0">{{ booking.guest_phone|default:"N/A" }}</p>
             </div>
           </div>
         </div>
@@ -88,26 +88,26 @@
               <tbody>
                 <tr>
                   <td class="price-row-label">Base Rate</td>
-                  <td style="text-align: right;">₹{{ booking.price_breakdown.base_amount }}</td>
+                  <td class="text-right">₹{{ booking.price_breakdown.base_amount }}</td>
                 </tr>
                 {% if booking.price_breakdown.meal_amount %}
                 <tr>
                   <td class="price-row-label">Meals</td>
-                  <td style="text-align: right;">₹{{ booking.price_breakdown.meal_amount }}</td>
+                  <td class="text-right">₹{{ booking.price_breakdown.meal_amount }}</td>
                 </tr>
                 {% endif %}
                 <tr>
                   <td class="price-row-label">Service Fee</td>
-                  <td style="text-align: right;">₹{{ booking.price_breakdown.service_fee }}</td>
+                  <td class="text-right">₹{{ booking.price_breakdown.service_fee }}</td>
                 </tr>
                 <tr>
                   <td class="price-row-label">Tax (GST)</td>
-                  <td style="text-align: right;">₹{{ booking.price_breakdown.gst }}</td>
+                  <td class="text-right">₹{{ booking.price_breakdown.gst }}</td>
                 </tr>
                 {% if booking.price_breakdown.promo_discount %}
                 <tr class="price-row-highlight">
                   <td class="price-row-label">Promo Discount</td>
-                  <td style="text-align: right;">-₹{{ booking.price_breakdown.promo_discount }}</td>
+                  <td class="text-right">-₹{{ booking.price_breakdown.promo_discount }}</td>
                 </tr>
                 {% endif %}
               </tbody>
@@ -121,7 +121,7 @@
             </button>
           </form>
 
-          <p style="text-align: center; font-size: var(--fs-sm); color: var(--color-text-muted); margin-top: var(--space-4);">
+          <p class="text-center mt-4 text-muted text-sm" >
             ✓ You won't be charged until you confirm payment
           </p>
         </div>
@@ -132,3 +132,4 @@
 <script src="{% static 'js/booking-review.js' %}"></script>
 <script src="{% static 'js/booking-timer.js' %}"></script>
 {% endblock %}
+

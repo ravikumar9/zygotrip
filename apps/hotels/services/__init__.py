@@ -115,6 +115,26 @@ class HotelListService:
 			for property_obj in queryset:
 				cards.append(self._build_card(property_obj, now))
 
+			# === System 5: Comparison Highlight - Identify best cards ===
+			if cards:
+				# Find best rating
+				best_rating = max((c["rating_value"] for c in cards if c["rating_value"]), default=0)
+				# Find lowest price
+				prices = [c["price_current"] for c in cards if c["price_current"]]
+				lowest_price = min(prices) if prices else None
+				# Find best deal (highest discount)
+				discounts = [c["discount_percent"] for c in cards if c["discount_percent"]]
+				best_discount = max(discounts) if discounts else None
+				
+				# Mark best cards
+				for card in cards:
+					card["is_best_rating"] = card["rating_value"] == best_rating and best_rating >= 4.0
+					card["is_lowest_price"] = card["price_current"] == lowest_price if lowest_price else False
+					card["is_best_deal"] = card["discount_percent"] == best_discount if best_discount else False
+					
+					# System 4: Deal Intelligence - Best value badge
+					card["is_best_value"] = card["is_best_deal"] or card["is_lowest_price"]
+
 			paginator = Paginator(cards, 20)
 			page = self.params.get("page") or 1
 			try:
@@ -175,17 +195,68 @@ class HotelListService:
 		if base_price and discount_price and discount_price < base_price:
 			discount_percent = round(((base_price - discount_price) / base_price) * 100, 1)
 
+		# === CONVERSION UX ENGINE: Behavioral Psychology Data ===
+		
+		# System 2: Urgency Engine - Simulate rooms left
+		rooms_left = (property_obj.id % 15) + 1  # 1-15 rooms
+		
+		# System 3: Social Proof Engine - Simulate booking activity
+		booked_today = (property_obj.id % 20) + 5  # 5-24 bookings
+		viewers_now = (property_obj.id % 50) + 10  # 10-59 viewers
+		
+		# System 9: Availability Indicator - Based on urgency
+		if rooms_left > 10:
+			availability_status = "high"
+			availability_label = "High availability"
+		elif rooms_left >= 5:
+			availability_status = "limited"
+			availability_label = "Limited rooms"
+		else:
+			availability_status = "critical"
+			availability_label = "Almost sold out"
+		
+		# System 10: Deal Framing - Calculate savings
+		savings_amount = None
+		if base_price and discount_price and discount_price < base_price:
+			savings_amount = int(base_price - discount_price)
+		
+		# System 12: Trust Layer - Simulate trust signals
+		is_verified = property_obj.id % 3 != 0  # 66% verified
+		free_cancellation = property_obj.id % 2 == 0  # 50% free cancellation
+		pay_at_hotel = property_obj.id % 5 != 0  # 80% pay at hotel
+		
+		# System 8: Rating Psychology - Color coding
+		rating_value = float(property_obj.rating) if property_obj.rating else 0
+		if rating_value >= 4.5:
+			rating_tier = "excellent"
+		elif rating_value >= 4.0:
+			rating_tier = "very-good"
+		elif rating_value >= 3.5:
+			rating_tier = "good"
+		else:
+			rating_tier = "average"
+
 		return {
 			"id": property_obj.id,
 			"name": property_obj.name,
 			"location": f"{property_obj.city}, {property_obj.country}" if property_obj.city else "Unknown",
 			"image_url": featured_image,
-			"rating_value": float(property_obj.rating) if property_obj.rating else 0,
+			"rating_value": rating_value,
 			"rating_count": property_obj.review_count or 0,
+			"rating_tier": rating_tier,
 			"amenities": amenities_list,  # STRING ARRAY (not dicts)
 			"price_current": float(discount_price) if discount_price else float(base_price) if base_price else None,
 			"price_original": float(base_price) if base_price else None,
 			"discount_percent": discount_percent,
+			"savings_amount": savings_amount,
+			"rooms_left": rooms_left,
+			"booked_today": booked_today,
+			"viewers_now": viewers_now,
+			"availability_status": availability_status,
+			"availability_label": availability_label,
+			"is_verified": is_verified,
+			"free_cancellation": free_cancellation,
+			"pay_at_hotel": pay_at_hotel,
 			"cta_url": f"/hotels/{property_obj.id}/",
 			"cta_label": "View Details",
 		}

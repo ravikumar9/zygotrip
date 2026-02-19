@@ -6,7 +6,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hotels', '0002_property_base_price_property_discount_price_and_more'),
         ('meals', '0001_initial'),
     ]
 

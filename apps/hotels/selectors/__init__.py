@@ -82,7 +82,7 @@ def apply_hotel_filters(queryset, params):
 		try:
 			from decimal import Decimal, InvalidOperation
 			min_price_decimal = Decimal(str(min_price).strip())
-			queryset = queryset.filter(base_price__gte=min_price_decimal)
+			queryset = queryset.filter(room_types__base_price__gte=min_price_decimal)
 		except (ValueError, TypeError, InvalidOperation):
 			pass
 
@@ -90,7 +90,7 @@ def apply_hotel_filters(queryset, params):
 		try:
 			from decimal import Decimal, InvalidOperation
 			max_price_decimal = Decimal(str(max_price).strip())
-			queryset = queryset.filter(base_price__lte=max_price_decimal)
+			queryset = queryset.filter(room_types__base_price__lte=max_price_decimal)
 		except (ValueError, TypeError, InvalidOperation):
 			pass
 

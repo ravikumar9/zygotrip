@@ -3,8 +3,6 @@ from celery import shared_task
 from django.utils import timezone
 from django.core.cache import cache
 from django.db.models import Sum
-from django.apps import apps
-from django.utils.module_loading import import_string
 from datetime import timedelta
 
 logger = logging.getLogger('zygotrip')
@@ -17,7 +15,7 @@ def cleanup_expired_bookings(self):
     Runs every 5 minutes via Celery Beat.
     """
     try:
-        Booking = apps.get_model('booking', 'Booking')
+        from apps.booking.models import Booking
         
         # Find bookings that expired before processing
         expired_cutoff = timezone.now() - timedelta(hours=1)
@@ -58,9 +56,9 @@ def generate_daily_reports(self):
     Runs daily at midnight (00:00 IST) via Celery Beat.
     """
     try:
+        from apps.booking.models import Booking
+        from apps.hotels.models import Property
         from django.contrib.auth import get_user_model
-
-        Booking = apps.get_model('booking', 'Booking')
         
         User = get_user_model()
         today = timezone.now().date()
@@ -109,10 +107,9 @@ def send_booking_confirmation_email(self, booking_id):
     Called after successful booking payment.
     """
     try:
+        from apps.booking.models import Booking
         from django.core.mail import send_mail
         from django.conf import settings
-
-        Booking = apps.get_model('booking', 'Booking')
         
         booking = Booking.objects.get(id=booking_id)
         
@@ -150,6 +147,7 @@ def update_search_cache(query_params):
     Called when new properties are added or prices change.
     """
     try:
+        from apps.hotels.models import Property
         from django.core.cache import cache
         import hashlib
         
@@ -180,21 +178,21 @@ def sync_operator_inventory(operator_id, resource_type):
         cache_key = f"inventory:{resource_type}:{operator_id}"
         
         if resource_type == 'bus':
-            Bus = apps.get_model('buses', 'Bus')
+            from buses.models import Bus
             buses = Bus.objects.filter(operator_id=operator_id).values(
                 'id', 'bus_number', 'total_seats', 'available_seats', 'is_active'
             )
             cache.set(cache_key, list(buses), 300)  # 5 min TTL
         
         elif resource_type == 'cab':
-            Cab = apps.get_model('cabs', 'Cab')
+            from cabs.models import Cab
             cabs = Cab.objects.filter(owner_id=operator_id).values(
                 'id', 'registration_number', 'base_fare', 'rate_per_km', 'is_active'
             )
             cache.set(cache_key, list(cabs), 300)
         
         elif resource_type == 'package':
-            Package = apps.get_model('packages', 'Package')
+            from apps.packages.models import Package
             packages = Package.objects.filter(provider_id=operator_id).values(
                 'id', 'name', 'price', 'duration_days', 'is_active'
             )
@@ -215,10 +213,10 @@ def sync_supplier_inventory(self, property_id, supplier_name):
     Runs periodically for each channel manager source.
     """
     try:
-        Property = apps.get_model('hotels', 'Property')
-        InventorySource = import_string('apps.hotels.inventory.InventorySource')
-        SupplierAdapterFactory = import_string('apps.hotels.supplier_adapters.SupplierAdapterFactory')
-        from apps.core.logging_service import OperationLogger
+        from apps.hotels.models import Property
+        from apps.hotels.inventory import InventorySource
+        from apps.hotels.supplier_adapters import SupplierAdapterFactory
+        from core.logging_service import OperationLogger
         from datetime import datetime, timedelta
         
         property_obj = Property.objects.get(id=property_id)
@@ -284,14 +282,14 @@ def sync_supplier_inventory(self, property_id, supplier_name):
         
         # Mark sync failed
         try:
-            Property = apps.get_model('hotels', 'Property')
-            InventorySource = import_string('apps.hotels.inventory.InventorySource')
+            from apps.hotels.models import Property
+            from apps.hotels.inventory import InventorySource
             property_obj = Property.objects.get(id=property_id)
             inventory = InventorySource.objects.get(property=property_obj, source_type=supplier_name)
             inventory.mark_sync_failed(str(exc))
             
             # Log failure
-            from apps.core.logging_service import OperationLogger
+            from core.logging_service import OperationLogger
             OperationLogger.log_operation(
                 operation_type='inventory_sync',
                 status='failed',
@@ -315,10 +313,8 @@ def reconcile_inventory_mismatches(self):
     Detects and corrects mismatches between supplier and local inventory.
     """
     try:
-        InventorySource = import_string('apps.hotels.inventory.InventorySource')
-        InventoryReconciliationEngine = import_string(
-            'apps.hotels.supplier_adapters.InventoryReconciliationEngine'
-        )
+        from apps.hotels.inventory import InventorySource, ExternalInventoryLog
+        from apps.hotels.supplier_adapters import InventoryReconciliationEngine
         
         engine = InventoryReconciliationEngine()
         
@@ -346,7 +342,7 @@ def reconcile_inventory_mismatches(self):
             corrections = engine.auto_correct(mismatches, source_of_truth='supplier')
             
             # Log reconciliation
-            from apps.core.logging_service import OperationLogger
+            from core.logging_service import OperationLogger
             OperationLogger.log_operation(
                 operation_type='inventory_sync',
                 status='corrected',

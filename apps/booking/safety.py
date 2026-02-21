@@ -3,10 +3,8 @@
 from django.db import transaction, IntegrityError
 from django.core.exceptions import ValidationError
 from decimal import Decimal
-from .models import Booking, CabBooking, BusBooking
-from apps.cabs.models import Cab
-from apps.hotels.models import Property
-from apps.buses.models import Bus
+from django.apps import apps
+from .models import Booking
 
 
 class BookingSafetyError(Exception):
@@ -40,7 +38,8 @@ class BookingTransactionManager:
         """
         try:
             # Lock property for update - prevents concurrent bookings
-            property = Property.objects.select_for_update().get(pk=property_obj.pk)
+            property_model = apps.get_model('hotels', 'Property')
+            property = property_model.objects.select_for_update().get(pk=property_obj.pk)
             
             # Check availability within transaction (after lock)
             conflicting = Booking.objects.filter(
@@ -102,10 +101,12 @@ class BookingTransactionManager:
         """
         try:
             # Lock cab for update
-            cab = Cab.objects.select_for_update().get(pk=cab.pk)
+            cab_model = apps.get_model('cabs', 'Cab')
+            cab_booking_model = apps.get_model('cabs', 'CabBooking')
+            cab = cab_model.objects.select_for_update().get(pk=cab.pk)
             
             # Check availability
-            seats_booked = CabBooking.objects.filter(
+            seats_booked = cab_booking_model.objects.filter(
                 cab=cab,
                 booking_date=booking_date,
                 status__in=['pending', 'confirmed']
@@ -117,7 +118,7 @@ class BookingTransactionManager:
                 )
             
             # Create booking
-            booking = CabBooking.objects.create(
+            booking = cab_booking_model.objects.create(
                 user=user,
                 cab=cab,
                 booking_date=booking_date,
@@ -157,10 +158,12 @@ class BookingTransactionManager:
         """
         try:
             # Lock bus for update
-            bus = Bus.objects.select_for_update().get(pk=bus.pk)
+            bus_model = apps.get_model('buses', 'Bus')
+            bus_booking_model = apps.get_model('buses', 'BusBooking')
+            bus = bus_model.objects.select_for_update().get(pk=bus.pk)
             
             # Check seat availability
-            seats_booked = BusBooking.objects.filter(
+            seats_booked = bus_booking_model.objects.filter(
                 bus=bus,
                 journey_date=journey_date,
                 status__in=['pending', 'confirmed']
@@ -173,7 +176,7 @@ class BookingTransactionManager:
                 )
             
             # Create booking
-            booking = BusBooking.objects.create(
+            booking = bus_booking_model.objects.create(
                 user=user,
                 bus=bus,
                 journey_date=journey_date,

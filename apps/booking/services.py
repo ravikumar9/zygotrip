@@ -175,3 +175,68 @@ def create_booking(
             timestamp=timezone.now(),
         )
         raise
+
+
+def create_simple_booking(user, property_obj, form):
+    """Create a simple booking from the create view form."""
+    check_in = form.cleaned_data['check_in']
+    check_out = form.cleaned_data['check_out']
+    quantity = form.cleaned_data.get('quantity', 1)
+
+    nights = (check_out - check_in).days
+    if nights <= 0:
+        raise ValueError('Invalid date range')
+
+    base_price = property_obj.base_price * nights * quantity if property_obj.base_price else 0
+
+    guest_name = form.cleaned_data.get('guest_full_name', user.full_name)
+    guest_email = form.cleaned_data.get('guest_email', user.email)
+    guest_phone = form.cleaned_data.get('guest_phone', '')
+
+    booking = Booking.objects.create(
+        user=user,
+        property=property_obj,
+        check_in=check_in,
+        check_out=check_out,
+        total_amount=base_price,
+        status=Booking.STATUS_REVIEW,
+        guest_name=guest_name,
+        guest_email=guest_email,
+        guest_phone=guest_phone,
+    )
+
+    tax_amount = base_price * Decimal('0.05')
+    total_with_tax = base_price + tax_amount
+
+    BookingPriceBreakdown.objects.create(
+        booking=booking,
+        base_amount=base_price,
+        meal_amount=0,
+        service_fee=0,
+        gst=tax_amount,
+        promo_discount=0,
+        total_amount=total_with_tax,
+    )
+
+    booking.total_amount = total_with_tax
+    booking.save(update_fields=['total_amount'])
+
+    BookingStatusHistory.objects.create(
+        booking=booking,
+        status=Booking.STATUS_REVIEW,
+        note='Booking created',
+    )
+
+    return booking
+
+
+def transition_booking_status(booking, new_status, note=''):
+    """Update booking status and append status history."""
+    booking.status = new_status
+    booking.save(update_fields=['status', 'updated_at'])
+    BookingStatusHistory.objects.create(
+        booking=booking,
+        status=new_status,
+        note=note,
+    )
+    return booking

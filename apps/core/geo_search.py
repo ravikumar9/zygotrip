@@ -8,8 +8,13 @@ Critical pattern from logs:
 - Distance calculation for "2.3 km from city centre"
 """
 from math import radians, cos, sin, asin, sqrt
+from django.apps import apps
 from django.db.models import Q, F
 from decimal import Decimal
+
+
+def _get_property_model():
+    return apps.get_model('hotels', 'Property')
 
 
 def haversine_distance(lat1, lon1, lat2, lon2):
@@ -39,8 +44,7 @@ def hotels_in_bounding_box(ne_lat, ne_lng, sw_lat, sw_lng):
     Returns:
         QuerySet of Property objects
     """
-    from apps.hotels.models import Property
-    
+    Property = _get_property_model()
     return Property.objects.filter(
         latitude__gte=sw_lat,
         latitude__lte=ne_lat,
@@ -56,8 +60,7 @@ def hotels_near_point(lat, lng, radius_km=10, limit=50):
     Uses bounding box approximation first (fast),
     then calculates exact distance (accurate)
     """
-    from apps.hotels.models import Property
-    
+    Property = _get_property_model()
     # Rough bounding box (1 degree ≈ 111 km)
     lat_delta = Decimal(radius_km) / Decimal(111)
     lng_delta = Decimal(radius_km) / Decimal(111 * cos(radians(float(lat))))
@@ -110,7 +113,7 @@ def get_city_context(city_code):
         }
     """
     from apps.core.location_models import City, Locality
-    from apps.hotels.models import Property
+    Property = _get_property_model()
     
     try:
         city = City.objects.get(code=city_code)

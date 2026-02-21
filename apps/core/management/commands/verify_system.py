@@ -61,15 +61,15 @@ class Command(BaseCommand):
             self.stdout.write('  ✓ Database connection successful')
             
             # Count data
-            from apps.accounts.models import User
-            from apps.hotels.models import Property
-            from apps.buses.models import Bus
-            from apps.packages.models import Package
-            
-            user_count = User.objects.count()
-            hotel_count = Property.objects.count()
-            bus_count = Bus.objects.count()
-            package_count = Package.objects.count()
+            user_model = apps.get_model('accounts', 'User')
+            property_model = apps.get_model('hotels', 'Property')
+            bus_model = apps.get_model('buses', 'Bus')
+            package_model = apps.get_model('packages', 'Package')
+
+            user_count = user_model.objects.count()
+            hotel_count = property_model.objects.count()
+            bus_count = bus_model.objects.count()
+            package_count = package_model.objects.count()
             
             self.stdout.write(f'  ✓ Users: {user_count}')
             self.stdout.write(f'  ✓ Hotels: {hotel_count}')

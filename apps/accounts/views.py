@@ -5,11 +5,10 @@ from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from apps.accounts.selectors import user_has_role
+from apps.accounts.selectors import user_has_role, get_customer_bookings, get_booking_stats
 from apps.payments.selectors import invoices_for_user
-from apps.booking.models import Booking
 from .forms import RegisterForm, CustomAuthenticationForm
-from .models import Role, UserRole
+from .services import assign_customer_role
 
 
 class LoginView(DjangoLoginView):
@@ -36,12 +35,10 @@ def customer_dashboard(request):
 		raise PermissionDenied
 	
 	# Get customer's bookings
-	bookings = Booking.objects.filter(user=request.user).select_related('property').order_by('-created_at')
+	bookings = get_customer_bookings(request.user)
 	
 	# Statistics
-	total_bookings = bookings.count()
-	confirmed_bookings = bookings.filter(status__in=[Booking.STATUS_CONFIRMED, Booking.STATUS_PAYMENT]).count()
-	cancelled_bookings = bookings.filter(status=Booking.STATUS_CANCELLED).count()
+	total_bookings, confirmed_bookings, cancelled_bookings = get_booking_stats(bookings)
 	
 	context = {
 		'bookings': bookings,
@@ -62,9 +59,7 @@ def register_view(request):
 	form = RegisterForm(request.POST or None)
 	if request.method == 'POST' and form.is_valid():
 		user = form.save()
-		role = Role.objects.filter(code='customer').first()
-		if role:
-			UserRole.objects.get_or_create(user=user, role=role)
+		assign_customer_role(user)
 		login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 		return redirect('core:home')
 	return render(request, 'accounts/register.html', {'form': form})

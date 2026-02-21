@@ -2,10 +2,8 @@ import uuid
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from django.conf import settings
 from apps.core.models import TimeStampedModel
-from apps.accounts.models import User
-from apps.hotels.models import Property
-from apps.rooms.models import RoomType
 from apps.core.validators import validate_future_date
 
 
@@ -27,8 +25,8 @@ class Booking(TimeStampedModel):
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 	public_booking_id = models.CharField(max_length=50, unique=True, editable=False, db_index=True, null=True, blank=True)
 	idempotency_key = models.CharField(max_length=64, unique=True, null=True, blank=True, db_index=True)
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
-	property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='bookings')
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookings')
+	property = models.ForeignKey('hotels.Property', on_delete=models.CASCADE, related_name='bookings')
 	check_in = models.DateField(validators=[validate_future_date])
 	check_out = models.DateField(validators=[validate_future_date])
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
@@ -65,7 +63,7 @@ class Booking(TimeStampedModel):
 
 class BookingRoom(TimeStampedModel):
 	booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='rooms')
-	room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
+	room_type = models.ForeignKey('rooms.RoomType', on_delete=models.CASCADE)
 	quantity = models.PositiveIntegerField(default=1)
 
 	class Meta:

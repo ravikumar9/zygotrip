@@ -4,20 +4,14 @@ Creates production-quality test data with proper RBAC setup
 """
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.apps import apps
 from decimal import Decimal
 import random
 from datetime import datetime, timedelta
 
-User = apps.get_model('accounts', 'User')
-Role = apps.get_model('accounts', 'Role')
-UserRole = apps.get_model('accounts', 'UserRole')
-Bus = apps.get_model('buses', 'Bus')
-BusType = apps.get_model('buses', 'BusType')
-BusSeat = apps.get_model('buses', 'BusSeat')
-Cab = apps.get_model('cabs', 'Cab')
-Package = apps.get_model('packages', 'Package')
-PackageCategory = apps.get_model('packages', 'PackageCategory')
+from apps.accounts.models import User, Role, UserRole
+from apps.buses.models import Bus, BusType, BusSeat
+from apps.cabs.models import Cab
+from apps.packages.models import Package, PackageCategory
 
 
 class Command(BaseCommand):

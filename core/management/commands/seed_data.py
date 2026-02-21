@@ -1,22 +1,15 @@
 from datetime import timedelta, time
 from decimal import Decimal
-from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-User = apps.get_model('accounts', 'User')
-Bus = apps.get_model('buses', 'Bus')
-BusType = apps.get_model('buses', 'BusType')
-PropertyApproval = apps.get_model('dashboard_admin', 'PropertyApproval')
-Property = apps.get_model('hotels', 'Property')
-PropertyAmenity = apps.get_model('hotels', 'PropertyAmenity')
-PropertyImage = apps.get_model('hotels', 'PropertyImage')
-MealPlan = apps.get_model('meals', 'MealPlan')
-Package = apps.get_model('packages', 'Package')
-PackageCategory = apps.get_model('packages', 'PackageCategory')
-PackageItinerary = apps.get_model('packages', 'PackageItinerary')
-RoomInventory = apps.get_model('rooms', 'RoomInventory')
-RoomType = apps.get_model('rooms', 'RoomType')
+from apps.accounts.models import User
+from apps.buses.models import Bus, BusType
+from apps.dashboard_admin.models import PropertyApproval
+from apps.hotels.models import Property, PropertyAmenity, PropertyImage
+from apps.meals.models import MealPlan
+from apps.packages.models import Package, PackageCategory, PackageItinerary
+from apps.rooms.models import RoomInventory, RoomType
 
 
 class Command(BaseCommand):

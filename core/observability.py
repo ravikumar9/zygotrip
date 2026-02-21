@@ -14,8 +14,6 @@ from django.db.models import Count, Q, Sum, Avg
 from django.views.generic import TemplateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
-from django.apps import apps
-from django.utils.module_loading import import_string
 from apps.core.models import TimeStampedModel
 
 logger = logging.getLogger('zygotrip')
@@ -61,9 +59,9 @@ class SystemMetrics(TimeStampedModel):
     @classmethod
     def collect_metrics(cls) -> Dict:
         """Collect current system metrics"""
+        from apps.booking.models import Booking
         from apps.core.models import OperationLog
-        Booking = apps.get_model('booking', 'Booking')
-        InventorySource = import_string('apps.hotels.inventory.InventorySource')
+        from apps.hotels.inventory import InventorySource
         
         # Booking metrics
         all_bookings = Booking.objects.all()
@@ -305,7 +303,7 @@ class MetricsCollector:
     
     def check_inventory_health(self) -> List[Dict]:
         """Check health of all inventory sources"""
-        InventorySource = import_string('apps.hotels.inventory.InventorySource')
+        from apps.hotels.inventory import InventorySource
         
         issues = []
         
@@ -375,7 +373,7 @@ class DashboardView(TemplateView):
         }
         
         # Get recent errors
-        from apps.core.models import OperationLog
+        from core.models import OperationLog
         context['recent_errors'] = OperationLog.objects.filter(
             status='failed'
         ).order_by('-timestamp')[:10]

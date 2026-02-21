@@ -14,6 +14,7 @@ from django.core.cache import cache
 from django.utils import timezone
 from django.db import models, transaction
 from django.conf import settings
+from django.apps import apps
 from apps.core.models import TimeStampedModel
 
 logger = logging.getLogger('zygotrip')
@@ -215,12 +216,13 @@ class DistributedBookingManager:
         
         try:
             with transaction.atomic():
-                from apps.hotels.models import Property, Booking
-                
+                property_model = apps.get_model('hotels', 'Property')
+                booking_model = apps.get_model('booking', 'Booking')
+
                 # Check availability
-                property_obj = Property.objects.select_for_update().get(id=property_id)
+                property_obj = property_model.objects.select_for_update().get(id=property_id)
                 
-                overlapping = Booking.objects.filter(
+                overlapping = booking_model.objects.filter(
                     property=property_obj,
                     checkin_date__lt=checkout_date,
                     checkout_date__gt=checkin_date,
@@ -232,7 +234,7 @@ class DistributedBookingManager:
                     return False, "Room not available for selected dates", None
                 
                 # Create booking
-                booking = Booking.objects.create(
+                booking = booking_model.objects.create(
                     property=property_obj,
                     user=user,
                     checkin_date=checkin_date,

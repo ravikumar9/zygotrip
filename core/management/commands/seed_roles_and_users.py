@@ -1,15 +1,8 @@
 from decimal import Decimal
-from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-
-User = apps.get_model('accounts', 'User')
-Role = apps.get_model('accounts', 'Role')
-Permission = apps.get_model('accounts', 'Permission')
-RolePermission = apps.get_model('accounts', 'RolePermission')
-UserRole = apps.get_model('accounts', 'UserRole')
-Wallet = apps.get_model('wallet', 'Wallet')
-WalletTransaction = apps.get_model('wallet', 'WalletTransaction')
+from apps.accounts.models import User, Role, Permission, RolePermission, UserRole
+from apps.wallet.models import Wallet, WalletTransaction
 
 
 class Command(BaseCommand):

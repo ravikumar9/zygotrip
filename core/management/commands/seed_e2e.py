@@ -1,30 +1,18 @@
 from datetime import timedelta
 from decimal import Decimal
-from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from apps.accounts.models import Permission, Role, RolePermission, User, UserRole
+from apps.dashboard_admin.models import PropertyApproval
+from apps.hotels.models import Property
+from apps.meals.models import MealPlan
+from apps.promos.models import Promo
+from apps.rooms.models import RoomInventory, RoomType, RoomAmenity
+from apps.wallet.models import Wallet
+from apps.buses.models import Bus, BusType, BusSeat
+from apps.packages.models import Package, PackageCategory, PackageItinerary
 from datetime import time
-
-Permission = apps.get_model('accounts', 'Permission')
-Role = apps.get_model('accounts', 'Role')
-RolePermission = apps.get_model('accounts', 'RolePermission')
-User = apps.get_model('accounts', 'User')
-UserRole = apps.get_model('accounts', 'UserRole')
-PropertyApproval = apps.get_model('dashboard_admin', 'PropertyApproval')
-Property = apps.get_model('hotels', 'Property')
-MealPlan = apps.get_model('meals', 'MealPlan')
-Promo = apps.get_model('promos', 'Promo')
-RoomInventory = apps.get_model('rooms', 'RoomInventory')
-RoomType = apps.get_model('rooms', 'RoomType')
-RoomAmenity = apps.get_model('rooms', 'RoomAmenity')
-Wallet = apps.get_model('wallet', 'Wallet')
-Bus = apps.get_model('buses', 'Bus')
-BusType = apps.get_model('buses', 'BusType')
-BusSeat = apps.get_model('buses', 'BusSeat')
-Package = apps.get_model('packages', 'Package')
-PackageCategory = apps.get_model('packages', 'PackageCategory')
-PackageItinerary = apps.get_model('packages', 'PackageItinerary')
 
 
 class Command(BaseCommand):

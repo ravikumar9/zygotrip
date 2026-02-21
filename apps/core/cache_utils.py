@@ -6,6 +6,7 @@ Provides decorators and helper functions for cache management.
 import hashlib
 import json
 from functools import wraps
+from django.apps import apps
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
@@ -206,21 +207,21 @@ def cache_operator_inventory(operator_id, resource_type):
     
     try:
         if resource_type == 'bus':
-            from apps.buses.models import Bus
+            Bus = apps.get_model('buses', 'Bus')
             inventory = Bus.objects.filter(
                 operator_id=operator_id,
                 is_active=True
             ).values('id', 'bus_number', 'total_seats', 'available_seats')
         
         elif resource_type == 'cab':
-            from apps.cabs.models import Cab
+            Cab = apps.get_model('cabs', 'Cab')
             inventory = Cab.objects.filter(
                 owner_id=operator_id,
                 is_active=True
             ).values('id', 'registration_number', 'base_fare', 'rate_per_km')
         
         elif resource_type == 'package':
-            from apps.packages.models import Package
+            Package = apps.get_model('packages', 'Package')
             inventory = Package.objects.filter(
                 provider_id=operator_id,
                 is_active=True

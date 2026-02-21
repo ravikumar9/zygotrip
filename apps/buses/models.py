@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
+from django.conf import settings
 from apps.core.models import TimeStampedModel
-from apps.accounts.models import User
 from apps.core.validators import validate_future_date
 
 
@@ -37,7 +37,7 @@ class BusType(TimeStampedModel):
 class Bus(TimeStampedModel):
 	"""Bus model with routes and schedules"""
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-	operator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buses', null=True, blank=True)
+	operator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='buses', null=True, blank=True)
 	registration_number = models.CharField(max_length=20, unique=True)
 	bus_type = models.ForeignKey(BusType, on_delete=models.PROTECT)
 	operator_name = models.CharField(max_length=100)
@@ -107,7 +107,7 @@ class BusBooking(TimeStampedModel):
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 	public_booking_id = models.CharField(max_length=50, unique=True, editable=False, db_index=True, null=True, blank=True)
 	idempotency_key = models.CharField(max_length=64, unique=True, null=True, blank=True, db_index=True)
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bus_bookings')
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bus_bookings')
 	bus = models.ForeignKey(Bus, on_delete=models.CASCADE, related_name='bookings')
 	journey_date = models.DateField(validators=[validate_future_date])
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)

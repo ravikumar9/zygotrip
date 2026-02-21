@@ -2,8 +2,8 @@ import uuid
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
+from django.conf import settings
 from apps.core.models import TimeStampedModel
-from apps.accounts.models import User
 from apps.core.validators import validate_future_date
 
 
@@ -51,7 +51,7 @@ class CabType(TimeStampedModel):
 class Cab(TimeStampedModel):
 	"""Cab model with owner for operator dashboard"""
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_cabs', null=True, blank=True)
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_cabs', null=True, blank=True)
 	name = models.CharField(max_length=100, default='Unnamed Cab')
 	city = models.CharField(max_length=50, choices=CITY_CHOICES, default='delhi')
 	seats = models.IntegerField(choices=SEAT_CHOICES, default=5, validators=[MinValueValidator(2), MaxValueValidator(12)])
@@ -132,7 +132,7 @@ class CabBooking(TimeStampedModel):
 	public_booking_id = models.CharField(max_length=50, unique=True, editable=False, db_index=True, null=True, blank=True)
 	idempotency_key = models.CharField(max_length=64, unique=True, null=True, blank=True, db_index=True)
 	cab = models.ForeignKey(Cab, on_delete=models.CASCADE, related_name='bookings')
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cab_bookings')
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cab_bookings')
 	booking_date = models.DateField(validators=[validate_future_date])
 	distance_km = models.DecimalField(max_digits=8, decimal_places=2, validators=[MinValueValidator(1)])
 	base_fare = models.DecimalField(max_digits=8, decimal_places=2, default=50)

@@ -7,18 +7,11 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.utils import timezone
 from datetime import datetime
 from apps.accounts.selectors import user_has_role
-from .models import Booking, BookingStatusHistory, BookingGuest, BookingPriceBreakdown
 from .forms import BookingCreateForm
 from apps.payments.services import process_payment
 from apps.wallet.services import get_or_create_wallet
-from apps.hotels.models import Property
-
-
-def _get_booking_or_403(user, uuid):
-	booking = get_object_or_404(Booking, uuid=uuid, is_active=True)
-	if booking.user != user:
-		raise PermissionDenied
-	return booking
+from .selectors import get_booking_or_403, get_property_or_404
+from .services import create_simple_booking, transition_booking_status
 
 
 @login_required
@@ -32,72 +25,19 @@ def create(request, property_id):
 		raise PermissionDenied
 	
 	# Get property
-	property_obj = get_object_or_404(Property, id=property_id)
+	property_obj = get_property_or_404(property_id)
 	
 	if request.method == 'POST':
 		form = BookingCreateForm(request.POST, property_obj=property_obj)
 		if form.is_valid():
-			# Create booking in PENDING status
-			check_in = form.cleaned_data['check_in']
-			check_out = form.cleaned_data['check_out']
-			quantity = form.cleaned_data.get('quantity', 1)
-			
-			# Calculate nights
-			nights = (check_out - check_in).days
-			if nights <= 0:
+			try:
+				booking = create_simple_booking(request.user, property_obj, form)
+			except ValueError:
 				messages.error(request, 'Check-out date must be after check-in date.')
 				return render(request, 'booking/create.html', {
 					'form': form,
-					'property': property_obj
+					'property': property_obj,
 				})
-			
-			# Calculate base price
-			base_price = property_obj.base_price * nights * quantity if property_obj.base_price else 0
-			
-			# Collect guest details from form
-			guest_name = form.cleaned_data.get('guest_full_name', request.user.full_name)
-			guest_email = form.cleaned_data.get('guest_email', request.user.email)
-			guest_phone = form.cleaned_data.get('guest_phone', '')
-			
-			# Create booking with guest details
-			booking = Booking.objects.create(
-				user=request.user,
-				property=property_obj,
-				check_in=check_in,
-				check_out=check_out,
-				total_amount=base_price,
-				status=Booking.STATUS_REVIEW,
-				guest_name=guest_name,
-				guest_email=guest_email,
-				guest_phone=guest_phone
-			)
-			
-			# Calculate total with tax
-			tax_amount = base_price * 0.05  # 5% GST
-			total_with_tax = base_price + tax_amount
-			
-			# Create price breakdown
-			BookingPriceBreakdown.objects.create(
-				booking=booking,
-				base_amount=base_price,
-				meal_amount=0,
-				service_fee=0,
-				gst=tax_amount,
-				promo_discount=0,
-				total_amount=total_with_tax
-			)
-			
-			# Update booking total
-			booking.total_amount = total_with_tax
-			booking.save(update_fields=['total_amount'])
-			
-			# Record booking status
-			BookingStatusHistory.objects.create(
-				booking=booking,
-				status=Booking.STATUS_REVIEW,
-				note='Booking created'
-			)
-			
 			messages.success(request, 'Booking created. Please review and confirm.')
 			return redirect('booking:review', uuid=booking.uuid)
 	else:
@@ -113,13 +53,11 @@ def create(request, property_id):
 def review(request, uuid):
 	if not user_has_role(request.user, 'customer'):
 		raise PermissionDenied
-	booking = _get_booking_or_403(request.user, uuid)
-	if booking.status not in [Booking.STATUS_REVIEW, Booking.STATUS_PAYMENT]:
+	booking = get_booking_or_403(request.user, uuid)
+	if booking.status not in [booking.STATUS_REVIEW, booking.STATUS_PAYMENT]:
 		raise PermissionDenied
 	if request.method == 'POST':
-		booking.status = Booking.STATUS_PAYMENT
-		booking.save(update_fields=['status', 'updated_at'])
-		BookingStatusHistory.objects.create(booking=booking, status=Booking.STATUS_PAYMENT)
+		transition_booking_status(booking, booking.STATUS_PAYMENT)
 		return redirect('booking:payment', uuid=booking.uuid)
 	nights = (booking.check_out - booking.check_in).days
 	return render(request, 'booking/review.html', {'booking': booking, 'nights': nights})
@@ -129,8 +67,8 @@ def review(request, uuid):
 def payment(request, uuid):
 	if not user_has_role(request.user, 'customer'):
 		raise PermissionDenied
-	booking = _get_booking_or_403(request.user, uuid)
-	if booking.status != Booking.STATUS_PAYMENT:
+	booking = get_booking_or_403(request.user, uuid)
+	if booking.status != booking.STATUS_PAYMENT:
 		raise PermissionDenied
 	if request.method == 'POST':
 		use_wallet = request.POST.get('use_wallet') == 'on'
@@ -145,8 +83,8 @@ def payment(request, uuid):
 def success(request, uuid):
 	if not user_has_role(request.user, 'customer'):
 		raise PermissionDenied
-	booking = _get_booking_or_403(request.user, uuid)
-	if booking.status != Booking.STATUS_CONFIRMED:
+	booking = get_booking_or_403(request.user, uuid)
+	if booking.status != booking.STATUS_CONFIRMED:
 		raise PermissionDenied
 	return render(request, 'booking/success.html', {'booking': booking})
 
@@ -159,15 +97,13 @@ def cancel(request, uuid):
 		return JsonResponse({'error': 'Unauthorized'}, status=403)
 	
 	try:
-		booking = _get_booking_or_403(request.user, uuid)
-	except PermissionDenied:
+		booking = get_booking_or_403(request.user, uuid)
+	except PermissionError:
 		return JsonResponse({'error': 'Booking not found'}, status=404)
 	
 	# Only cancel if still in review or payment status
-	if booking.status in [Booking.STATUS_REVIEW, Booking.STATUS_PAYMENT]:
-		booking.status = Booking.STATUS_CANCELLED
-		booking.save(update_fields=['status', 'updated_at'])
-		BookingStatusHistory.objects.create(booking=booking, status=Booking.STATUS_CANCELLED, note='Cancelled due to timer expiry')
+	if booking.status in [booking.STATUS_REVIEW, booking.STATUS_PAYMENT]:
+		transition_booking_status(booking, booking.STATUS_CANCELLED, note='Cancelled due to timer expiry')
 		return JsonResponse({'success': True, 'message': 'Booking cancelled'})
 	
 	return JsonResponse({'error': 'Cannot cancel booking'}, status=400)

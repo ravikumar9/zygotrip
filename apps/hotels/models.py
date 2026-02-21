@@ -1,13 +1,13 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
+from django.conf import settings
 from apps.hotels.validators import validate_https_image_url
 from apps.core.models import TimeStampedModel
-from apps.accounts.models import User
 
 
 class Property(TimeStampedModel):
-	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='properties')
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='properties')
 	name = models.CharField(max_length=140)
 	slug = models.SlugField(unique=True, blank=True, null=True)
 	property_type = models.CharField(max_length=80, default='Hotel')

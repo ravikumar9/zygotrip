@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 from apps.core.models import TimeStampedModel
-from apps.accounts.models import User
-from apps.booking.models import Booking
 
 
 class Promo(TimeStampedModel):
@@ -58,8 +57,8 @@ class Promo(TimeStampedModel):
 
 class PromoUsage(TimeStampedModel):
 	promo = models.ForeignKey(Promo, on_delete=models.CASCADE, related_name='usages')
-	booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='promo_usages')
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	booking = models.ForeignKey('booking.Booking', on_delete=models.CASCADE, related_name='promo_usages')
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 	class Meta:
 		verbose_name_plural = "Promo Usage"

@@ -1,11 +1,9 @@
 """Verify PHASE 1 & 2 implementation"""
 from django.core.management.base import BaseCommand
-from django.apps import apps
-
-User = apps.get_model('accounts', 'User')
-Bus = apps.get_model('buses', 'Bus')
-Cab = apps.get_model('cabs', 'Cab')
-Package = apps.get_model('packages', 'Package')
+from apps.accounts.models import User
+from apps.buses.models import Bus
+from apps.cabs.models import Cab
+from apps.packages.models import Package
 
 
 class Command(BaseCommand):

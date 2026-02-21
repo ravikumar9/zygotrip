@@ -1,5 +1,5 @@
 from django.db.models import Count, Min, Q
-from dashboard_admin.models import PropertyApproval
+from apps.dashboard_admin.models import PropertyApproval
 from apps.hotels.models import Property
 
 

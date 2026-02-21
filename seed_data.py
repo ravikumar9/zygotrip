@@ -10,10 +10,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zygotrip_project.settings')
 django.setup()
 
 from apps.hotels.models import Property
-from buses.models import Bus, BusType
-from cabs.models import Cab
-from packages import models as package_models
-from packages.models import Package
+from apps.buses.models import Bus, BusType
+from apps.cabs.models import Cab
+from apps.packages import models as package_models
+from apps.packages.models import Package
 from django.contrib.auth import get_user_model
 
 User = get_user_model()

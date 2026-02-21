@@ -7,8 +7,8 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
-from hotels.models import Property, PropertyImage, PropertyOffer, RatingAggregate, Category
-from accounts.models import User
+from apps.hotels.models import Property, PropertyImage, PropertyOffer, RatingAggregate, Category
+from apps.accounts.models import User
 
 
 @pytest.mark.django_db
@@ -242,7 +242,7 @@ class TestQuerysetOptimization:
 			rating=Decimal('4.0')
 		)
 		
-		from dashboard_admin.models import PropertyApproval
+		from apps.dashboard_admin.models import PropertyApproval
 		PropertyApproval.objects.create(
 			property=property_obj,
 			status='APPROVED'

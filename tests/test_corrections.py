@@ -19,13 +19,13 @@ from django.utils import timezone
 from datetime import timedelta
 from unittest.mock import patch, MagicMock
 
-from hotels.models import Property
-from accounts.models import User
-from inventory.models import SupplierPropertyMap, PropertyInventory, PriceHistory
-from inventory.matching_engine import haversine_distance, calculate_match_score
-from pricing.core_engine import UnifiedPricingEngine
-from inventory.concurrency import InventoryManager, InsufficientInventory
-from core.validators import InputValidator, FraudPrice, SuspiciousPrice
+from apps.hotels.models import Property
+from apps.accounts.models import User
+from apps.inventory.models import SupplierPropertyMap, PropertyInventory, PriceHistory
+from apps.inventory.matching_engine import haversine_distance, calculate_match_score
+from apps.pricing.core_engine import UnifiedPricingEngine
+from apps.inventory.concurrency import InventoryManager, InsufficientInventory
+from apps.core.validators import InputValidator, FraudPrice, SuspiciousPrice
 
 
 class BaseTestMixin:

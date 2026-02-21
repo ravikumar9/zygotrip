@@ -36,7 +36,7 @@ print("\n[PROOF 1] HOTEL BROWSING & API VALIDATION")
 print("-" * 80)
 
 # DB Query
-from hotels.models import Property
+from apps.hotels.models import Property
 hotels = Property.objects.all()[:3]
 print(f"\n[DB] Hotels in database: {Property.objects.count()}")
 for hotel in hotels:
@@ -98,7 +98,7 @@ print("\n[PROOF 2] CAB LISTING & SEARCH")
 print("-" * 80)
 
 # DB Query
-from cabs.models import Cab
+from apps.cabs.models import Cab
 cabs = Cab.objects.all()[:3]
 print(f"\n[DB] Cabs in database: {Cab.objects.count()}")
 for cab in cabs:
@@ -143,7 +143,7 @@ print("\n[PROOF 3] BUS SEARCH & LISTING")
 print("-" * 80)
 
 # DB Query
-from buses.models import Bus
+from apps.buses.models import Bus
 buses = Bus.objects.all()[:3]
 print(f"\n[DB] Buses in database: {Bus.objects.count()}")
 for bus in buses:

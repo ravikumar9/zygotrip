@@ -10,7 +10,7 @@ django.setup()
 
 from decimal import Decimal
 from apps.hotels.models import Property
-from core.location_models import City
+from apps.core.location_models import City
 
 # Geolocation data for major Indian cities
 CITY_COORDINATES = {

@@ -14,17 +14,17 @@ from django.utils import timezone
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 
-from accounts.models import User
-from hotels.models import Property
-from rooms.models import RoomType, RoomInventory
-from inventory.models import SupplierPropertyMap, PropertyInventory, PriceHistory
-from inventory.matching_engine import match_supplier_property
-from pricing.core_engine import UnifiedPricingEngine
+from apps.accounts.models import User
+from apps.hotels.models import Property
+from apps.rooms.models import RoomType, RoomInventory
+from apps.inventory.models import SupplierPropertyMap, PropertyInventory, PriceHistory
+from apps.inventory.matching_engine import match_supplier_property
+from apps.pricing.core_engine import UnifiedPricingEngine
 from security.pricing_guard import PricingGuard, FraudDetection, RateLimitExceeded
-from core.validators import InputValidator
-from core.models import OperationLog
-from core.observability import PerformanceLog
-from booking.services import create_booking
+from apps.core.validators import InputValidator
+from apps.core.models import OperationLog
+from apps.core.observability import PerformanceLog
+from apps.booking.services import create_booking
 
 
 class DataIntegrityCertificationTestCase(TestCase):
@@ -144,7 +144,7 @@ class ConcurrencySafetyCertificationTestCase(TransactionTestCase):
         lock = threading.Lock()
 
         def attempt():
-            from inventory.concurrency import InventoryManager, InsufficientInventory
+            from apps.inventory.concurrency import InventoryManager, InsufficientInventory
             try:
                 InventoryManager.deduct_rooms(self.property.id, 1)
                 with lock:

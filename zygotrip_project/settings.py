@@ -34,26 +34,26 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     # project apps
-    "accounts",
-    "core",
+    "apps.accounts",
+    "apps.core",
     "apps.hotels",
-    "rooms",
-    "meals",
-    "pricing",
-    "booking",
-    "payments",
-    "wallet",
-    "promos",
-    "reviews",
-    "buses",
-    "packages",
-    "flights",
-    "trains",
-    "cabs",
-    "inventory",
-    "dashboard_owner",
-    "dashboard_admin",
-    "dashboard_finance",
+    "apps.rooms",
+    "apps.meals",
+    "apps.pricing",
+    "apps.booking",
+    "apps.payments",
+    "apps.wallet",
+    "apps.promos",
+    "apps.reviews",
+    "apps.buses",
+    "apps.packages",
+    "apps.flights",
+    "apps.trains",
+    "apps.cabs",
+    "apps.inventory",
+    "apps.dashboard_owner",
+    "apps.dashboard_admin",
+    "apps.dashboard_finance",
 
     # celery
     "django_celery_beat",
@@ -74,8 +74,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 
-    "core.middleware.RateLimitMiddleware",
-    "core.middleware.StructuredLoggingMiddleware",
+    "apps.core.middleware.RateLimitMiddleware",
+    "apps.core.middleware.StructuredLoggingMiddleware",
 ]
 
 
@@ -246,11 +246,11 @@ CELERY_RESULT_EXPIRES = 3600
 
 CELERY_BEAT_SCHEDULE = {
     "cleanup-expired-bookings": {
-        "task": "core.tasks.cleanup_expired_bookings",
+        "task": "apps.core.tasks.cleanup_expired_bookings",
         "schedule": 300.0,
     },
     "generate-daily-reports": {
-        "task": "core.tasks.generate_daily_reports",
+        "task": "apps.core.tasks.generate_daily_reports",
         "schedule": 86400.0,
     },
 }
@@ -275,7 +275,7 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "json": {"()": "core.logging_formatters.JSONFormatter"},
+        "json": {"()": "apps.core.logging_formatters.JSONFormatter"},
     },
     "handlers": {
         "console": {

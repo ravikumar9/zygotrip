@@ -23,9 +23,9 @@ django.setup()
 from django.test import Client
 from django.contrib.auth import get_user_model
 from apps.hotels.models import Property
-from buses.models import Bus
-from cabs.models import Cab
-from packages.models import Package
+from apps.buses.models import Bus
+from apps.cabs.models import Cab
+from apps.packages.models import Package
 
 User = get_user_model()
 

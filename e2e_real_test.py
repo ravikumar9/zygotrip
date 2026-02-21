@@ -18,15 +18,15 @@ django.setup()
 
 from django.db import transaction
 from django.utils import timezone
-from accounts.models import User, Role, UserRole
-from accounts.selectors import user_has_role
+from apps.accounts.models import User, Role, UserRole
+from apps.accounts.selectors import user_has_role
 from apps.hotels.models import Property
-from rooms.models import RoomType
-from dashboard_admin.models import PropertyApproval
-from core.location_models import Country, State, City
-from booking.models import Booking
-from cabs.models import Cab
-from buses.models import Bus
+from apps.rooms.models import RoomType
+from apps.dashboard_admin.models import PropertyApproval
+from apps.core.location_models import Country, State, City
+from apps.booking.models import Booking
+from apps.cabs.models import Cab
+from apps.buses.models import Bus
 from playwright.async_api import async_playwright
 from asgiref.sync import sync_to_async
 

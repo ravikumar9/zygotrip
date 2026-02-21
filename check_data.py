@@ -3,8 +3,8 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zygotrip_project.settings')
 django.setup()
 
-from hotels.models import Property
-from core.models import City
+from apps.hotels.models import Property
+from apps.core.models import City
 
 # Check if any hotels exist
 hotel_count = Property.objects.count()

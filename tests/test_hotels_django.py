@@ -9,9 +9,9 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
 from django.urls import reverse
-from hotels.models import Property, PropertyImage, PropertyOffer, RatingAggregate, Category
-from accounts.models import User
-from dashboard_admin.models import PropertyApproval
+from apps.hotels.models import Property, PropertyImage, PropertyOffer, RatingAggregate, Category
+from apps.accounts.models import User
+from apps.dashboard_admin.models import PropertyApproval
 
 
 class TestPropertyMapping(TestCase):

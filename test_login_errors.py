@@ -35,4 +35,3 @@ elif 'form' in content.lower() and 'password' in content.lower():
     # Check for error display area
     if 'alert' in content.lower() or 'error' in content.lower():
         print('[PASS] Error display area found in template')
-

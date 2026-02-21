@@ -13,9 +13,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zygotrip_project.settings')
 django.setup()
 
 from django.db import connection
-from accounts.models import User, UserRole, Role
+from apps.accounts.models import User, UserRole, Role
 from apps.hotels.models import Property
-from core.location_models import City
+from apps.core.location_models import City
 import asyncio
 from playwright.async_api import async_playwright, expect
 

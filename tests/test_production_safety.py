@@ -23,13 +23,13 @@ import threading
 import time
 
 # Imports
-from hotels.models import Property
-from accounts.models import User
-from inventory.models import SupplierPropertyMap, PropertyInventory, PriceHistory
-from inventory.matching_engine import match_supplier_property, create_supplier_mapping
-from pricing.core_engine import UnifiedPricingEngine, calculate_price
-from inventory.concurrency import InventoryManager, InsufficientInventory
-from core.validators import InputValidator, FraudPrice, SuspiciousPrice
+from apps.hotels.models import Property
+from apps.accounts.models import User
+from apps.inventory.models import SupplierPropertyMap, PropertyInventory, PriceHistory
+from apps.inventory.matching_engine import match_supplier_property, create_supplier_mapping
+from apps.pricing.core_engine import UnifiedPricingEngine, calculate_price
+from apps.inventory.concurrency import InventoryManager, InsufficientInventory
+from apps.core.validators import InputValidator, FraudPrice, SuspiciousPrice
 from security.pricing_guard import PricingGuard, FraudDetection
 
 

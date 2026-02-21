@@ -29,9 +29,9 @@ from django.template.loader import get_template
 from django.template import TemplateDoesNotExist, TemplateSyntaxError
 from django.core.management import call_command
 from apps.hotels.models import Property
-from buses.models import Bus
-from cabs.models import Cab
-from packages.models import Package
+from apps.buses.models import Bus
+from apps.cabs.models import Cab
+from apps.packages.models import Package
 
 
 class TemplateValidator:

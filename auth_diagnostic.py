@@ -11,7 +11,7 @@ try:
     print("✓ Django setup complete", flush=True)
     
     from django.contrib.auth import get_user_model
-    from accounts.models import Role, UserRole
+    from apps.accounts.models import Role, UserRole
     
     User = get_user_model()  # Use swapped user model
     
@@ -45,7 +45,7 @@ try:
     print(f"   AUTHENTICATION_BACKENDS: {settings.AUTHENTICATION_BACKENDS}")
     
     # Check RegisterForm
-    from accounts.forms import RegisterForm
+    from apps.accounts.forms import RegisterForm
     form = RegisterForm()
     print(f"\n4. Register Form Fields:")
     for field_name in form.fields:
@@ -53,7 +53,7 @@ try:
     
     # Check LoginView
     print(f"\n5. LoginView Configuration:")
-    from accounts.views import LoginView
+    from apps.accounts.views import LoginView
     print(f"   template_name: {LoginView.template_name}")
     print(f"   redirect_authenticated_user: {LoginView.redirect_authenticated_user}")
     

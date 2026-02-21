@@ -29,7 +29,7 @@ def print_status(test_name, passed, message=""):
 def test_1_property_pricing_refactor():
     """Test that Property pricing is computed from RoomType"""
     from apps.hotels.models import Property
-    from rooms.models import RoomType
+    from apps.rooms.models import RoomType
     
     print(f"\n{BLUE}=== Test 1: Property Pricing Refactor ==={RESET}")
     

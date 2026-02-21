@@ -14,10 +14,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 django.setup()
 
 from apps.hotels.models import Property
-from buses.models import Bus, BusSeat
+from apps.buses.models import Bus, BusSeat
 from apps.cabs.models import Cab
-from booking.models import Booking
-from accounts.models import User
+from apps.booking.models import Booking
+from apps.accounts.models import User
 
 def print_header(title):
     print("\n" + "=" * 70)

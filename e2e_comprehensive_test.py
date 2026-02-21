@@ -76,25 +76,25 @@ class E2ETester:
     @staticmethod
     async def count_hotels():
         """Count hotels in DB (async safe)"""
-        from hotels.models import Property
+        from apps.hotels.models import Property
         return await sync_to_async(Property.objects.count)()
     
     @staticmethod
     async def get_sample_hotel():
         """Get sample hotel from DB (async safe)"""
-        from hotels.models import Property
+        from apps.hotels.models import Property
         return await sync_to_async(Property.objects.first)()
     
     @staticmethod
     async def count_cabs():
         """Count cabs in DB (async safe)"""
-        from cabs.models import Cab
+        from apps.cabs.models import Cab
         return await sync_to_async(Cab.objects.count)()
     
     @staticmethod
     async def count_buses():
         """Count buses in DB (async safe)"""
-        from buses.models import Bus
+        from apps.buses.models import Bus
         return await sync_to_async(Bus.objects.count)()
     
     @staticmethod

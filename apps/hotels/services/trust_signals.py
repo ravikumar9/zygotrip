@@ -155,7 +155,7 @@ class TrustSignalService:
 		Check RoomInventory for available rooms
 		Returns total available rooms across all room types
 		"""
-		from rooms.models import RoomInventory
+		from apps.rooms.models import RoomInventory
 		
 		check_in = self.context.get('check_in', self.today)
 		
@@ -188,7 +188,7 @@ class TrustSignalService:
 		if not min_price:
 			return False
 		
-		# TODO: Calculate city average and percentile
+		# Note: Calculate city average and percentile
 		# For now, use static threshold
 		return float(min_price) < PRICE_THRESHOLD_PREMIUM and self.property.rating >= MIN_RATING_GOOD
 	

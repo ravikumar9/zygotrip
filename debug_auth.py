@@ -33,4 +33,3 @@ if response.content:
         print('✓ Response contains form data')
     else:
         print('✗ Response does not seem to contain login form')
-

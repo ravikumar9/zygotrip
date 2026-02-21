@@ -9,9 +9,9 @@ from decimal import Decimal
 from django.test import TestCase
 from unittest.mock import patch
 
-from hotels.models import Property
-from accounts.models import User
-from pricing.core_engine import (
+from apps.hotels.models import Property
+from apps.accounts.models import User
+from apps.pricing.core_engine import (
     UnifiedPricingEngine,
     PricingConfig,
     calculate_price

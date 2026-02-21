@@ -4,7 +4,7 @@ Create test accounts with proper roles for Phase 2 validation.
 Run: python manage.py shell < create_test_accounts.py
 """
 
-from accounts.models import User, UserRole, Role
+from apps.accounts.models import User, UserRole, Role
 from django.db import IntegrityError
 
 # Test credentials to create

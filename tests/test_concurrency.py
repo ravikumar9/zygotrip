@@ -12,10 +12,10 @@ from django.test import TestCase, TransactionTestCase
 from django.db import transaction, connection
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from hotels.models import Property
-from accounts.models import User
-from inventory.models import PropertyInventory
-from inventory.concurrency import InventoryManager, InsufficientInventory
+from apps.hotels.models import Property
+from apps.accounts.models import User
+from apps.inventory.models import PropertyInventory
+from apps.inventory.concurrency import InventoryManager, InsufficientInventory
 
 
 class ConcurrencyBaseTestCase(TransactionTestCase):

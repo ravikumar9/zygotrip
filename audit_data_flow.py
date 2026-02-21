@@ -3,7 +3,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zygotrip_project.settings')
 django.setup()
 
-from hotels.models import Property
+from apps.hotels.models import Property
 from apps.search.engine import search_engine
 
 print("DATA FLOW TRACE: HOTEL ENTITY")

@@ -15,8 +15,8 @@ django.setup()
 from django.contrib.auth import authenticate
 from django.test import Client
 from django.db import connection
-from accounts.models import User
-from accounts.forms import RegisterForm, CustomAuthenticationForm
+from apps.accounts.models import User
+from apps.accounts.forms import RegisterForm, CustomAuthenticationForm
 
 print("\n" + "="*80)
 print("PHASE 1: AUTH SYSTEM DIAGNOSTICS")

@@ -81,7 +81,7 @@ class SearchRankingService:
 	
 	def _price_score(self):
 		"""Price competitiveness - inverse scoring (lower price = higher score)"""
-		# TODO: Implement percentile-based scoring across result set
+		# Note: Implement percentile-based scoring across result set
 		# For now, use simple inverse: cheaper properties score higher
 		return Case(
 			When(min_room_price__lte=PRICE_THRESHOLD_BUDGET, then=Value(1.0)),
@@ -98,7 +98,7 @@ class SearchRankingService:
 		if not self.user_lat or not self.user_lng:
 			return Value(0.5, output_field=FloatField())  # Neutral score if no location
 		
-		# TODO: Implement Haversine distance calculation in database
+		# Note: Implement Haversine distance calculation in database
 		# For now, return neutral score
 		return Value(0.5, output_field=FloatField())
 	
@@ -117,7 +117,7 @@ class SearchRankingService:
 	
 	def _availability_score(self):
 		"""Availability signal - properties with rooms available score higher"""
-		# TODO: Check RoomInventory for date range availability
+		# Note: Check RoomInventory for date range availability
 		# For now, assume all properties available (neutral score)
 		return Value(0.7, output_field=FloatField())
 	

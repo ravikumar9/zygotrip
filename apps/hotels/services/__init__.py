@@ -9,11 +9,11 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth import login
 from django.utils import timezone
-from accounts.models import Role, User, UserRole
-from accounts.selectors import user_has_role
-from booking.forms import BookingCreateForm
-from booking.services import create_booking
-from core.date_utils import get_date_for_template
+from apps.accounts.models import Role, User, UserRole
+from apps.accounts.selectors import user_has_role
+from apps.booking.forms import BookingCreateForm
+from apps.booking.services import create_booking
+from apps.core.date_utils import get_date_for_template
 from apps.hotels.models import Category
 from ..selectors import public_properties_queryset, apply_hotel_filters, get_property_detail
 
@@ -363,3 +363,24 @@ class HotelDetailService:
 			},
 			"status": 200,
 		}
+
+def create_property(owner=None, name=None, description=None, **kwargs):
+	"""Stub function to create a property."""
+	from apps.hotels.models import Property
+	if not name:
+		raise ValueError("Property name is required")
+	property_obj = Property.objects.create(
+		name=name,
+		description=description or "",
+		owner=owner,
+	)
+	return property_obj
+
+
+def submit_property_for_approval(property_obj=None, **kwargs):
+	"""Stub function to submit property for approval."""
+	if not property_obj:
+		raise ValueError("Property object is required")
+	property_obj.status = 'pending_approval'
+	property_obj.save(update_fields=['status'])
+	return property_obj

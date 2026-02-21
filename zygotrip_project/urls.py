@@ -19,14 +19,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.views import serve as static_serve
 from django.urls import include, path, re_path
-from accounts.views import LoginView, register_view, logout_view
-from dashboard_owner.views import add_property
-from cabs.dashboards import cab_create
-from buses.dashboards import bus_create
+from apps.accounts.views import LoginView, register_view, logout_view
+from apps.dashboard_owner.views import add_property
+from apps.cabs.dashboards import cab_create
+from apps.buses.dashboards import bus_create
 
 urlpatterns = [
     # Core routes
-    path('', include('core.urls')),
+    path('', include('apps.core.urls')),
     
     # Auth routes - with explicit names matching template references
     path('login/', LoginView.as_view(), name='account_login'),
@@ -34,7 +34,7 @@ urlpatterns = [
     path('logout/', logout_view, name='account_logout'),
     
     # Accounts with namespace
-    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('apps.accounts.urls')),
     
     # Hotels with namespace AND backwards-compatible names
     path('hotels/', include('apps.hotels.urls')),
@@ -43,31 +43,31 @@ urlpatterns = [
     path('search/', include('apps.search.urls')),
     
     # Other apps
-    path('buses/', include('buses.urls')),
-    path('packages/', include('packages.urls')),
-    path('flights/', include('flights.urls')),
-    path('trains/', include('trains.urls')),
-    path('cabs/', include('cabs.urls')),
+    path('buses/', include('apps.buses.urls')),
+    path('packages/', include('apps.packages.urls')),
+    path('flights/', include('apps.flights.urls')),
+    path('trains/', include('apps.trains.urls')),
+    path('cabs/', include('apps.cabs.urls')),
     
     # APIs (all consolidated into apps.search and apps.hotels)
     path('api/v1/', include('apps.hotels.api.v1.urls')),
     
     # Registration and Booking
-    path('register/property/', include('registration.urls')),
-    path('booking/', include('booking.urls')),
-    path('invoice/', include('payments.urls')),
+    path('register/property/', include('apps.registration.urls')),
+    path('booking/', include('apps.booking.urls')),
+    path('invoice/', include('apps.payments.urls')),
     
     # Owner/Vendor dashboards
     path('owner/property/create/', add_property, name='owner_property_create'),
     path('vendor/cab/create/', cab_create, name='vendor_cab_create'),
     path('vendor/bus/create/', bus_create, name='vendor_bus_create'),
-    path('owner/dashboard/', include('dashboard_owner.urls')),
-    path('admin/dashboard/', include('dashboard_admin.urls')),
-    path('finance/dashboard/', include('dashboard_finance.urls')),
+    path('owner/dashboard/', include('apps.dashboard_owner.urls')),
+    path('admin/dashboard/', include('apps.dashboard_admin.urls')),
+    path('finance/dashboard/', include('apps.dashboard_finance.urls')),
     path('admin/', admin.site.urls),
 ]
 
-handler403 = 'core.views.permission_denied'
+handler403 = 'apps.core.views.permission_denied'
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

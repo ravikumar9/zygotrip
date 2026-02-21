@@ -17,7 +17,7 @@ import logging
 from decimal import Decimal
 from datetime import datetime, timedelta
 from django.utils import timezone
-from core.models import OperationLog
+from apps.core.models import OperationLog
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 

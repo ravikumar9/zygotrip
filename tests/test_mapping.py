@@ -10,10 +10,10 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from hotels.models import Property
-from accounts.models import User
-from inventory.models import SupplierPropertyMap
-from inventory.matching_engine import (
+from apps.hotels.models import Property
+from apps.accounts.models import User
+from apps.inventory.models import SupplierPropertyMap
+from apps.inventory.matching_engine import (
     haversine_distance,
     calculate_match_score,
     match_supplier_property,

@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zygotrip_project.settings')
 django.setup()
 
 from django.contrib.auth import get_user_model
-from accounts.models import Role, UserRole
+from apps.accounts.models import Role, UserRole
 from django.conf import settings
 
 User = get_user_model()
@@ -31,7 +31,7 @@ print(f"   CSRF_COOKIE_SECURE: {settings.CSRF_COOKIE_SECURE}")
 print(f"   SESSION_COOKIE_SECURE: {settings.SESSION_COOKIE_SECURE}")
 
 # Forms
-from accounts.forms import RegisterForm
+from apps.accounts.forms import RegisterForm
 form = RegisterForm()
 print(f"\n4. REGISTER FORM FIELDS: {list(form.fields.keys())}")
 

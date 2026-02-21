@@ -10,9 +10,9 @@ from django.test import TestCase
 from django.utils import timezone
 from datetime import datetime
 
-from hotels.models import Property
-from accounts.models import User
-from inventory.models import PriceHistory
+from apps.hotels.models import Property
+from apps.accounts.models import User
+from apps.inventory.models import PriceHistory
 
 
 class PriceHistoryImmutabilityTestCase(TestCase):

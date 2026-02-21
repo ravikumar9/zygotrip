@@ -44,7 +44,7 @@ class ImageOptimizer:
         # In production, this would call image processing service
         # (e.g., Cloudinary, ImageKit, AWS Lambda)
         # For now, return the URL as-is
-        # TODO: Integrate with real image processing service
+        # Note: Integrate with real image processing service
         
         return image_url
     

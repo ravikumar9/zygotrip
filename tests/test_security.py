@@ -11,7 +11,7 @@ from django.utils import timezone
 from datetime import timedelta
 from unittest.mock import patch, MagicMock
 
-from core.validators import (
+from apps.core.validators import (
     InputValidator,
     FraudPrice,
     SuspiciousPrice,

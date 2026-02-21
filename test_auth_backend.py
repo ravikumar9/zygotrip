@@ -42,7 +42,7 @@ else:
 # Test 4: Custom AuthenticationForm test
 print()
 print('[TEST 4] CustomAuthenticationForm validates email')
-from accounts.forms import CustomAuthenticationForm
+from apps.accounts.forms import CustomAuthenticationForm
 
 form = CustomAuthenticationForm(data={
     'username': 'TEST@EXAMPLE.COM',  # uppercase

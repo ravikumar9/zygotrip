@@ -6,13 +6,13 @@
   <div class="ota-container">
     <div >
       <h1 class="mb-2">Edit Cab</h1>
-      <p class="mb-8 text-secondary" >Update your cab information</p>
+      <p class="mb-8" >Update your cab information</p>
 
       <form method="post" class="card p-6">
         {% csrf_token %}
 
         {% if form.non_field_errors %}
-          <div class="p-3 rounded mb-4 bg-danger" >
+          <div class="p-3 rounded mb-4" >
             {{ form.non_field_errors.0 }}
           </div>
         {% endif %}
@@ -55,10 +55,10 @@
           {% if form.base_price_per_km.errors %}
             <p class="text-sm" >{{ form.base_price_per_km.errors.0 }}</p>
           {% endif %}
-          <p class="mt-1 text-secondary text-xs" >System price will be automatically recalculated</p>
+          <p class="mt-1 text-xs" >System price will be automatically recalculated</p>
         </div>
 
-        <p class="p-3 rounded m-6 bg-info text-sm" >
+        <p class="p-3 rounded m-6 text-sm" >
           <strong>Current System Price:</strong> ₹{{ cab.system_price_per_km }}/km
         </p>
 
@@ -69,4 +69,15 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

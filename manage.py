@@ -7,6 +7,22 @@ import sys
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zygotrip_project.settings')
+    if (
+        len(sys.argv) > 1
+        and sys.argv[1] == 'runserver'
+        and '--http' not in sys.argv
+        and '--help' not in sys.argv
+        and '-h' not in sys.argv
+        and '--version' not in sys.argv
+    ):
+        from https_dev_server import main as https_main
+        https_main(sys.argv[2:])
+        return
+
+    # Allow explicit HTTP server with --http flag
+    if '--http' in sys.argv:
+        sys.argv.remove('--http')
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

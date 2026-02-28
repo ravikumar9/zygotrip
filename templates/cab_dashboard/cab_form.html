@@ -8,6 +8,27 @@
       <form method="post">
         {% csrf_token %}
         <div class="mb-4">
+          <label class="auth-label">Registration Number</label>
+          <input type="text" name="registration_number" required />
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Vehicle Type</label>
+          <select name="vehicle_type" required>
+            <option value="sedan">Sedan</option>
+            <option value="suv">SUV</option>
+            <option value="hatchback">Hatchback</option>
+            <option value="luxury">Luxury</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Base Fare</label>
+          <input type="number" name="base_fare" required />
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Rate Per KM</label>
+          <input type="number" name="rate_per_km" required />
+        </div>
+        <div class="mb-4">
           <label class="auth-label">Cab Name</label>
           {{ form.name }}
         </div>
@@ -33,3 +54,14 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+

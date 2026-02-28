@@ -51,6 +51,7 @@ class City(models.Model):
     code = models.CharField(max_length=20, unique=True, help_text="CTXCR code for search")
     name = models.CharField(max_length=100)
     display_name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=120, unique=True, blank=True, null=True, help_text="URL slug for routing")
     alternate_names = models.TextField(blank=True, help_text="Comma-separated aliases")
     
     # Geo data for bounding box search
@@ -91,6 +92,7 @@ class Locality(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='localities')
     name = models.CharField(max_length=100)
     display_name = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=120, blank=True, null=True, help_text="URL slug for routing")
     
     # Geo coordinates
     latitude = models.DecimalField(max_digits=9, decimal_places=6)

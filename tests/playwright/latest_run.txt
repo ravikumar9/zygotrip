@@ -1,0 +1,71 @@
+﻿
+Running 1 test using 1 worker
+
+
+=== STEP 1: Registration validation ===
+  [1a] Mismatched passwords error: true
+  [1b] Weak password error: true
+
+=== STEP 2: Register property-owner ===
+  Registered owner_e2e_384409@test.com -> https://127.0.0.1:8000/owner/dashboard/
+
+=== STEP 3: Login validation ===
+  [3] Wrong password -> error: true
+
+=== STEP 4: Owner creates property ===
+    Logged in as owner_e2e_384409@test.com
+  Property created!
+
+=== STEP 5: Find property ID ===
+  Property ID: 99
+
+=== STEP 6: Add room type ===
+  Room type created!
+  Room type ID: null
+
+=== STEP 7: Submit for approval ===
+  Submitted for approval!
+
+=== STEP 8: Access control checks ===
+    Logged in as customer_e2e@test.com
+  [8a] Customer to owner dashboard blocked: true
+  [8b] Customer to admin dashboard blocked: true
+
+=== STEP 9: Admin approves property ===
+    Logged in as staff_admin@test.com
+  Approve buttons: 5
+  Property approved!
+
+=== STEP 10: Get property slug ===
+  Slug: e2e-hotel-384409
+
+=== STEP 11: Customer finds hotel ===
+    Logged in as customer_e2e@test.com
+
+=== STEP 12: Navigate to booking form ===
+  After submit: https://127.0.0.1:8000/hotels/hotel-details/?property=e2e-hotel-384409
+
+=== STEP 13: Insufficient wallet (Rs.200) ===
+  Γ£ÿ  1 [chromium] ΓÇ║ tests\playwright\hotel_e2e_full_flow.spec.js:71:3 ΓÇ║ ZygoTrip Hotel Full E2E ΓÇ║ end-to-end: register owner ├óΓÇáΓÇÖ create property ├óΓÇáΓÇÖ approve ├óΓÇáΓÇÖ book with wallet (2.6m)
+
+
+  1) [chromium] ΓÇ║ tests\playwright\hotel_e2e_full_flow.spec.js:71:3 ΓÇ║ ZygoTrip Hotel Full E2E ΓÇ║ end-to-end: register owner ├óΓÇáΓÇÖ create property ├óΓÇáΓÇÖ approve ├óΓÇáΓÇÖ book with wallet 
+
+    TimeoutError: locator.click: Timeout 8000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button[type="submit"]').first()[22m
+
+
+      406 |       await page.fill('input[name="last_name"]',  'Tester').catch(() => {});
+      407 |       await page.fill('input[name="phone"]',       '9876543288').catch(() => {});
+    > 408 |       await page.locator('button[type="submit"]').first().click();
+          |                                                           ^
+      409 |       await page.waitForTimeout(4000);
+      410 |       curUrl = page.url();
+      411 |       if (lRtM) roomTypeIdForBooking = leelaRt;
+        at C:\Users\ravi9\Downloads\Zy\zygotrip\tests\playwright\hotel_e2e_full_flow.spec.js:408:59
+
+    Error Context: test-results\playwright-hotel_e2e_full_-5902c-pprove-├óΓÇáΓÇÖ-book-with-wallet-chromium\error-context.md
+
+  1 failed
+    [chromium] ΓÇ║ tests\playwright\hotel_e2e_full_flow.spec.js:71:3 ΓÇ║ ZygoTrip Hotel Full E2E ΓÇ║ end-to-end: register owner ├óΓÇáΓÇÖ create property ├óΓÇáΓÇÖ approve ├óΓÇáΓÇÖ book with wallet 

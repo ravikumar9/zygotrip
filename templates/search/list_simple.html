@@ -1,76 +1,88 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static query_params %}
 
 {% block content %}
-<div class="ota-container" style="padding: 40px 20px;">
-    <h1>Search Results{% if query %} for "{{ query }}"{% endif %}</h1>
-    
-    {% if results %}
-        <div style="margin-bottom: 20px; color: #666;">Found {{ total_count }} properties</div>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-            {% for property in results %}
-                <article class="hotel-card-premium" style="padding: 15px; border: 1px solid #eee; border-radius: 8px;">
-                    {% if property.image_url %}
-                        <img src="{{ property.image_url }}" alt="{{ property.name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">
-                    {% endif %}
-                    
-                    <h3 style="margin: 12px 0 8px;">{{ property.name }}</h3>
-                    <p style="color: #666; margin: 0 0 12px; font-size: 14px;">{{ property.city }}{% if property.area %}, {{ property.area }}{% endif %}</p>
-                    
-                    {% if property.rating_value %}
-                        <div style="margin-bottom: 12px;">
-                            <span style="font-weight: bold;">{{ property.rating_value }}★</span>
-                            {% if property.rating_count %}<span style="color: #999; font-size: 13px;">({{ property.rating_count }} reviews)</span>{% endif %}
-                        </div>
-                    {% endif %}
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <div>
-                            <span style="font-size: 24px; font-weight: bold; color: var(--color-primary, #2563eb);">₹{{ property.price_current }}</span>
-                            <span style="display: block; color: #666; font-size: 13px;">per night</span>
-                        </div>
-                        {% if property.discount_percent %}
-                            <div style="background: var(--color-danger, #dc2626); color: white; padding: 4px 8px; border-radius: 4px; font-size: 13px; font-weight: bold;">
-                                {{ property.discount_percent }}% OFF
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    {% if property.amenities %}
-                        <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
-                            {% for amenity in property.amenities|slice:":3" %}
-                                <span style="background: #f0f0f0; padding: 4px 10px; border-radius: 4px; font-size: 12px;">{{ amenity }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    
-                    <a href="{{ property.cta_url }}" style="display: block; background: var(--color-primary, #2563eb); color: white; text-align: center; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
-                        View Details
-                    </a>
-                </article>
-            {% endfor %}
+<section class="section">
+    <div class="ota-container">
+        <div class="search-card search-card--inline">
+            {% include "components/search/hotel_search.html" %}
         </div>
-        
-        {% if page_obj.has_other_pages %}
-            <div style="margin-top: 40px; text-align: center;">
-                {% if page_obj.has_previous %}
-                    <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" style="padding: 10px 20px; background: #f0f0f0; text-decoration: none; border-radius: 6px;">← Previous</a>
-                {% endif %}
-                
-                <span style="margin: 0 20px;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                
-                {% if page_obj.has_next %}
-                    <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" style="padding: 10px 20px; background: #f0f0f0; text-decoration: none; border-radius: 6px;">Next →</a>
-                {% endif %}
+        <h1>Search Results{% if query %} for"{{ query }}"{% endif %}</h1>
+
+        {% if results %}
+            <p class="">Found {{ total_count }} properties</p>
+
+            <div class="service-grid">
+                {% for property in results %}
+                    <article class="hotel-card-premium" data-score="{{ property.relevance_score|default:0 }}">
+                        <div class="hotel-card-image-wrapper">
+                            <img src="{% if property.image_url %}{{ property.image_url }}{% else %}{% static 'img/placeholder-hotel.jpg' %}{% endif %}" alt="{{ property.name }}" class="hotel-image" loading="lazy" />
+                        </div>
+                        <div class="hotel-card-info">
+                            <div class="hotel-card-header">
+                                <h3 class="hotel-card-title">{{ property.name }}</h3>
+                                {% if property.rating_value %}
+                                    <div class="hotel-card-rating">{{ property.rating_value }} ★</div>
+                                {% endif %}
+                            </div>
+                            <div class="hotel-card-location">{{ property.city }}{% if property.area %}, {{ property.area }}{% endif %}</div>
+                            {% if property.rating_count %}
+                                <div class="hotel-card-badges">
+                                    <span class="hotel-card-badge">{{ property.rating_count }} reviews</span>
+                                </div>
+                            {% endif %}
+                            {% if property.amenities %}
+                                <div class="hotel-card-badges">
+                                    {% for amenity in property.amenities|slice:":3" %}
+                                        <span class="hotel-card-badge">{{ amenity }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="hotel-card-price-section">
+                            <div>
+                                <div class="hotel-card-price-current">₹{{ property.price_current }}</div>
+                                <div class="hotel-card-price-label">per night</div>
+                            </div>
+                            <a href="{{ property.cta_url }}" class="hotel-card-cta">View Details</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_other_pages %}
+                <div class="results-header">
+                    {% if page_obj.has_previous %}
+                        <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}{% if request|query_get:'checkin' %}&checkin={{ request|query_get:'checkin' }}{% endif %}{% if request|query_get:'checkout' %}&checkout={{ request|query_get:'checkout' }}{% endif %}{% if request|query_get:'guests' %}&guests={{ request|query_get:'guests' }}{% endif %}" class="btn btn-outline">Previous</a>
+                    {% endif %}
+                    <span class="">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    {% if page_obj.has_next %}
+                        <a href="?q={{ query }}&page={{ page_obj.next_page_number }}{% if request|query_get:'checkin' %}&checkin={{ request|query_get:'checkin' }}{% endif %}{% if request|query_get:'checkout' %}&checkout={{ request|query_get:'checkout' }}{% endif %}{% if request|query_get:'guests' %}&guests={{ request|query_get:'guests' }}{% endif %}" class="btn btn-outline">Next</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🏨</div>
+                <h2 class="empty-state-title">No properties found</h2>
+                <p class="empty-state-description">Try adjusting your search or use different filters.</p>
+                <div class="empty-state-action">
+                    <a href="/" class="btn btn-primary">Back to Home</a>
+                </div>
             </div>
         {% endif %}
-    {% else %}
-        <div style="text-align: center; padding: 60px 20px;">
-            <h2 style="color: #999;">No properties found</h2>
-            <p style="color: #999; margin-bottom: 20px;">Try adjusting your search or use different filters.</p>
-            <a href="/" style="padding: 10px 20px; background: var(--color-primary, #2563eb); color: white; text-decoration: none; border-radius: 6px; display: inline-block;">Back to Home</a>
-        </div>
-    {% endif %}
-</div>
+    </div>
+</section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

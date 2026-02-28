@@ -3,35 +3,15 @@
 
 {% comment %}
 CARD DATA CONTRACT (RENDER-READY FORMAT WITH SIGNALS):
-{
-  "id": 123,
-  "name": "Hotel Name",
-  "location": "City, Country",
-  "image_url": "/path/to/image.jpg",
+{"id": 123,"name":"Hotel Name","location":"City, Country","image_url":"/path/to/image.jpg",
   
-  # INTELLIGENCE SIGNALS (critical for informative cards)
-  "rating_value": 4.5,
-  "rating_count": 128,
-  "popularity_score": 89,
-  "bookings_today": 12,
-  "is_trending": true,
-  "distance_km": 2.3,  # From city center or search reference point
+  # INTELLIGENCE SIGNALS (critical for informative cards)"rating_value": 4.5,"rating_count": 128,"popularity_score": 89,"bookings_today": 12,"is_trending": true,"distance_km": 2.3,  # From city center or search reference point"amenities": ["WiFi","Breakfast","Pool"],  # STRING ARRAY ONLY"price_current": 4500,"price_original": 6000,"discount_percent": 25,
   
-  "amenities": ["WiFi", "Breakfast", "Pool"],  # STRING ARRAY ONLY
-  "price_current": 4500,
-  "price_original": 6000,
-  "discount_percent": 25,
-  
-  # POLICY SIGNALS
-  "has_free_cancellation": true,
-  "cancellation_hours": 24,
-  
-  "cta_url": "/hotels/123/",
-  "cta_label": "View Details"
+  # POLICY SIGNALS"has_free_cancellation": true,"cancellation_hours": 24,"cta_url":"/hotels/123/","cta_label":"View Details"
 }
 
 RULE: Backend MUST send pre-formatted data. UI never parses.
-RULE: Amenities MUST be ["string", "string"], never dicts.
+RULE: Amenities MUST be ["string","string"], never dicts.
 RULE: Prices MUST be numbers, not objects.
 {% endcomment %}
 
@@ -48,7 +28,7 @@ RULE: Prices MUST be numbers, not objects.
     {% endif %}
     
     {% else %}
-    <div class="d-flex align-center justify-center h-full bg-secondary text-muted" >
+    <div class="d-flex align-center justify-center h-full" >
       No Image
     </div>
     {% endif %}
@@ -127,3 +107,14 @@ RULE: Prices MUST be numbers, not objects.
   </div>
 
 </div>
+
+
+
+
+
+
+
+
+
+
+

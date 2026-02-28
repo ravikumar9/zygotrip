@@ -3,13 +3,13 @@
     <a href="/" class="site-logo">Zygotrip</a>
     
     <div class="site-nav-links">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/hotels/" class="nav-link">Hotels</a>
-      <a href="/buses/" class="nav-link">Buses</a>
-<a href="/cabs/" class="nav-link">Cabs</a>
-      <a href="/packages/" class="nav-link">Packages</a>
-      <a href="/flights/" class="nav-link">Flights</a>
-      <a href="/trains/" class="nav-link">Trains</a>
+      <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a>
+      <a href="/hotels/" class="nav-link {% if '/hotels/' in request.path %}active{% endif %}">Hotels</a>
+      <a href="/buses/" class="nav-link {% if '/buses/' in request.path %}active{% endif %}">Buses</a>
+      <a href="/cabs/" class="nav-link {% if '/cabs/' in request.path %}active{% endif %}">Cabs</a>
+      <a href="/packages/" class="nav-link {% if '/packages/' in request.path %}active{% endif %}">Packages</a>
+      <a href="/flights/" class="nav-link {% if '/flights/' in request.path %}active{% endif %}">Flights</a>
+      <a href="/trains/" class="nav-link {% if '/trains/' in request.path %}active{% endif %}">Trains</a>
     </div>
     
     <div class="site-nav-actions">
@@ -20,9 +20,20 @@
         {% endif %}
         <a href="{% url 'account_logout' %}" class="btn btn-primary btn-sm">Logout</a>
       {% else %}
-        <a href="{% url 'account_login' %}" class="btn btn-primary btn-sm">Login</a>
+        <a href="{% url 'account_login' %}" class="btn btn-outline btn-sm">Login</a>
         <a href="{% url 'account_register' %}" class="btn btn-primary btn-sm">Register</a>
       {% endif %}
     </div>
   </nav>
 </header>
+
+
+
+
+
+
+
+
+
+
+

@@ -154,10 +154,10 @@ Visit: http://127.0.0.1:8000/
 ✓ Visual inspection:
   [ ] Header has subtle border and shadow
   [ ] Cards have box-shadow and hover effects
-  [ ] Primary buttons are blue (#2563EB)
-  [ ] Primary buttons hover to darker blue (#1E40AF)
+  [ ] Primary buttons use var(--primary)
+  [ ] Primary buttons hover uses var(--secondary)
   [ ] Accent color (orange) used for badges/highlights
-  [ ] Footer is dark (#111827) with light text
+  [ ] Footer uses var(--text-main) with light text
   [ ] Text hierarchy is clear (bold headings, muted secondary)
 
 ✓ Check CSS loaded:

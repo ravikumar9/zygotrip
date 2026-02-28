@@ -1,53 +1,152 @@
 from django.db.models import Count, Min, Q
-from apps.dashboard_admin.models import PropertyApproval
+from django.conf import settings
+from django.core.exceptions import FieldDoesNotExist
 from apps.hotels.models import Property
 
 
+def _supports_field(model, field_name: str) -> bool:
+	try:
+		model._meta.get_field(field_name)
+		return True
+	except FieldDoesNotExist:
+		return False
+
+
+def _supports_relation(model, relation_name: str) -> bool:
+	return any(field.name == relation_name for field in model._meta.get_fields())
+
+
 def public_properties_queryset():
+	"""Get ONLY publicly visible properties.
+	
+	CRITICAL: Must match BOTH conditions:
+	- status='approved' (admin approved)
+	- agreement_signed=True (owner accepted)
+	
+	If either is False, NOT visible."""
+	filters = {
+		"status": "approved",
+		"agreement_signed": True,
+	}
+	if _supports_field(Property, "is_active"):
+		filters["is_active"] = True
 	return (
-		Property.objects.filter(
-			is_active=True,
-			approval__status=PropertyApproval.STATUS_APPROVED,
-			approval__is_active=True,
-		)
-		.select_related("approval", "owner", "city", "locality")
+		Property.objects.filter(**filters)
+		.select_related("owner", "city", "locality")
 		.prefetch_related("images", "amenities", "policies", "offers")
 		.annotate(
 			min_room_price=Min("room_types__base_price"),
-			# review_count is now a model field, not an annotation
 		)
 	)
 
 
-def get_property_detail(pk):
-	return (
-		Property.objects.filter(
-			pk=pk,
-			is_active=True,
-			approval__status=PropertyApproval.STATUS_APPROVED,
-			approval__is_active=True,
-		)
-		.select_related("approval", "owner")
+
+def get_property_detail(identifier):
+	filters = {
+		"status": "approved",
+		"agreement_signed": True,
+	}
+	if _supports_field(Property, "is_active"):
+		filters["is_active"] = True
+	lookup = Q(slug=str(identifier))
+	try:
+		lookup |= Q(pk=int(identifier))
+	except (TypeError, ValueError):
+		pass
+	queryset = (
+		Property.objects.filter(lookup, **filters)
+		.select_related("owner")
 		.prefetch_related(
 			"images",
 			"amenities",
 			"policies",
 			"offers",
 			"room_types",
-			"meal_plans",
+		)
+	)
+	property_obj = queryset.first()
+	if property_obj or not settings.DEBUG:
+		return property_obj
+	# In DEBUG, if not found with new system, fallback to checking any property
+	fallback_qs = Property.objects.filter(lookup)
+	if _supports_field(Property, "is_active"):
+		fallback_qs = fallback_qs.filter(is_active=True)
+	property_obj = (
+		fallback_qs
+		.select_related("owner")
+		.prefetch_related(
+			"images",
+			"amenities",
+			"policies",
+			"offers",
+			"room_types",
 		)
 		.first()
 	)
+	return property_obj
 
 
-def apply_hotel_filters(queryset, params):
-	search_query = (params.get("q") or "").strip()
-	selected_cities = [city.strip() for city in params.getlist("city") if city.strip()]
-	selected_ratings = [rating.strip() for rating in params.getlist("rating") if rating.strip()]
-	selected_amenities = [amenity.strip() for amenity in params.getlist("amenities") if amenity.strip()]
-	min_price = params.get("min_price") or ""
-	max_price = params.get("max_price") or ""
+def _get_list_param(params, key: str):
+	if hasattr(params, "getlist"):
+		values = params.getlist(key)
+	else:
+		value = params.get(key)
+		values = value if isinstance(value, list) else [value] if value is not None else []
+	flattened = []
+	for value in values:
+		if value is None:
+			continue
+		parts = [item.strip() for item in str(value).split(",") if item.strip()]
+		flattened.extend(parts)
+	return flattened
+
+
+def parse_filters(params):
+	search_query = (params.get("q") or params.get("location") or "").strip()
+	selected_cities = _get_list_param(params, "city")
+	selected_areas = _get_list_param(params, "area")
+	selected_ratings = _get_list_param(params, "rating")
+	selected_amenities = _get_list_param(params, "amenities")
+	selected_property_types = _get_list_param(params, "property_type")
+	selected_meals = _get_list_param(params, "meals")
+	selected_cancellation = (params.get("cancellation") or "").strip().lower()
+	min_price = (params.get("min_price") or "").strip()
+	max_price = (params.get("max_price") or "").strip()
 	selected_category = (params.get("category") or "").strip()
+	return {
+		"search_query": search_query,
+		"selected_cities": selected_cities,
+		"selected_areas": selected_areas,
+		"selected_ratings": selected_ratings,
+		"selected_amenities": selected_amenities,
+		"selected_property_types": selected_property_types,
+		"selected_meals": selected_meals,
+		"selected_cancellation": selected_cancellation,
+		"min_price": min_price,
+		"max_price": max_price,
+		"selected_category": selected_category,
+		"guests": (params.get("guests") or "").strip(),
+		"rooms": (params.get("rooms") or params.get("quantity") or "").strip(),
+		"checkin": (params.get("checkin") or params.get("check_in") or "").strip(),
+		"checkout": (params.get("checkout") or params.get("check_out") or "").strip(),
+	}
+
+
+def apply_hotel_filters(queryset, params, exclude_price: bool = False):
+	filters = parse_filters(params)
+	search_query = filters["search_query"]
+	selected_cities = filters["selected_cities"]
+	selected_areas = filters["selected_areas"]
+	selected_ratings = filters["selected_ratings"]
+	selected_amenities = filters["selected_amenities"]
+	selected_property_types = filters["selected_property_types"]
+	selected_meals = filters["selected_meals"]
+	selected_cancellation = filters["selected_cancellation"]
+	min_price = filters["min_price"]
+	max_price = filters["max_price"]
+	selected_category = filters["selected_category"]
+	guests = filters.get("guests")
+	rooms = filters.get("rooms")
 
 	if search_query:
 		queryset = queryset.filter(
@@ -55,8 +154,8 @@ def apply_hotel_filters(queryset, params):
 			| Q(city__name__icontains=search_query)
 			| Q(city__display_name__icontains=search_query)
 			| Q(city_text__icontains=search_query)
-			| Q(legacy_city__icontains=search_query)
 			| Q(area__icontains=search_query)
+			| Q(locality__name__icontains=search_query)
 			| Q(landmark__icontains=search_query)
 			| Q(slug__icontains=search_query)
 		)
@@ -67,8 +166,14 @@ def apply_hotel_filters(queryset, params):
 			city_query |= Q(city__name__iexact=city)
 			city_query |= Q(city__display_name__iexact=city)
 			city_query |= Q(city_text__iexact=city)
-			city_query |= Q(legacy_city__iexact=city)
 		queryset = queryset.filter(city_query)
+
+	if selected_areas:
+		area_query = Q()
+		for area in selected_areas:
+			area_query |= Q(area__iexact=area)
+			area_query |= Q(locality__name__iexact=area)
+		queryset = queryset.filter(area_query)
 
 	if selected_ratings:
 		try:
@@ -78,7 +183,7 @@ def apply_hotel_filters(queryset, params):
 		except (ValueError, TypeError):
 			pass
 
-	if min_price:
+	if min_price and not exclude_price:
 		try:
 			from decimal import Decimal, InvalidOperation
 			min_price_decimal = Decimal(str(min_price).strip())
@@ -86,7 +191,7 @@ def apply_hotel_filters(queryset, params):
 		except (ValueError, TypeError, InvalidOperation):
 			pass
 
-	if max_price:
+	if max_price and not exclude_price:
 		try:
 			from decimal import Decimal, InvalidOperation
 			max_price_decimal = Decimal(str(max_price).strip())
@@ -98,22 +203,45 @@ def apply_hotel_filters(queryset, params):
 		amenity_map = {
 			"wifi": "Free WiFi",
 			"breakfast": "Breakfast Included",
-			"pool": "Pool",
+			"pool": "Swimming Pool",
 			"parking": "Parking",
 		}
-		amenity_names = [amenity_map.get(value, value) for value in selected_amenities]
+		amenity_names = []
+		for value in selected_amenities:
+			key = value.lower()
+			amenity_names.append(amenity_map.get(key, value))
 		queryset = queryset.filter(amenities__name__in=amenity_names).distinct()
+
+	if selected_property_types:
+		queryset = queryset.filter(property_type__in=selected_property_types)
+
+	if selected_meals and _supports_relation(queryset.model, "meal_plans"):
+		queryset = queryset.filter(meal_plans__name__in=selected_meals).distinct()
+
+	if selected_cancellation == "free":
+		queryset = queryset.filter(has_free_cancellation=True)
+	elif selected_cancellation == "non_refundable":
+		queryset = queryset.filter(has_free_cancellation=False)
+
+	if guests:
+		try:
+			guest_count = int(guests)
+			queryset = queryset.filter(room_types__max_guests__gte=guest_count)
+		except (ValueError, TypeError):
+			pass
+
+	if rooms:
+		try:
+			room_count = int(rooms)
+			queryset = queryset.filter(room_types__available_count__gte=room_count)
+		except (ValueError, TypeError):
+			pass
 
 	if selected_category:
 		queryset = queryset.filter(categories__category__slug=selected_category)
 
-	return {
+	filters.update({
 		"queryset": queryset,
-		"search_query": search_query,
-		"selected_cities": selected_cities,
-		"selected_ratings": selected_ratings,
-		"selected_amenities": selected_amenities,
-		"min_price": min_price,
-		"max_price": max_price,
 		"selected_category": selected_category,
-	}
+	})
+	return filters

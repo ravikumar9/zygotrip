@@ -4,7 +4,8 @@ Production-grade OTA search with ranking, caching, and fallback strategies
 """
 
 from typing import Dict, Any, Optional, List
-from django.db.models import Q, QuerySet, Prefetch
+from django.db.models import Q, QuerySet
+from django.db import connection
 from django.core.exceptions import ObjectDoesNotExist
 import time
 import logging
@@ -16,6 +17,43 @@ from .filters_engine import FiltersEngine
 from .cache_manager import CacheManager
 
 logger = logging.getLogger(__name__)
+
+try:
+    from django.contrib.postgres.search import TrigramSimilarity
+except ImportError:  # pragma: no cover - optional dependency
+    TrigramSimilarity = None
+
+
+class SearchResults:
+    """Search results container with tuple and dict-like access."""
+
+    def __init__(self, results, count: int, strategy: str = "", intent: str = "", cached: bool = False, query_time_ms: float | None = None):
+        self.results = results
+        self.count = count
+        self.strategy = strategy
+        self.intent = intent
+        self.cached = cached
+        self.query_time_ms = query_time_ms
+
+    def __iter__(self):
+        yield self.results
+        yield self.count
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            return {
+                "results": self.results,
+                "count": self.count,
+                "strategy": self.strategy,
+                "intent": self.intent,
+                "cached": self.cached,
+                "query_time_ms": self.query_time_ms,
+            }.get(key)
+        return self.results[key]
+
+    def get(self, key, default=None):
+        value = self.__getitem__(key)
+        return default if value is None else value
 
 
 class UnifiedSearchEngine:
@@ -42,10 +80,14 @@ class UnifiedSearchEngine:
     
     def search_hotels(
         self,
-        query: str,
+        query: str | None = None,
         filters: Optional[Dict[str, Any]] = None,
-        use_cache: bool = True
-    ) -> Dict[str, Any]:
+        use_cache: bool = True,
+        limit: int = 50,
+        city: str | None = None,
+        area: str | None = None,
+        hotel_name: str | None = None,
+    ) -> SearchResults:
         """
         Main search method with fallback strategies
         
@@ -64,60 +106,96 @@ class UnifiedSearchEngine:
             }
         """
         start_time = time.time()
+        search_query = (query or "").strip()
+        filter_payload = filters.copy() if filters else {}
+
+        if city:
+            filter_payload["city"] = city
+        if area:
+            filter_payload["area"] = area
+        if hotel_name:
+            filter_payload["hotel_name"] = hotel_name
         
         try:
             # Check cache first
             if use_cache:
-                cached = self.cache_manager.get_search_results(query, filters)
+                cached = self.cache_manager.get_search_results(search_query, filter_payload)
                 if cached is not None:
-                    cached['cached'] = True
-                    return cached
+                    ids = cached.get("ids", [])
+                    if ids:
+                        from apps.hotels.models import Property
+                        results = list(Property.objects.filter(id__in=ids))
+                        results.sort(key=lambda item: ids.index(item.id))
+                    else:
+                        results = []
+                    return SearchResults(
+                        results=results,
+                        count=cached.get("count", 0),
+                        strategy=cached.get("strategy", ""),
+                        intent=cached.get("intent", ""),
+                        cached=True,
+                        query_time_ms=cached.get("query_time_ms"),
+                    )
             
             # Parse query intent
-            intent = self.query_parser.parse(query)
-            logger.info(f"Search query: '{query}' → Intent: {intent.type} (confidence: {intent.confidence})")
+            intent = self.query_parser.parse(search_query)
+            logger.info(f"Search query: '{search_query}' → Intent: {intent.type} (confidence: {intent.confidence})")
             
             # Get base queryset
-            from apps.hotels.models import Property
-            queryset = Property.objects.select_related(
+            from apps.hotels.selectors import public_properties_queryset
+            queryset = public_properties_queryset().select_related(
                 'city', 'locality'
             ).prefetch_related(
-                'images', 'amenities', 'rooms'
-            ).filter(is_active=True)
+                'images', 'amenities', 'room_types'
+            )
             
             # Apply search based on intent
             queryset = self._apply_search_strategy(queryset, intent)
             
             # Apply filters if provided
-            if filters:
-                queryset = self.filters_engine.apply_filters(queryset, filters)
+            if filter_payload:
+                queryset = self.filters_engine.apply_filters(queryset, filter_payload)
             
             # Apply ranking
-            queryset = self.ranking_engine.rank_results(queryset, query)
+            ranked = self.ranking_engine.rank_results(queryset, search_query)
             
             # Get result count
-            count = queryset.count()
+            count = len(ranked)
             
             # Fallback if no results
             if count == 0:
-                queryset = self._fallback_search(query, filters)
-                count = queryset.count()
+                fallback_qs = self._fallback_search(search_query, filter_payload)
+                ranked = self.ranking_engine.rank_results(fallback_qs, search_query)
+                count = len(ranked)
+
+            if limit:
+                ranked = ranked[:limit]
             
             # Prepare response
             query_time = (time.time() - start_time) * 1000  # Convert to ms
             
-            result = {
-                "results": queryset,
-                "count": count,
-                "query_time_ms": round(query_time, 2),
-                "strategy": self.query_parser.get_search_strategy(intent),
-                "intent": intent.type,
-                "cached": False
-            }
+            result = SearchResults(
+                results=ranked,
+                count=count,
+                query_time_ms=round(query_time, 2),
+                strategy=self.query_parser.get_search_strategy(intent),
+                intent=intent.type,
+                cached=False,
+            )
             
             # Cache results
             if use_cache and count > 0:
-                self.cache_manager.set_search_results(query, result, filters)
+                self.cache_manager.set_search_results(
+                    search_query,
+                    {
+                        "ids": [item.id for item in ranked],
+                        "count": count,
+                        "query_time_ms": round(query_time, 2),
+                        "strategy": result.strategy,
+                        "intent": result.intent,
+                    },
+                    filter_payload,
+                )
             
             logger.info(f"Search completed: {count} results in {query_time:.2f}ms")
             
@@ -125,12 +203,15 @@ class UnifiedSearchEngine:
             
         except Exception as e:
             logger.error(f"Search error: {e}", exc_info=True)
-            return {
-                "results": Property.objects.none(),
-                "count": 0,
-                "error": str(e),
-                "query_time_ms": (time.time() - start_time) * 1000
-            }
+            from apps.hotels.models import Property
+            return SearchResults(
+                results=list(Property.objects.none()),
+                count=0,
+                query_time_ms=round((time.time() - start_time) * 1000, 2),
+                strategy="error",
+                intent="error",
+                cached=False,
+            )
     
     def _apply_search_strategy(self, queryset: QuerySet, intent: QueryIntent) -> QuerySet:
         """
@@ -174,19 +255,21 @@ class UnifiedSearchEngine:
             
             elif intent.type == 'property':
                 # Property name match
-                return queryset.filter(
+                result = queryset.filter(
                     Q(name__icontains=intent.normalized) |
                     Q(name__istartswith=intent.normalized)
                 )
+                return self._apply_trigram_similarity(result, intent.normalized)
             
             elif intent.type == 'landmark':
                 # Search near landmarks (fallback to name search)
                 # Note: Implement geospatial search if coordinates available
-                return queryset.filter(
+                result = queryset.filter(
                     Q(name__icontains=intent.normalized) |
                     Q(description__icontains=intent.normalized) |
                     Q(locality__name__icontains=intent.normalized)
                 )
+                return self._apply_trigram_similarity(result, intent.normalized)
             
             else:
                 # Unknown intent: broad search
@@ -201,12 +284,35 @@ class UnifiedSearchEngine:
         Broad search across multiple fields
         Used for unknown intent or fallback
         """
-        return queryset.filter(
+        result = queryset.filter(
             Q(name__icontains=query) |
             Q(city__name__icontains=query) |
+            Q(city_text__icontains=query) |
+            Q(legacy_city__icontains=query) |
             Q(locality__name__icontains=query) |
+            Q(area__icontains=query) |
+            Q(landmark__icontains=query) |
             Q(description__icontains=query)
         )
+        return self._apply_trigram_similarity(result, query)
+
+    def _apply_trigram_similarity(self, queryset: QuerySet, query: str) -> QuerySet:
+        if not query or not TrigramSimilarity:
+            return queryset
+        if connection.vendor != "postgresql":
+            return queryset
+        try:
+            return queryset.annotate(
+                similarity=(
+                    TrigramSimilarity('name', query)
+                    + TrigramSimilarity('city__name', query)
+                    + TrigramSimilarity('area', query)
+                    + TrigramSimilarity('landmark', query)
+                )
+            ).filter(similarity__gt=0.1)
+        except Exception:
+            logger.exception("Trigram similarity annotation failed")
+            return queryset
     
     def _fallback_search(self, query: str, filters: Optional[Dict] = None) -> QuerySet:
         """
@@ -219,7 +325,7 @@ class UnifiedSearchEngine:
         3. City-only match
         4. Popular properties in any city
         """
-        from apps.hotels.models import Property
+        from apps.hotels.selectors import public_properties_queryset
         
         logger.info(f"Triggering fallback for query: '{query}'")
         
@@ -228,30 +334,31 @@ class UnifiedSearchEngine:
         if len(tokens) > 1:
             for token in tokens:
                 if len(token) >= 3:
-                    results = Property.objects.filter(
+                    results = public_properties_queryset().filter(
                         Q(name__icontains=token) |
-                        Q(city__name__icontains=token),
-                        is_active=True
+                        Q(city__name__icontains=token) |
+                        Q(city_text__icontains=token) |
+                        Q(legacy_city__icontains=token) |
+                        Q(locality__name__icontains=token) |
+                        Q(area__icontains=token) |
+                        Q(landmark__icontains=token)
                     )
                     if results.exists():
                         logger.info(f"Fallback success: partial match on '{token}'")
                         return results
         
         # Try city-only (remove all filters except city)
-        if filters and filters.get('city_id'):
-            results = Property.objects.filter(
-                city_id=filters['city_id'],
-                is_active=True
-            )
+        if filters and (filters.get('city_id') or filters.get('city')):
+            city_value = filters.get('city_id') or filters.get('city')
+            city_filter = Q(city_id=city_value) if str(city_value).isdigit() else Q(city__name__icontains=city_value)
+            results = public_properties_queryset().filter(city_filter)
             if results.exists():
                 logger.info("Fallback success: city-only match")
                 return results
         
         # Last resort: popular properties
         logger.info("Fallback: returning popular properties")
-        return Property.objects.filter(
-            is_active=True
-        ).order_by('-search_score', '-rating')[:20]
+        return public_properties_queryset().order_by('-popularity_score', '-rating')[:20]
     
     def autocomplete(self, query: str) -> Dict[str, Any]:
         """
@@ -307,8 +414,8 @@ class UnifiedSearchEngine:
                 return cached
             
             # Get base queryset
-            from apps.hotels.models import Property
-            queryset = Property.objects.filter(is_active=True)
+            from apps.hotels.selectors import public_properties_queryset
+            queryset = public_properties_queryset()
             
             # Scope to query if provided
             if query:

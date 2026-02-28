@@ -14,7 +14,7 @@ class Command(BaseCommand):
     help = 'Seed location hierarchy for India'
     
     def handle(self, *args, **kwargs):
-        self.stdout.write('🌍 Seeding location hierarchy...')
+        self.stdout.write('Seeding location hierarchy...')
         
         # Create India country
         india, _ = Country.objects.get_or_create(
@@ -25,7 +25,7 @@ class Command(BaseCommand):
                 'is_active': True
             }
         )
-        self.stdout.write(f'✓ Country: {india.name}')
+        self.stdout.write(f'+ Country: {india.name}')
         
         # Seed states with major cities
         states_data = self.get_states_data()
@@ -80,14 +80,14 @@ class Command(BaseCommand):
                             }
                         )
         
-        self.stdout.write(f'✓ Seeded {State.objects.count()} states')
-        self.stdout.write(f'✓ Seeded {City.objects.count()} cities')
-        self.stdout.write(f'✓ Seeded {Locality.objects.count()} localities')
+        self.stdout.write(f'+ Seeded {State.objects.count()} states')
+        self.stdout.write(f'+ Seeded {City.objects.count()} cities')
+        self.stdout.write(f'+ Seeded {Locality.objects.count()} localities')
         
         # Build search index
         self.build_search_index()
         
-        self.stdout.write(self.style.SUCCESS('✅ Location hierarchy seeded successfully'))
+        self.stdout.write(self.style.SUCCESS('Location hierarchy seeded successfully'))
     
     def build_search_index(self):
         """Populate LocationSearchIndex table from location data"""
@@ -128,7 +128,7 @@ class Command(BaseCommand):
                 is_active=True
             )
         
-        self.stdout.write(f'✓ Built search index: {LocationSearchIndex.objects.count()} entries')
+        self.stdout.write(f'+ Built search index: {LocationSearchIndex.objects.count()} entries')
     
     def get_states_data(self):
         """Return comprehensive state/city data for India"""

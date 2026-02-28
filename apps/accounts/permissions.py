@@ -47,3 +47,62 @@ class RoleRequiredMixin:
         if self.required_role and not user_has_role(request.user, self.required_role):
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+
+# ==========================================
+# PHASE 10: PERMISSION CHECKING UTILITIES (NEW)
+# ==========================================
+
+def has_role(user, *roles):
+	"""Check if user has any of the given roles"""
+	return user.is_authenticated and user.role in roles
+
+
+def is_traveler(user):
+	"""Check if user is a traveler"""
+	return user.is_authenticated and user.role == 'traveler'
+
+
+def is_vendor(user):
+	"""Check if user is any type of vendor"""
+	vendor_roles = {'property_owner', 'cab_owner', 'bus_operator', 'package_provider'}
+	return user.is_authenticated and user.role in vendor_roles
+
+
+def is_property_owner(user):
+	"""Check if user is a property owner"""
+	return user.is_authenticated and user.role == 'property_owner'
+
+
+def is_cab_owner(user):
+	"""Check if user is a cab owner"""
+	return user.is_authenticated and user.role == 'cab_owner'
+
+
+def is_bus_operator(user):
+	"""Check if user is a bus operator"""
+	return user.is_authenticated and user.role == 'bus_operator'
+
+
+def is_package_provider(user):
+	"""Check if user is a package provider"""
+	return user.is_authenticated and user.role == 'package_provider'
+
+
+def is_admin(user):
+	"""Check if user is admin or staff"""
+	return user.is_authenticated and (user.is_admin() or user.is_staff)
+
+
+def can_modify_property(user, property_obj):
+	"""Check if user can modify a property (must be owner)"""
+	if not user.is_authenticated:
+		return False
+	return property_obj.owner_id == user.id
+
+
+def can_view_analytics(user, property_obj):
+	"""Check if user can view property analytics (owner or admin)"""
+	if not user.is_authenticated:
+		return False
+	return property_obj.owner_id == user.id or user.is_admin()

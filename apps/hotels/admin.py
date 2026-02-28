@@ -15,8 +15,9 @@ from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 from .models import (
-    Property, PropertyImage, PropertyOffer, RatingAggregate, 
+    Property, PropertyImage, RatingAggregate, 
     Category, PropertyCategory, PropertyPolicy, PropertyAmenity
+    # Note: PropertyOffer moved to apps.offers
     # Note: Remaining models commented out - need to be defined in models.py
     # PaymentMethodType, PropertyPaymentSupport,
     # CancellationPolicyOption, PropertyCancellationPolicy,
@@ -91,7 +92,7 @@ from .models import (
 #     def property_count(self, obj):
 #         count = obj.properties.count()
 #         return format_html(
-#             '<span style="background-color: #417690; color: white; padding: 3px 10px; border-radius: 3px;">{}</span>',
+#             '<span style="background-color: var(--primary); color: var(--bg-card); padding: 3px 10px; border-radius: 3px;">{}</span>',
 #             count
 #         )
 #     property_count.short_description = 'Properties Using'
@@ -141,27 +142,28 @@ class PropertyImageInline(admin.TabularInline):
     fields = ('image_url', 'is_featured', 'display_order')
 
 
-class PropertyOfferInline(admin.TabularInline):
-    """Inline offer management"""
-    model = PropertyOffer
-    extra = 0
-    fields = ('title', 'discount_percentage', 'valid_from', 'valid_until', 'is_active')
+# PropertyOffer moved to apps.offers - see apps/offers/admin.py
+# class PropertyOfferInline(admin.TabularInline):
+#     """Inline offer management"""
+#     model = PropertyOffer
+#     extra = 0
+#     fields = ('title', 'discount_percentage', 'valid_from', 'valid_until', 'is_active')
 
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    """Main property admin with comprehensive filter configuration"""
+    """Main property admin with comprehensive filter configuration and commission control"""
     
     list_display = (
-        'name', 'city', 'rating', 'review_count', 'popularity_score',
-        'free_cancellation_badge', 'is_trending_badge', 'is_active'
+        'name', 'owner', 'status_badge', 'city', 'rating', 'commission_display',
+        'agreement_badge', 'is_active'
     )
     list_filter = (
-        'is_active', 'city', 'rating', ('has_free_cancellation', admin.RelatedOnlyFieldListFilter),
-        'is_trending', 'created_at'
+        'is_active', 'status', 'city', 'rating', 'has_free_cancellation',
+        'agreement_signed', 'is_trending', 'created_at'
     )
     list_editable = ('is_active',)
-    search_fields = ('name', 'city', 'area', 'landmark')
+    search_fields = ('name', 'city', 'owner__email', 'owner__full_name')
     prepopulated_fields = {'slug': ('name',)}
     
     fieldsets = (
@@ -181,6 +183,13 @@ class PropertyAdmin(admin.ModelAdmin):
         ('Policies', {
             'fields': ('has_free_cancellation', 'cancellation_hours')
         }),
+        # ==========================================
+        # PHASE 5 & 6: COMMISSION & AGREEMENT FIELDS (NEW)
+        # ==========================================
+        ('Vendor Management', {
+            'fields': ('status', 'commission_percentage', 'agreement_file', 'agreement_signed'),
+            'description': 'Approval workflow, commission settings, and agreement management'
+        }),
         ('Status', {
             'fields': ('is_active', 'created_at', 'updated_at'),
             'classes': ('collapse',)
@@ -193,25 +202,55 @@ class PropertyAdmin(admin.ModelAdmin):
         # PropertyCancellationPolicyInline,  # COMMENTED OUT: PropertyCancellationPolicy not defined
         # PropertyAmenityFilterInline,  # COMMENTED OUT: PropertyAmenityFilter not defined
         # PropertyBrandInline,  # COMMENTED OUT: PropertyBrandRelation not defined
-        PropertyOfferInline,
+        # PropertyOfferInline,  # MOVED: PropertyOffer now in apps.offers
     ]
     
     readonly_fields = ('created_at', 'updated_at', 'slug')
     
+    def status_badge(self, obj):
+        """Display status with color coding"""
+        colors = {
+            'pending': '#FF9800',
+            'approved': '#4CAF50',
+            'rejected': '#F44336',
+            'suspended': '#9C27B0',
+        }
+        color = colors.get(obj.status, '#757575')
+        return format_html(
+            '<span style="background-color: {}; color: white; padding: 5px 10px; border-radius: 3px;">{}</span>',
+            color, obj.get_status_display()
+        )
+    status_badge.short_description = 'Status'
+    
+    def commission_display(self, obj):
+        """Display commission percentage"""
+        return format_html('{}%', obj.commission_percentage)
+    commission_display.short_description = 'Commission'
+    
+    def agreement_badge(self, obj):
+        """Display agreement status"""
+        if obj.agreement_signed:
+            return format_html('<span style="color: green;">✓ Signed</span>')
+        elif obj.agreement_file:
+            return format_html('<span style="color: orange;">⚠ Pending Signature</span>')
+        else:
+            return format_html('<span style="color: red;">✗ Not Generated</span>')
+    agreement_badge.short_description = 'Agreement'
+    
     def free_cancellation_badge(self, obj):
-        color = '#10b981' if obj.has_free_cancellation else '#ef4444'
+        color = 'var(--success)' if obj.has_free_cancellation else 'var(--danger)'
         text = 'Free Cancel' if obj.has_free_cancellation else 'Paid Cancel'
         return format_html(
-            '<span style="background-color: {}; color: white; padding: 3px 10px; border-radius: 3px;">{}</span>',
+            '<span style="background-color: {}; color: var(--bg-card); padding: 3px 10px; border-radius: 3px;">{}</span>',
             color, text
         )
     free_cancellation_badge.short_description = 'Cancellation'
     
     def is_trending_badge(self, obj):
-        color = '#f59e0b' if obj.is_trending else '#d1d5db'
+        color = 'var(--warning)' if obj.is_trending else 'var(--secondary)'
         icon = '🔥' if obj.is_trending else '-'
         return format_html(
-            '<span style="background-color: {}; color: white; padding: 3px 10px; border-radius: 3px;">{}</span>',
+            '<span style="background-color: {}; color: var(--bg-card); padding: 3px 10px; border-radius: 3px;">{}</span>',
             color, icon
         )
     is_trending_badge.short_description = 'Trending'
@@ -221,6 +260,10 @@ class PropertyAdmin(admin.ModelAdmin):
         'mark_paid_cancellation',
         'mark_not_trending',
         'mark_trending',
+        'approve_properties',
+        'reject_properties',
+        'generate_agreements',
+        'suspend_properties',
     ]
     
     def mark_free_cancellation(self, request, queryset):
@@ -242,6 +285,50 @@ class PropertyAdmin(admin.ModelAdmin):
         count = queryset.update(is_trending=False)
         messages.success(request, f'{count} properties unmarked as trending')
     mark_not_trending.short_description = 'Unmark as trending'
+    
+    # ==========================================
+    # PHASE 5 & 6: ADMIN APPROVAL & AGREEMENT ACTIONS (NEW)
+    # ==========================================
+    
+    def approve_properties(self, request, queryset):
+        """Approve properties and generate agreements"""
+        from .services import save_property_agreement
+        
+        count = 0
+        for property_obj in queryset.filter(status='pending'):
+            property_obj.status = 'approved'
+            property_obj.save()
+            
+            # Auto-generate agreement
+            save_property_agreement(property_obj)
+            count += 1
+        
+        messages.success(request, f'{count} properties approved and agreements generated')
+    approve_properties.short_description = 'Approve properties (generates agreements)'
+    
+    def reject_properties(self, request, queryset):
+        """Reject properties"""
+        count = queryset.filter(status='pending').update(status='rejected')
+        messages.success(request, f'{count} properties rejected')
+    reject_properties.short_description = 'Reject properties'
+    
+    def suspend_properties(self, request, queryset):
+        """Suspend properties from listing"""
+        count = queryset.update(status='suspended')
+        messages.success(request, f'{count} properties suspended')
+    suspend_properties.short_description = 'Suspend properties'
+    
+    def generate_agreements(self, request, queryset):
+        """Manually generate/regenerate agreements"""
+        from .services import save_property_agreement
+        
+        count = 0
+        for property_obj in queryset:
+            if save_property_agreement(property_obj):
+                count += 1
+        
+        messages.success(request, f'Agreements generated for {count} properties')
+    generate_agreements.short_description = 'Generate/Regenerate agreements'
 
 
 # ============================================================================
@@ -318,40 +405,41 @@ class CategoryAdmin(admin.ModelAdmin):
     def property_count(self, obj):
         count = obj.propertycategory_set.count()
         return format_html(
-            '<span style="background-color: #417690; color: white; padding: 3px 10px; border-radius: 3px;">{}</span>',
+            '<span style="background-color: var(--primary); color: var(--bg-card); padding: 3px 10px; border-radius: 3px;">{}</span>',
             count
         )
     property_count.short_description = 'Properties'
 
 
-@admin.register(PropertyOffer)
-class PropertyOfferAdmin(admin.ModelAdmin):
-    """Admin for promotional offers"""
-    list_display = (
-        'property', 'title', 'discount_display', 'valid_from',
-        'valid_until', 'is_active', 'code'
-    )
-    list_filter = ('is_active', 'valid_from', 'valid_until', 'property__city')
-    list_editable = ('is_active',)
-    search_fields = ('property__name', 'title', 'code')
-    
-    fieldsets = (
-        ('Basic Info', {
-            'fields': ('property', 'title', 'description', 'code')
-        }),
-        ('Discount', {
-            'fields': ('discount_percentage', 'discount_amount'),
-            'description': 'Either percentage or amount (one or both)'
-        }),
-        ('Validity', {
-            'fields': ('valid_from', 'valid_until', 'is_active')
-        }),
-    )
-    
-    def discount_display(self, obj):
-        if obj.discount_percentage:
-            return f"{obj.discount_percentage}%"
-        elif obj.discount_amount:
-            return f"₹{obj.discount_amount}"
-        return "-"
-    discount_display.short_description = 'Discount'
+# PropertyOffer admin moved to apps.offers.admin
+# @admin.register(PropertyOffer)
+# class PropertyOfferAdmin(admin.ModelAdmin):
+#     """Admin for promotional offers"""
+#     list_display = (
+#         'property', 'title', 'discount_display', 'valid_from',
+#         'valid_until', 'is_active', 'code'
+#     )
+#     list_filter = ('is_active', 'valid_from', 'valid_until', 'property__city')
+#     list_editable = ('is_active',)
+#     search_fields = ('property__name', 'title', 'code')
+#     
+#     fieldsets = (
+#         ('Basic Info', {
+#             'fields': ('property', 'title', 'description', 'code')
+#         }),
+#         ('Discount', {
+#             'fields': ('discount_percentage', 'discount_amount'),
+#             'description': 'Either percentage or amount (one or both)'
+#         }),
+#         ('Validity', {
+#             'fields': ('valid_from', 'valid_until', 'is_active')
+#         }),
+#     )
+#     
+#     def discount_display(self, obj):
+#         if obj.discount_percentage:
+#             return f"{obj.discount_percentage}%"
+#         elif obj.discount_amount:
+#             return f"₹{obj.discount_amount}"
+#         return "-"
+#     discount_display.short_description = 'Discount'

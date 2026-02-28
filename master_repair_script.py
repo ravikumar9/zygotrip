@@ -178,8 +178,8 @@ class UIDesignValidator:
     """Validates UI design system application"""
     
     DESIGN_TOKENS = {
-        'PRIMARY_COLOR': '#2563EB',  # Indigo
-        'ACCENT_COLOR': '#F59E0B',   # Amber
+        'PRIMARY_COLOR': 'var(--primary)',
+        'ACCENT_COLOR': 'var(--warning)',
         'BACKGROUND_GRADIENT': 'from-indigo-500 via-purple-500 to-blue-600',
         'CARD_SHADOW': 'shadow-lg',
         'CARD_RADIUS': 'rounded-xl',

@@ -102,7 +102,7 @@ class DesignSystemValidator:
         # Pattern for hex colors and rgb/rgba
         color_pattern = re.compile(
             r'(?:^|[^a-zA-Z])(?:'
-            r'#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?|'  # #fff or #ffffff
+             r'#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?|'  # short or long hex
             r'rgba?\([^)]*\)'  # rgb() or rgba()
             r')',
             re.IGNORECASE

@@ -18,7 +18,7 @@ def register_property(request):
 		if form.is_valid():
 			property_obj = create_property_from_form(form, request.user)
 			messages.success(request, f'Property "{property_obj.name}" registered successfully!')
-			return redirect('dashboard_owner:property_list')  # or appropriate dashboard
+			return redirect('dashboard_owner:dashboard')
 	else:
 		form = PropertyRegistrationForm()
 	

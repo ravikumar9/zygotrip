@@ -18,15 +18,22 @@ function addDays(days) {
 }
 
 test('invoice: accessible from profile after booking', async ({ page }) => {
+  const seedResponse = await page.request.get('/test/seed/');
+  expect(seedResponse.ok()).toBeTruthy();
+  const seedData = await seedResponse.json();
+  expect(seedData.properties).toBeGreaterThan(0);
+  expect(seedData.property_id).toBeTruthy();
   await login(page, 'customer@test.com');
   await page.goto('/hotels/');
-  await page.getByRole('link', { name: 'Proceed to Booking' }).first().click();
+  await page.goto(`/hotels/${seedData.property_id}/`);
+  await page.waitForURL(new RegExp(`/hotels/${seedData.property_id}/`));
   await page.selectOption('select[name="room_type"]', { index: 1 });
-  await page.fill('input[type="date"] >> nth=0', addDays(4));
-  await page.fill('input[type="date"] >> nth=1', addDays(5));
+  await page.fill('input[name="check_in"]', addDays(4));
+  await page.fill('input[name="check_out"]', addDays(5));
+  await page.fill('input[name="quantity"]', '1');
   await page.fill('input[name="guest_full_name"]', 'Invoice User');
   await page.fill('input[name="guest_age"]', '31');
-  await page.getByRole('button', { name: 'Proceed to Booking' }).click();
+  await page.getByRole('button', { name: 'Book now' }).click();
   await page.waitForURL(/\/booking\/.*\/review\//);
   await page.getByRole('button', { name: 'Proceed to Payment' }).click();
   await page.waitForURL(/\/booking\/.*\/payment\//);

@@ -251,7 +251,7 @@ def safe_get_filter_params(request, allowed_fields, allowed_choices=None):
         APIValidationError: If validation fails
     """
     allowed_choices = allowed_choices or {}
-    
+
     try:
         return APIInputValidator.validate_filter_params(
             request.GET.dict(),
@@ -262,3 +262,76 @@ def safe_get_filter_params(request, allowed_fields, allowed_choices=None):
         raise
     except Exception as e:
         raise APIValidationError(f"Filter validation error: {str(e)}")
+
+
+# ======================================================
+# DJANGO REST FRAMEWORK - STANDARDISED EXCEPTION HANDLER
+# ======================================================
+
+def drf_exception_handler(exc, context):
+    """
+    Standardised DRF exception handler.
+
+    All API errors return a consistent envelope:
+    {
+        "success": false,
+        "error": {
+            "code": "validation_error",
+            "message": "...",
+            "detail": { ... }   # optional field-level errors
+        }
+    }
+    """
+    import logging
+    from rest_framework.views import exception_handler
+    from rest_framework.response import Response
+    from rest_framework import status
+
+    logger = logging.getLogger('zygotrip.api')
+
+    # Call the default DRF handler first to get a Response object
+    response = exception_handler(exc, context)
+
+    if response is not None:
+        # Reshape existing DRF error responses to our envelope format
+        original_data = response.data
+        code = getattr(exc, 'default_code', 'error')
+
+        if isinstance(original_data, dict) and 'detail' in original_data:
+            message = str(original_data['detail'])
+            detail = None
+        elif isinstance(original_data, list):
+            message = '; '.join(str(e) for e in original_data)
+            detail = None
+        else:
+            message = 'Validation failed'
+            detail = original_data
+
+        response.data = {
+            'success': False,
+            'error': {
+                'code': code,
+                'message': message,
+                'detail': detail,
+            }
+        }
+        logger.warning(
+            "API error: status=%s code=%s message=%s",
+            response.status_code, code, message,
+        )
+    else:
+        # Unhandled exception — return 500 with our envelope
+        logger.exception("Unhandled API exception", exc_info=exc)
+        response = Response(
+            {
+                'success': False,
+                'error': {
+                    'code': 'internal_error',
+                    'message': 'An unexpected error occurred. Please try again later.',
+                    'detail': None,
+                }
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    return response

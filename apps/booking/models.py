@@ -5,22 +5,68 @@ from datetime import timedelta
 from django.conf import settings
 from apps.core.models import TimeStampedModel
 from apps.core.validators import validate_future_date
+from builtins import property as builtin_property
 
 
 class Booking(TimeStampedModel):
+	STATUS_HOLD = 'hold'
+	STATUS_PAYMENT_PENDING = 'payment_pending'
+	STATUS_CONFIRMED = 'confirmed'
+	STATUS_CANCELLED = 'cancelled'
+	STATUS_FAILED = 'failed'
+	STATUS_REFUND_PENDING = 'refund_pending'
+	STATUS_REFUNDED = 'refunded'
+	STATUS_SETTLEMENT_PENDING = 'settlement_pending'
+
+	# OTA Lifecycle statuses (Phase 1)
+	STATUS_INITIATED = 'initiated'         # Pre-booking: user started the funnel
+	STATUS_CHECKED_IN = 'checked_in'       # Guest has checked in at the property
+	STATUS_CHECKED_OUT = 'checked_out'     # Guest has checked out — triggers settlement
+	STATUS_SETTLED = 'settled'             # Payout released to owner
+	
+	# Legacy statuses (for migration compatibility)
 	STATUS_PENDING = 'pending'
 	STATUS_REVIEW = 'review'
 	STATUS_PAYMENT = 'payment'
-	STATUS_CONFIRMED = 'confirmed'
-	STATUS_CANCELLED = 'cancelled'
 
 	STATUS_CHOICES = [
+		(STATUS_INITIATED, 'Initiated'),
+		(STATUS_HOLD, 'Hold'),
+		(STATUS_PAYMENT_PENDING, 'Payment Pending'),
+		(STATUS_CONFIRMED, 'Confirmed'),
+		(STATUS_CHECKED_IN, 'Checked In'),
+		(STATUS_CHECKED_OUT, 'Checked Out'),
+		(STATUS_CANCELLED, 'Cancelled'),
+		(STATUS_FAILED, 'Failed'),
+		(STATUS_REFUND_PENDING, 'Refund Pending'),
+		(STATUS_REFUNDED, 'Refunded'),
+		(STATUS_SETTLEMENT_PENDING, 'Settlement Pending'),
+		(STATUS_SETTLED, 'Settled'),
+		# Legacy
 		(STATUS_PENDING, 'Pending'),
 		(STATUS_REVIEW, 'Review'),
 		(STATUS_PAYMENT, 'Payment'),
-		(STATUS_CONFIRMED, 'Confirmed'),
-		(STATUS_CANCELLED, 'Cancelled'),
 	]
+	
+	# Full OTA lifecycle state machine
+	VALID_TRANSITIONS = {
+		STATUS_INITIATED: [STATUS_HOLD, STATUS_PAYMENT_PENDING, STATUS_CANCELLED],
+		STATUS_HOLD: [STATUS_PAYMENT_PENDING, STATUS_FAILED, STATUS_CANCELLED],
+		STATUS_PAYMENT_PENDING: [STATUS_CONFIRMED, STATUS_FAILED, STATUS_CANCELLED],
+		STATUS_CONFIRMED: [STATUS_CHECKED_IN, STATUS_REFUND_PENDING, STATUS_CANCELLED],
+		STATUS_CHECKED_IN: [STATUS_CHECKED_OUT, STATUS_CANCELLED],
+		STATUS_CHECKED_OUT: [STATUS_SETTLEMENT_PENDING, STATUS_SETTLED],
+		STATUS_SETTLEMENT_PENDING: [STATUS_SETTLED, STATUS_REFUND_PENDING, STATUS_CANCELLED],
+		STATUS_SETTLED: [],
+		STATUS_REFUND_PENDING: [STATUS_REFUNDED, STATUS_CANCELLED],
+		STATUS_FAILED: [STATUS_CANCELLED],
+		STATUS_CANCELLED: [],
+		STATUS_REFUNDED: [],
+		# Legacy transitions
+		STATUS_PENDING: [STATUS_REVIEW, STATUS_PAYMENT, STATUS_CANCELLED],
+		STATUS_REVIEW: [STATUS_PAYMENT, STATUS_CANCELLED],
+		STATUS_PAYMENT: [STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_FAILED],
+	}
 
 	uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 	public_booking_id = models.CharField(max_length=50, unique=True, editable=False, db_index=True, null=True, blank=True)
@@ -29,9 +75,75 @@ class Booking(TimeStampedModel):
 	property = models.ForeignKey('hotels.Property', on_delete=models.CASCADE, related_name='bookings')
 	check_in = models.DateField(validators=[validate_future_date])
 	check_out = models.DateField(validators=[validate_future_date])
-	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_HOLD, db_index=True)
 	total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 	promo_code = models.CharField(max_length=30, blank=True)
+	
+	# FINANCIAL FIELDS (merchant model)
+	gross_amount = models.DecimalField(
+		max_digits=12, 
+		decimal_places=2, 
+		default=0,
+		help_text="Total booking value before commission"
+	)
+	commission_amount = models.DecimalField(
+		max_digits=12,
+		decimal_places=2,
+		default=0,
+		help_text="Platform commission (Zygotrip cut)"
+	)
+	gst_amount = models.DecimalField(
+		max_digits=12,
+		decimal_places=2,
+		default=0,
+		help_text="18% GST on gross amount"
+	)
+	gateway_fee = models.DecimalField(
+		max_digits=12,
+		decimal_places=2,
+		default=0,
+		help_text="Payment gateway fee"
+	)
+	net_payable_to_hotel = models.DecimalField(
+		max_digits=12,
+		decimal_places=2,
+		default=0,
+		help_text="gross_amount - commission_amount - gateway_fee"
+	)
+	refund_amount = models.DecimalField(
+		max_digits=12,
+		decimal_places=2,
+		default=0,
+		help_text="Amount refunded to customer (if cancelled)"
+	)
+	settlement_status = models.CharField(
+		max_length=20,
+		choices=[
+			('unsettled', 'Unsettled'),
+			('settlement_pending', 'Settlement Pending'),
+			('settled', 'Settled'),
+		],
+		default='unsettled',
+		db_index=True
+	)
+	payment_reference_id = models.CharField(
+		max_length=100,
+		unique=True,
+		null=True,
+		blank=True,
+		db_index=True,
+		help_text="Payment gateway transaction ID"
+	)
+	refund_reference_id = models.CharField(
+		max_length=100,
+		null=True,
+		blank=True,
+		db_index=True,
+		help_text="Payment gateway refund ID"
+	)
+	
+	# HOLD management
+	hold_expires_at = models.DateTimeField(null=True, blank=True, db_index=True)
 	
 	# GUEST DETAILS (directly on booking for easy access)
 	guest_name = models.CharField(max_length=120, blank=True)
@@ -47,15 +159,31 @@ class Booking(TimeStampedModel):
 			date_str = self.created_at.strftime('%Y%m%d') if self.created_at else timezone.now().strftime('%Y%m%d')
 			short_id = str(self.uuid)[:8].upper()
 			self.public_booking_id = f"BK-{date_str}-HTL-{short_id}"
-		# Set timer on first creation (only for review and payment statuses)
+		# Set hold_expires_at on HOLD status creation (30 minutes hold window)
+		if not self.pk and self.status == self.STATUS_HOLD:
+			self.hold_expires_at = timezone.now() + timedelta(minutes=30)
+		# Set timer on first creation (only for legacy review and payment statuses)
 		if not self.pk and self.status in [self.STATUS_REVIEW, self.STATUS_PAYMENT]:
 			self.timer_expires_at = timezone.now() + timedelta(minutes=10)
 		super().save(*args, **kwargs)
+
+	def is_hold_expired(self):
+		"""Check if this HOLD booking's reservation has expired."""
+		if self.status != self.STATUS_HOLD or not self.hold_expires_at:
+			return False
+		return timezone.now() > self.hold_expires_at
 
 	def is_timer_expired(self):
 		if self.timer_expires_at is None:
 			return False
 		return timezone.now() > self.timer_expires_at
+
+	@builtin_property
+	def timer_seconds(self):
+		if self.timer_expires_at is None:
+			return 0
+		remaining = (self.timer_expires_at - timezone.now()).total_seconds()
+		return max(0, int(remaining))
 
 	def __str__(self):
 		return f"{self.uuid}"
@@ -93,5 +221,93 @@ class BookingStatusHistory(TimeStampedModel):
 	note = models.CharField(max_length=200, blank=True)
 
 
+class BookingContext(TimeStampedModel):
+	"""
+	Phase 1: Persistent booking session context.
+	Captures every parameter of the booking funnel before a Booking record is created.
+	Enables session recovery, analytics, and price-lock windows.
+	"""
+	# Session identity
+	session_key = models.CharField(max_length=40, blank=True, db_index=True)
+	user = models.ForeignKey(
+		settings.AUTH_USER_MODEL,
+		on_delete=models.SET_NULL,
+		null=True, blank=True,
+		related_name='booking_contexts'
+	)
+
+	# What they want to book
+	property = models.ForeignKey(
+		'hotels.Property',
+		on_delete=models.CASCADE,
+		related_name='booking_contexts'
+	)
+	room_type = models.ForeignKey(
+		'rooms.RoomType',
+		on_delete=models.SET_NULL,
+		null=True, blank=True,
+		related_name='booking_contexts'
+	)
+	checkin = models.DateField()
+	checkout = models.DateField()
+	adults = models.PositiveIntegerField(default=1)
+	children = models.PositiveIntegerField(default=0)
+	rooms = models.PositiveIntegerField(default=1)
+	meal_plan = models.CharField(max_length=50, blank=True)
+
+	# Pricing snapshot at time of context creation
+	base_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+	property_discount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+	platform_discount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+	promo_discount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+	tax = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+	service_fee = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+	final_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+	# Promo tracking
+	promo_code = models.CharField(max_length=30, blank=True)
+
+	# Link to actual booking once created
+	booking = models.ForeignKey(
+		Booking,
+		on_delete=models.SET_NULL,
+		null=True, blank=True,
+		related_name='contexts'
+	)
+
+	# Lifecycle
+	STATUS_ACTIVE = 'active'
+	STATUS_CONVERTED = 'converted'
+	STATUS_EXPIRED = 'expired'
+	STATUS_ABANDONED = 'abandoned'
+	CONTEXT_STATUS_CHOICES = [
+		(STATUS_ACTIVE, 'Active'),
+		(STATUS_CONVERTED, 'Converted to Booking'),
+		(STATUS_EXPIRED, 'Expired'),
+		(STATUS_ABANDONED, 'Abandoned'),
+	]
+	context_status = models.CharField(
+		max_length=20,
+		choices=CONTEXT_STATUS_CHOICES,
+		default=STATUS_ACTIVE,
+		db_index=True
+	)
+	expires_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		app_label = 'booking'
+		ordering = ['-created_at']
+		indexes = [
+			models.Index(fields=['session_key'], name='bkctx_session_idx'),
+			models.Index(fields=['user', 'context_status'], name='bkctx_user_status_idx'),
+			models.Index(fields=['expires_at'], name='bkctx_expires_idx'),
+		]
+
+	def __str__(self):
+		return f"BookingContext({self.property}, {self.checkin}→{self.checkout}, {self.context_status})"
+
+
 # Import models from distributed_locks for migration generation
 from .distributed_locks import BookingRetryQueue
+from .settlement_models import Settlement, SettlementLineItem
+from .cancellation_models import CancellationPolicy

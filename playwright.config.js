@@ -4,11 +4,14 @@ module.exports = defineConfig({
   testDir: './tests',
   timeout: 60000,
   use: {
-    baseURL: 'http://127.0.0.1:8000',
-    headless: true,
-    viewport: { width: 1280, height: 720 },
+    baseURL: 'https://127.0.0.1:8000',
+    headless: false,
+    ignoreHTTPSErrors: true,
+    actionTimeout: 8000,
+    navigationTimeout: 30000,
+    viewport: { width: 1280, height: 800 },
     launchOptions: {
-      slowMo: 200,
+      slowMo: 100,
     },
   },
   projects: [

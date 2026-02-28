@@ -1,8 +1,8 @@
 <!-- Category Tabs Component -->
 <section class="section category-tabs-section py-12">
   <div class="ota-container">
-    <h2 class="text-3xl font-bold text-main mb-2">Explore by Category</h2>
-    <p class="text-secondary mb-8">Find the perfect service for your travel needs</p>
+    <h2 class="text-3xl font-bold mb-2">Explore by Category</h2>
+    <p class="mb-8">Find the perfect service for your travel needs</p>
 
     <div class="categories-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="categories-container">
       <!-- Categories loaded dynamically -->
@@ -20,20 +20,31 @@ document.addEventListener('DOMContentLoaded', function() {
       
       if (data.categories && data.categories.length > 0) {
         container.innerHTML = data.categories.map(cat => `
-          <a href="${cat.url}" class="category-card bg-white rounded-lg p-6 text-center hover:shadow-lg transition-all duration-200 hover:-translate-y-1 border border-gray-200">
+          <a href="${cat.url}" class="category-card rounded-lg p-6 text-center hover:shadow-lg transition-all duration-200 hover:-translate-y-1 border">
             <div class="category-icon text-4xl mb-3">${cat.icon || '🏨'}</div>
-            <h3 class="font-semibold text-main mb-1">${cat.name}</h3>
-            <p class="text-xs text-secondary">${cat.description.substring(0, 50)}...</p>
+            <h3 class="font-semibold mb-1">${cat.name}</h3>
+            <p class="text-xs">${cat.description.substring(0, 50)}...</p>
           </a>
         `).join('');
       } else {
-        container.innerHTML = '<p class="text-secondary">No categories available</p>';
+        container.innerHTML = '<p class="">No categories available</p>';
       }
     })
     .catch(err => {
       console.error('Failed to load categories:', err);
       document.getElementById('categories-container').innerHTML = 
-        '<p class="text-red-500">Failed to load categories</p>';
+        '<p class="">Failed to load categories</p>';
     });
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+

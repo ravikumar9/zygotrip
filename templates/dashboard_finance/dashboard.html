@@ -6,32 +6,32 @@
     <div class="d-flex justify-between align-center mb-12">
       <div>
         <h1>Finance Dashboard</h1>
-        <p class="text-secondary">Monitor payments and wallet balances</p>
+        <p class="">Monitor payments and wallet balances</p>
       </div>
     </div>
 
     <!-- KPI Cards -->
     <div class="grid md:grid-cols-4 gap-6 mb-12">
       <div class="card text-center">
-        <p class="m-2 text-sm text-muted" >Total Revenue</p>
+        <p class="m-2 text-sm" >Total Revenue</p>
         <p class="font-bold text-3xl m-0" >₹125,430</p>
         <p class="m-2 text-xs" >↑ 12% this month</p>
       </div>
       
       <div class="card text-center">
-        <p class="m-2 text-sm text-muted" >Pending Payments</p>
+        <p class="m-2 text-sm" >Pending Payments</p>
         <p class="font-bold text-3xl m-0" >₹8,940</p>
         <p class="m-2 text-xs" >5 transactions</p>
       </div>
       
       <div class="card text-center">
-        <p class="m-2 text-sm text-muted" >Total Wallets</p>
+        <p class="m-2 text-sm" >Total Wallets</p>
         <p class="font-bold text-3xl m-0" >₹45,300</p>
-        <p class="m-2 text-secondary text-xs" >Across 234 users</p>
+        <p class="m-2 text-xs" >Across 234 users</p>
       </div>
       
       <div class="card text-center">
-        <p class="m-2 text-sm text-muted" >Conversion Rate</p>
+        <p class="m-2 text-sm" >Conversion Rate</p>
         <p class="font-bold text-3xl m-0" >82%</p>
         <p class="m-2 text-xs" >↑ 3% from last week</p>
       </div>
@@ -81,7 +81,7 @@
                   {% for payment in payments|default_if_none:"" %}
                     <tr>
                       <td>
-                        <code class="text-xs bg-tertiary" >
+                        <code class="text-xs" >
                           {{ payment.booking.uuid|truncatechars:12 }}
                         </code>
                       </td>
@@ -125,10 +125,10 @@
           {% if wallets %}
             <div class="grid md:grid-cols-2 gap-4">
               {% for wallet in wallets|default_if_none:""|slice:":10" %}
-                <div class="p-4 rounded-lg d-flex justify-between align-center bg-tertiary" >
+                <div class="p-4 rounded-lg d-flex justify-between align-center" >
                   <div>
                     <p class="font-semibold m-1">{{ wallet.user.full_name }}</p>
-                    <p class="text-sm m-0 text-secondary" >{{ wallet.user.email|truncatechars:25 }}</p>
+                    <p class="text-sm m-0" >{{ wallet.user.email|truncatechars:25 }}</p>
                   </div>
                   <div class="text-right">
                     <p class="font-bold m-0 text-lg" >₹{{ wallet.balance }}</p>
@@ -148,4 +148,15 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

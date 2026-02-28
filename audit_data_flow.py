@@ -26,9 +26,9 @@ if hotel:
     print(f"  Fields: {[f.name for f in hotel._meta.fields[:6]]}")
     
     # Get through service
-    print(f"\n[SERVICE] Through SearchService:")
-    service = SearchService()
-    results = service.search_hotels(city_code='BANGALORE', limit=1)
+    print(f"\n[SERVICE] Through UnifiedSearchEngine:")
+    search_results = search_engine.search_hotels(query='Bangalore', limit=1)
+    results = search_results.results if search_results else []
     
     if results:
         result = results[0]

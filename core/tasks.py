@@ -9,7 +9,31 @@ logger = logging.getLogger('zygotrip')
 
 
 @shared_task(bind=True, max_retries=3)
+def release_expired_booking_holds(self):
+    """
+    Release inventory from expired HOLD bookings.
+    Runs every 2 minutes via Celery Beat.
+    
+    IDEMPOTENT: Safe to run multiple times.
+    """
+    try:
+        from apps.booking.hold_expiry_service import release_expired_holds
+        
+        result = release_expired_holds()
+        logger.info(
+            f"Released {result['released_count']} expired holds at {result['timestamp']}",
+        )
+        return result
+    
+    except Exception as exc:
+        logger.error(f"Error in release_expired_booking_holds: {str(exc)}")
+        # Retry with exponential backoff
+        raise self.retry(exc=exc, countdown=60)
+
+
+@shared_task(bind=True, max_retries=3)
 def cleanup_expired_bookings(self):
+
     """
     Cleanup expired/abandoned bookings and refund wallet amounts.
     Runs every 5 minutes via Celery Beat.
@@ -178,14 +202,14 @@ def sync_operator_inventory(operator_id, resource_type):
         cache_key = f"inventory:{resource_type}:{operator_id}"
         
         if resource_type == 'bus':
-            from buses.models import Bus
+            from apps.buses.models import Bus
             buses = Bus.objects.filter(operator_id=operator_id).values(
                 'id', 'bus_number', 'total_seats', 'available_seats', 'is_active'
             )
             cache.set(cache_key, list(buses), 300)  # 5 min TTL
         
         elif resource_type == 'cab':
-            from cabs.models import Cab
+            from apps.cabs.models import Cab
             cabs = Cab.objects.filter(owner_id=operator_id).values(
                 'id', 'registration_number', 'base_fare', 'rate_per_km', 'is_active'
             )
@@ -216,7 +240,7 @@ def sync_supplier_inventory(self, property_id, supplier_name):
         from apps.hotels.models import Property
         from apps.hotels.inventory import InventorySource
         from apps.hotels.supplier_adapters import SupplierAdapterFactory
-        from core.logging_service import OperationLogger
+        from apps.core.logging_service import OperationLogger
         from datetime import datetime, timedelta
         
         property_obj = Property.objects.get(id=property_id)
@@ -289,7 +313,7 @@ def sync_supplier_inventory(self, property_id, supplier_name):
             inventory.mark_sync_failed(str(exc))
             
             # Log failure
-            from core.logging_service import OperationLogger
+            from apps.core.logging_service import OperationLogger
             OperationLogger.log_operation(
                 operation_type='inventory_sync',
                 status='failed',
@@ -342,7 +366,7 @@ def reconcile_inventory_mismatches(self):
             corrections = engine.auto_correct(mismatches, source_of_truth='supplier')
             
             # Log reconciliation
-            from core.logging_service import OperationLogger
+            from apps.core.logging_service import OperationLogger
             OperationLogger.log_operation(
                 operation_type='inventory_sync',
                 status='corrected',

@@ -25,19 +25,19 @@
 
             <div class="d-grid gap-3 m-4 p-3 border-top border-bottom" >
               <div>
-                <p class="text-xs text-secondary" >Your Price</p>
+                <p class="text-xs" >Your Price</p>
                 <p class="font-semibold">₹{{ cab.base_price_per_km }}/km</p>
               </div>
               <div>
-                <p class="text-xs text-secondary" >System Price</p>
+                <p class="text-xs" >System Price</p>
                 <p class="font-semibold">₹{{ cab.system_price_per_km }}/km</p>
               </div>
               <div>
-                <p class="text-xs text-secondary" >Seats</p>
+                <p class="text-xs" >Seats</p>
                 <p class="font-semibold">{{ cab.get_seats_display }}</p>
               </div>
               <div>
-                <p class="text-xs text-secondary" >Fuel</p>
+                <p class="text-xs" >Fuel</p>
                 <p class="font-semibold">{{ cab.get_fuel_type_display }}</p>
               </div>
             </div>
@@ -47,7 +47,7 @@
               <a href="{% url 'cabs:owner-delete' cab.id %}" class="button button-danger" >Delete</a>
             </div>
 
-            <p class="mt-2 text-secondary mb-0 text-xs" >
+            <p class="mt-2 mb-0 text-xs" >
               📊 {{ cab.bookings.count }} bookings • Registered {{ cab.created_at|date:"M d, Y" }}
             </p>
           </div>
@@ -64,4 +64,15 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

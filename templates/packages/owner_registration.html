@@ -6,13 +6,13 @@
   <div class="ota-container">
     <div >
       <h1 class="mb-2">Register New Package</h1>
-      <p class="mb-8 text-secondary" >Add your package to our platform</p>
+      <p class="mb-8" >Add your package to our platform</p>
 
       <form method="post" class="card p-6">
         {% csrf_token %}
 
         {% if form.non_field_errors %}
-          <div class="p-3 rounded mb-4 bg-danger" >
+          <div class="p-3 rounded mb-4" >
             {{ form.non_field_errors.0 }}
           </div>
         {% endif %}
@@ -113,4 +113,15 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

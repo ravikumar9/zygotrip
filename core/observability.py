@@ -373,7 +373,7 @@ class DashboardView(TemplateView):
         }
         
         # Get recent errors
-        from core.models import OperationLog
+        from apps.core.models import OperationLog
         context['recent_errors'] = OperationLog.objects.filter(
             status='failed'
         ).order_by('-timestamp')[:10]

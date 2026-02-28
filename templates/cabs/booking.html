@@ -20,8 +20,8 @@
         {% endif %}
 
         <!-- Cab Summary -->
-        <div class="p-4 rounded mb-6 bg-secondary" >
-          <p class="mb-1 text-secondary text-sm" >Cab</p>
+        <div class="p-4 rounded mb-6" >
+          <p class="mb-1 text-sm" >Cab</p>
           <h3 class="mb-2">{{ cab.name }}</h3>
           <div class="d-flex justify-between text-sm">
             <span>Rate: ₹{{ cab.system_price_per_km }}/km + ₹50 base</span>
@@ -53,11 +53,11 @@
           {% if form.promo_code.errors %}
             <p class="text-sm" >{{ form.promo_code.errors.0 }}</p>
           {% endif %}
-          <p class="mt-1 text-secondary text-xs" >{% if best_coupon %}Use code <strong>{{ best_coupon.code }}</strong>{% else %}Have a promo code? Enter it here.{% endif %}</p>
+          <p class="mt-1 text-xs" >{% if best_coupon %}Use code <strong>{{ best_coupon.code }}</strong>{% else %}Have a promo code? Enter it here.{% endif %}</p>
         </div>
 
         <!-- Pricing Preview (JS will update this) -->
-        <div class="p-4 rounded m-6 bg-secondary" >
+        <div class="p-4 rounded m-6" >
           <div class="d-flex justify-between mb-2">
             <span>Base Fare:</span>
             <span>₹50</span>
@@ -129,4 +129,15 @@
   updatePricing();
 </script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

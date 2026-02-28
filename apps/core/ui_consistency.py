@@ -15,25 +15,25 @@ register = template.Library()
 
 # Global theme configuration
 GLOBAL_THEME = {
-    'primary_color': '#1f2937',      # Dark blue-gray
-    'secondary_color': '#3b82f6',    # Blue
-    'accent_color': '#ec4899',       # Pink
-    'success_color': '#10b981',      # Green
-    'warning_color': '#f59e0b',      # Amber
-    'danger_color': '#ef4444',       # Red
-    
-    'background_color': '#ffffff',
-    'surface_color': '#f9fafb',
-    'border_color': '#e5e7eb',
-    'text_primary': '#111827',
-    'text_secondary': '#6b7280',
-    
-    'font_family': 'system-ui, -apple-system, sans-serif',
+    'primary_color': 'var(--primary)',
+    'secondary_color': 'var(--secondary)',
+    'accent_color': 'var(--warning)',
+    'success_color': 'var(--success)',
+    'warning_color': 'var(--warning)',
+    'danger_color': 'var(--danger)',
+
+    'background_color': 'var(--bg-main)',
+    'surface_color': 'var(--bg-card)',
+    'border_color': 'var(--secondary)',
+    'text_primary': 'var(--text-main)',
+    'text_secondary': 'var(--secondary)',
+
+    'font_family': '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif',
     'border_radius': '8px',
-    
+
     'icon_set': 'globe',  # Primary icon: globe emoji
-    'navbar_background': '#1f2937',
-    'navbar_text': '#ffffff',
+    'navbar_background': 'var(--primary)',
+    'navbar_text': 'var(--bg-card)',
 }
 
 # Global template patterns (enforce consistency)
@@ -70,7 +70,7 @@ COMPONENT_PATTERNS = {
 @register.simple_tag
 def global_theme_color(color_name: str) -> str:
     """Get global theme color"""
-    return GLOBAL_THEME.get(color_name, '#000000')
+    return GLOBAL_THEME.get(color_name, 'var(--text-main)')
 
 
 @register.simple_tag

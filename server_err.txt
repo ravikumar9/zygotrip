@@ -1,0 +1,9 @@
+INFO:     Started server process [4576]
+INFO:     Waiting for application startup.
+INFO:     ASGI 'lifespan' protocol appears unsupported.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on https://127.0.0.1:8000 (Press CTRL+C to quit)
+C:\Users\ravi9\Downloads\Zy\zygotrip\.venv\Lib\site-packages\django\http\response.py:517: Warning: StreamingHttpResponse must consume synchronous iterators in order to serve them asynchronously. Use an asynchronous iterator instead.
+  warnings.warn(
+INFO:     Shutting down
+INFO:     Finished server process [4576]

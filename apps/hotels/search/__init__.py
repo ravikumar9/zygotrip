@@ -4,36 +4,16 @@
 from typing import Dict, List, Optional
 from decimal import Decimal
 from django.db.models import QuerySet, F, Case, When, FloatField, Value
+from django.db.models.functions import Cast
 from django.utils import timezone
-from apps.hotels.constants import (
-	RANKING_WEIGHT_RATING,
-	RANKING_WEIGHT_PRICE,
-	RANKING_WEIGHT_DISTANCE,
-	RANKING_WEIGHT_POPULARITY,
-	RANKING_WEIGHT_AVAILABILITY,
-	MIN_RATING_TOP_RATED,
-	MIN_BOOKINGS_TRENDING,
-	MIN_BOOKINGS_POPULAR,
-	MIN_BOOKINGS_WEEK_POPULAR,
-	PRICE_THRESHOLD_BUDGET,
-	PRICE_THRESHOLD_MODERATE,
-	PRICE_THRESHOLD_PREMIUM,
-	PRICE_THRESHOLD_LUXURY,
-	PRICE_THRESHOLD_ULTRA,
-)
 
 
 class SearchRankingService:
 	"""
 	Production-grade search ranking algorithm
-	Combines multiple signals into composite relevance score
-	
-	Scoring weights (total = 1.0):
-	- Rating quality: 30%
-	- Price competitiveness: 20% 
-	- Distance proximity: 25%
-	- Popularity signals: 15%
-	- Availability: 10%
+    
+	Scoring formula:
+	score = match_score + rating*0.3 + bookings*0.2 + popularity*0.2
 	"""
 	
 	def __init__(self, queryset: QuerySet, params: Dict):
@@ -44,23 +24,20 @@ class SearchRankingService:
 	
 	def apply_ranking(self) -> QuerySet:
 		"""Apply composite ranking score and sort by relevance"""
-		# Normalize scores to 0-1 range
+		query = (self.params.get('q') or '').strip()
+
 		qs = self.queryset.annotate(
-			rating_score=self._rating_score(),
-			price_score=self._price_score(),
-			distance_score=self._distance_score(),
+			match_score=self._match_score(query),
+			booking_score=self._booking_score(),
 			popularity_score_normalized=self._popularity_score(),
-			availability_score=self._availability_score(),
 		)
 		
-		# Composite relevance score
 		qs = qs.annotate(
 			relevance_score=(
-				F('rating_score') * RANKING_WEIGHT_RATING +
-				F('price_score') * RANKING_WEIGHT_PRICE +
-				F('distance_score') * RANKING_WEIGHT_DISTANCE +
-				F('popularity_score_normalized') * RANKING_WEIGHT_POPULARITY +
-				F('availability_score') * RANKING_WEIGHT_AVAILABILITY
+				F('match_score') +
+				(Cast('rating', FloatField()) * Value(0.3, output_field=FloatField())) +
+				(F('booking_score') * Value(0.2, output_field=FloatField())) +
+				(F('popularity_score_normalized') * Value(0.2, output_field=FloatField()))
 			)
 		)
 		
@@ -83,12 +60,17 @@ class SearchRankingService:
 		"""Price competitiveness - inverse scoring (lower price = higher score)"""
 		# Note: Implement percentile-based scoring across result set
 		# For now, use simple inverse: cheaper properties score higher
+		budget = 1500
+		moderate = 3000
+		premium = 6000
+		luxury = 12000
+		ultra = 20000
 		return Case(
-			When(min_room_price__lte=PRICE_THRESHOLD_BUDGET, then=Value(1.0)),
-			When(min_room_price__lte=PRICE_THRESHOLD_MODERATE, then=Value(0.80)),
-			When(min_room_price__lte=PRICE_THRESHOLD_PREMIUM, then=Value(0.60)),
-			When(min_room_price__lte=PRICE_THRESHOLD_LUXURY, then=Value(0.40)),
-			When(min_room_price__lte=PRICE_THRESHOLD_ULTRA, then=Value(0.20)),
+			When(min_room_price__lte=budget, then=Value(1.0)),
+			When(min_room_price__lte=moderate, then=Value(0.80)),
+			When(min_room_price__lte=premium, then=Value(0.60)),
+			When(min_room_price__lte=luxury, then=Value(0.40)),
+			When(min_room_price__lte=ultra, then=Value(0.20)),
 			default=Value(0.05),
 			output_field=FloatField()
 		)
@@ -105,13 +87,36 @@ class SearchRankingService:
 	def _popularity_score(self):
 		"""Popularity from booking signals"""
 		return Case(
-			When(is_trending=True, then=Value(1.0)),
-			When(bookings_today__gte=MIN_BOOKINGS_TRENDING, then=Value(0.90)),
-			When(bookings_today__gte=MIN_BOOKINGS_POPULAR, then=Value(0.75)),
-			When(bookings_today__gte=1, then=Value(0.60)),
-			When(bookings_this_week__gte=MIN_BOOKINGS_WEEK_POPULAR, then=Value(0.50)),
-			When(popularity_score__gte=80, then=Value(0.40)),
-			default=Value(0.20),
+			When(popularity_score__gte=80, then=Value(1.0)),
+			When(popularity_score__gte=50, then=Value(0.8)),
+			When(popularity_score__gte=20, then=Value(0.6)),
+			When(popularity_score__gte=1, then=Value(0.4)),
+			default=Value(0.2),
+			output_field=FloatField()
+		)
+
+	def _booking_score(self):
+		"""Bookings activity score"""
+		return Case(
+			When(bookings_today__gte=20, then=Value(1.0)),
+			When(bookings_today__gte=10, then=Value(0.8)),
+			When(bookings_today__gte=5, then=Value(0.6)),
+			When(bookings_today__gte=1, then=Value(0.4)),
+			default=Value(0.2),
+			output_field=FloatField()
+		)
+
+	def _match_score(self, query: str):
+		"""Match score based on query text relevance"""
+		if not query:
+			return Value(0.5, output_field=FloatField())
+		return Case(
+			When(name__icontains=query, then=Value(1.0)),
+			When(city__name__icontains=query, then=Value(0.8)),
+			When(locality__name__icontains=query, then=Value(0.7)),
+			When(area__icontains=query, then=Value(0.6)),
+			When(landmark__icontains=query, then=Value(0.5)),
+			default=Value(0.0),
 			output_field=FloatField()
 		)
 	

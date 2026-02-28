@@ -97,74 +97,24 @@
         </div>
 
         <div class="form-actions d-flex gap-2 mt-6">
-          <button type="submit" class="btn primary">Create Property</button>
-          <a href="{% url 'dashboard_owner:dashboard' %}" class="btn ghost">Cancel</a>
+          <button type="submit" class="btn btn-primary primary-button">Create Property</button>
+          <a href="{% url 'dashboard_owner:dashboard' %}" class="btn btn-ghost">Cancel</a>
         </div>
       </form>
     </div>
   </section>
 </div>
 
-<style>
-.max-width-600 {
-  max-width: 600px;
-}
 
-.form {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-label {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: var(--text);
-}
-
-.form input,
-.form textarea,
-.form select {
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 14px;
-  font-family: inherit;
-}
-
-.form input:focus,
-.form textarea:focus,
-.form select:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-}
-
-.form-error {
-  color: #dc2626;
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.form-actions {
-  justify-content: flex-end;
-}
-
-@media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+

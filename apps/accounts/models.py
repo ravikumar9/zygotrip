@@ -2,6 +2,19 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from apps.core.models import TimeStampedModel
 
+# ==========================================================================
+# PHASE 1: USER MODEL RESTRUCTURE - CORE FOUNDATION
+# ==========================================================================
+
+ROLE_CHOICES = [
+    ('traveler', 'Traveler'),
+    ('property_owner', 'Property Owner'),
+    ('cab_owner', 'Cab Owner'),
+    ('bus_operator', 'Bus Operator'),
+    ('package_provider', 'Package Provider'),
+    ('admin', 'Admin'),
+]
+
 
 class UserManager(BaseUserManager):
 	def create_user(self, email, password=None, **extra_fields):
@@ -17,6 +30,7 @@ class UserManager(BaseUserManager):
 		extra_fields.setdefault('is_staff', True)
 		extra_fields.setdefault('is_superuser', True)
 		extra_fields.setdefault('is_active', True)
+		extra_fields.setdefault('role', 'admin')
 		return self.create_user(email, password, **extra_fields)
 
 
@@ -25,7 +39,25 @@ class User(TimeStampedModel, AbstractBaseUser, PermissionsMixin):
 	full_name = models.CharField(max_length=120)
 	phone = models.CharField(max_length=20, blank=True)
 	is_staff = models.BooleanField(default=False)
-	roles = models.ManyToManyField('Role', through='UserRole', related_name='users')
+	
+	# ==========================================
+	# PHASE 1: Role-based identifier (NEW)
+	# ==========================================
+	role = models.CharField(
+		max_length=30,
+		choices=ROLE_CHOICES,
+		default='traveler',
+		help_text="User's primary role in the marketplace"
+	)
+	
+	# Vendor verification flag
+	is_verified_vendor = models.BooleanField(
+		default=False,
+		help_text="Whether this vendor has been verified by admin"
+	)
+	
+	# Legacy support for ManyToMany roles (will be deprecated)
+	roles = models.ManyToManyField('Role', through='UserRole', related_name='users', blank=True)
 
 	objects = UserManager()
 
@@ -33,7 +65,26 @@ class User(TimeStampedModel, AbstractBaseUser, PermissionsMixin):
 	REQUIRED_FIELDS = ['full_name']
 
 	def __str__(self):
-		return self.email
+		return f"{self.email} ({self.get_role_display()})"
+	
+	def is_vendor(self):
+		"""Check if user is a vendor (non-traveler/non-admin role)"""
+		return self.role in ['property_owner', 'cab_owner', 'bus_operator', 'package_provider']
+	
+	def is_property_owner(self):
+		return self.role == 'property_owner'
+	
+	def is_cab_owner(self):
+		return self.role == 'cab_owner'
+	
+	def is_bus_operator(self):
+		return self.role == 'bus_operator'
+	
+	def is_package_provider(self):
+		return self.role == 'package_provider'
+	
+	def is_admin(self):
+		return self.role == 'admin' or self.is_staff
 
 
 class Role(TimeStampedModel):
@@ -69,5 +120,3 @@ class UserRole(TimeStampedModel):
 
 	class Meta:
 		unique_together = ('user', 'role')
-
-# Create your models here.

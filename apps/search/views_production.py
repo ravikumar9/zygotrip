@@ -13,40 +13,62 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import cache_page
 from django.core.paginator import Paginator
-from django.db.models import Q, Case, When, Value, IntegerField, F
+from django.db.models import Q, Case, When, Value, IntegerField, F, Count
 import json
 
 from apps.hotels.models import Property
+from .models import SearchIndex
+from apps.core.models import City, Locality
 from apps.hotels.viewmodels import HotelCardVM
+from apps.hotels.services import _build_detail_url, _build_stay_params
 from .engine import search_engine
 
 
-def build_hotel_card_vm(property_obj) -> HotelCardVM:
+def build_hotel_card_vm(property_obj, stay_params) -> HotelCardVM:
     """Convert Property ORM object to HotelCardVM.
-    
-    This is the transformation layer - ALWAYS use this.
+
+    PERFORMANCE RULES (N+1 prevention):
+    - Use annotated `min_room_price` instead of calling property.base_price (N+1)
+    - Use prefetched images list instead of .filter() on images (N+1)
+    - Use prefetched amenities list instead of .all() in a loop (already fine)
     """
     from decimal import Decimal
-    
-    # Get base price (computed from room_types)
+
+    # FIX N+1: Use annotated field from ota_visible_properties() queryset.
+    # property_obj.base_price fires one SQL query per hotel — never call it in a loop.
+    # ota_visible_properties() annotates `min_room_price` for exactly this purpose.
     try:
-        base_price = int(property_obj.base_price) if property_obj.base_price else 0
+        raw_price = (
+            getattr(property_obj, 'min_room_price', None)
+            or getattr(property_obj, 'min_price', None)
+        )
+        base_price = int(raw_price) if raw_price else 0
     except (TypeError, ValueError):
         base_price = 0
-    
-    # Get amenities from PropertyAmenity queryset
+
+    # Get amenities — already prefetched, safe to iterate
     amenities_qs = property_obj.amenities.all() if hasattr(property_obj, 'amenities') else []
     amenities_list = [a.name for a in amenities_qs]
-    
-    # Get image URL
+
+    # FIX N+1: Use prefetched images cache instead of .filter(is_featured=True).
+    # .filter() bypasses the prefetch cache and fires a new query per hotel.
     try:
-        primary_image = property_obj.images.filter(is_featured=True).first()
-        if not primary_image:
-            primary_image = property_obj.images.first()
-        image_url = primary_image.image_url if primary_image else ''
-    except:
+        prefetched_images = list(property_obj.images.all())  # uses prefetch cache
+        primary_image = next((img for img in prefetched_images if img.is_featured), None)
+        if not primary_image and prefetched_images:
+            primary_image = prefetched_images[0]
+        image_url = primary_image.resolved_url if primary_image else ''
+    except Exception:
         image_url = ''
-    
+
+    rating = property_obj.rating
+    if rating and float(rating) >= 4.5:
+        rating_tier = 'excellent'
+    elif rating and float(rating) >= 3.5:
+        rating_tier = 'good'
+    else:
+        rating_tier = 'average'
+
     return HotelCardVM(
         id=property_obj.id,
         name=property_obj.name,
@@ -62,22 +84,23 @@ def build_hotel_card_vm(property_obj) -> HotelCardVM:
         price_original=None,
         discount_percent=0,
         savings_amount=Decimal('0'),
-        rating_value=float(property_obj.rating) if property_obj.rating else None,
+        rating_value=float(rating) if rating else None,
         rating_count=property_obj.review_count or 0,
-        rating_tier='excellent' if property_obj.rating and property_obj.rating >= 4.5 else 'good' if property_obj.rating and property_obj.rating >= 3.5 else 'average',
-        rooms_left=5,  # Default value
+        rating_tier=rating_tier,
+        rooms_left=getattr(property_obj, 'available_rooms', 5),
         booked_today=property_obj.bookings_today or 0,
-        viewers_now=0,  # Would come from analytics
-        is_verified=True,  # Assume verified for now
+        viewers_now=0,
+        is_verified=True,
         is_best_rating=False,
         is_lowest_price=False,
         is_best_deal=False,
         is_best_value=False,
         amenities=amenities_list,
-        free_cancellation=getattr(property_obj, 'free_cancellation', False),
+        free_cancellation=getattr(property_obj, 'has_free_cancellation', False),
         pay_at_hotel=getattr(property_obj, 'pay_at_hotel', False),
         property_type=property_obj.property_type or 'hotel',
-        cta_url=f'/hotels/{property_obj.slug}/',
+        cta_url=_build_detail_url(property_obj, stay_params),
+        relevance_score=float(getattr(property_obj, 'relevance_score', 0) or 0),
     )
 
 
@@ -92,15 +115,18 @@ def search_list(request):
     """
     try:
         # Extract search parameters
-        query = request.GET.get('q', '').strip()
+        query = (request.GET.get('q') or request.GET.get('location') or '').strip()
         page = request.GET.get('page', 1)
         format_type = request.GET.get('format', 'html')
         
         # Use unified search engine
-        results_qs, total_count = search_engine.search_hotels(query=query, limit=50)
+        search_results = search_engine.search_hotels(query=query, limit=50)
+        results_qs = search_results.results
+        total_count = search_results.count
+        stay_params = _build_stay_params(request.GET)
         
         # Convert to ViewModels
-        hotel_cards = [build_hotel_card_vm(prop) for prop in results_qs]
+        hotel_cards = [build_hotel_card_vm(prop, stay_params) for prop in results_qs]
         
         # Pagination
         paginator = Paginator(hotel_cards, 20)
@@ -215,3 +241,203 @@ def search_api(request):
         return search_list_response
     
     return JsonResponse({'error': 'Invalid format'}, status=400)
+
+
+@require_http_methods(['GET'])
+def search_index_api(request):
+    """Unified autocomplete API for city/area/property suggestions.
+    
+    NEW PHASE 2 FORMAT: Returns slug-based routing for canonical URLs.
+    Example response:
+        [
+            {
+                "type": "city",
+                "name": "Coorg",
+                "slug": "coorg",
+                "property_count": 45
+            },
+            {
+                "type": "locality",
+                "name": "Madikeri",
+                "slug": "madikeri",
+                "city_slug": "coorg",
+                "property_count": 12
+            },
+            {
+                "type": "property",
+                "name": "Coorg Grand Stay",
+                "slug": "coorg-grand-stay",
+                "city_slug": "coorg",
+                "locality_slug": "madikeri",
+                "property_count": null
+            }
+        ]
+    """
+    query = (request.GET.get('q') or '').strip()
+    if len(query) < 2:
+        return JsonResponse([], safe=False)
+
+    results_list = []
+    
+    # Cities - use slug routing
+    cities = (
+        City.objects.filter(is_active=True, name__icontains=query)
+        .select_related('state')
+        .order_by('-popularity_score', 'name')
+        [:5]
+    )
+    for city in cities:
+        # Use new clean approval system: status='approved' AND agreement_signed=True
+        property_count = Property.objects.filter(
+            city=city,
+            status='approved',
+            agreement_signed=True
+        ).count()
+        results_list.append({
+            'type': 'city',
+            'name': city.name,
+            'slug': city.slug,
+            'property_count': property_count,
+        })
+    
+    # Localities - use slug routing with city_slug
+    from apps.core.location_models import Locality
+    localities = (
+        Locality.objects.filter(is_active=True, name__icontains=query)
+        .select_related('city')
+        .order_by('-popularity_score', 'name')
+        [:5]
+    )
+    for loc in localities:
+        # Use new clean system: status='approved' AND agreement_signed=True
+        property_count = Property.objects.filter(
+            locality=loc,
+            status='approved',
+            agreement_signed=True
+        ).count()
+        results_list.append({
+            'type': 'locality',
+            'name': loc.name,
+            'slug': loc.slug,
+            'city_slug': loc.city.slug if loc.city else None,
+            'property_count': property_count,
+        })
+    
+    # Properties - use slug routing
+    properties = (
+        Property.objects.filter(
+            name__icontains=query,
+            status='approved',
+            agreement_signed=True
+        )
+        .select_related('city', 'locality')
+        .order_by('-rating', 'name')
+        [:5]
+    )
+    for prop in properties:
+        results_list.append({
+            'type': 'property',
+            'name': prop.name,
+            'slug': prop.slug or f"property-{prop.id}",
+            'city_slug': prop.city.slug if prop.city else None,
+            'locality_slug': prop.locality.slug if prop.locality else None,
+        })
+    
+    # Sort by type (city > locality > property) then by name
+    type_order = {'city': 0, 'locality': 1, 'property': 2}
+    results_list.sort(key=lambda x: (type_order.get(x['type'], 3), x['name']))
+    
+    return JsonResponse(results_list[:15], safe=False)
+
+
+@require_http_methods(['GET'])
+def cities_autocomplete(request):
+    """Lightweight city autocomplete for /api/cities endpoint.
+    
+    PHASE 2: Returns slug for canonical routing.
+    """
+    query = (request.GET.get('q') or '').strip()
+    if len(query) < 2:
+        return JsonResponse([], safe=False)
+
+    cities = (
+        City.objects.filter(is_active=True, name__icontains=query)
+        .select_related('state')
+        .order_by('-popularity_score', 'name')
+        [:8]
+    )
+
+    results = [
+        {
+            'name': city.name,
+            'slug': city.slug,
+            'state': city.state.name if city.state else '',
+        }
+        for city in cities
+    ]
+
+    return JsonResponse(results, safe=False)
+
+
+@require_http_methods(['GET'])
+def location_autocomplete(request):
+    """Location autocomplete for the global search bar."""
+    query = (request.GET.get('q') or '').strip()
+    limit = int(request.GET.get('limit', 8))
+
+    if len(query) < 2:
+        return JsonResponse({"cities": [], "areas": [], "hotels": []})
+
+    cities = City.objects.filter(
+        is_active=True,
+        name__icontains=query,
+    ).annotate(count=Count("hotels")).order_by('-popularity_score', 'name')[:5]
+
+    localities = Locality.objects.filter(
+        is_active=True,
+        name__icontains=query,
+        city__is_active=True,
+    ).annotate(count=Count("hotels")).select_related('city').order_by('-popularity_score', 'name')[:5]
+
+    from apps.hotels.selectors import public_properties_queryset
+
+    properties_qs = public_properties_queryset()
+    properties = properties_qs.filter(
+        Q(name__icontains=query)
+    ).select_related('city')[:5]
+
+    city_results = [
+        {
+            'label': city.display_name or city.name,
+            'value': city.display_name or city.name,
+            'count': city.count,
+            'meta': city.state.name if city.state else 'City',
+        }
+        for city in cities
+    ]
+
+    area_results = []
+    for locality in localities:
+        label = locality.display_name or locality.name
+        area_results.append({
+            'label': label,
+            'value': label,
+            'count': locality.count,
+            'meta': locality.city.name if locality.city else '',
+        })
+
+    hotel_results = [
+        {
+            'label': prop.name,
+            'value': prop.name,
+            'count': 1,
+            'meta': prop.city.name if prop.city else '',
+        }
+        for prop in properties
+    ]
+
+    return JsonResponse({
+        "cities": city_results[:limit],
+        "areas": area_results[:limit],
+        "hotels": hotel_results[:limit],
+    })

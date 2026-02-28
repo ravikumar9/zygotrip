@@ -177,33 +177,33 @@ async def test_booking_review(page: Page, test_email: str, test_password: str):
     try:
         # Login first
         await page.goto(f"{BASE_URL}/login/", wait_until="networkidle", timeout=10000)
-		
-		# Find the actual form fields (username/password, not email)
-		username_field = await page.query_selector("input[name='username']")
-		password_field = await page.query_selector("input[name='password']")
-		
-		if username_field and password_field:
-			await username_field.fill(test_email)
-			await password_field.fill(test_password)
-			log("[OK] Login credentials filled")
-			
-			submit_btn = await page.query_selector("button[type='submit']")
-			if submit_btn:
-				await submit_btn.click()
-				await page.wait_for_url(f"{BASE_URL}/**", timeout=5000)
-				log("[OK] Logged in successfully")
-            
-            # Check for guest data fields
-            guest_name = await page.query_selector("input[name='guest_full_name']")
-            guest_email = await page.query_selector("input[name='guest_email']")
-            guest_phone = await page.query_selector("input[name='guest_phone']")
-            
-            if guest_name:
-                log("[OK] Guest name field present")
-            if guest_email:
-                log("[OK] Guest email field present")
-            if guest_phone:
-                log("[OK] Guest phone field present")
+
+        # Find the actual form fields (username/password, not email)
+        username_field = await page.query_selector("input[name='username']")
+        password_field = await page.query_selector("input[name='password']")
+
+        if username_field and password_field:
+            await username_field.fill(test_email)
+            await password_field.fill(test_password)
+            log("[OK] Login credentials filled")
+
+            submit_btn = await page.query_selector("button[type='submit']")
+            if submit_btn:
+                await submit_btn.click()
+                await page.wait_for_url(f"{BASE_URL}/**", timeout=5000)
+                log("[OK] Logged in successfully")
+
+        # Check for guest data fields
+        guest_name = await page.query_selector("input[name='guest_full_name']")
+        guest_email = await page.query_selector("input[name='guest_email']")
+        guest_phone = await page.query_selector("input[name='guest_phone']")
+
+        if guest_name:
+            log("[OK] Guest name field present")
+        if guest_email:
+            log("[OK] Guest email field present")
+        if guest_phone:
+            log("[OK] Guest phone field present")
         
         await page.screenshot(path=f"{SCREENSHOTS_DIR}/05_booking_review.png")
         return True
@@ -298,19 +298,21 @@ async def test_customer_dashboard(page: Page, test_email: str, test_password: st
     try:
         # Login
         await page.goto(f"{BASE_URL}/login/", timeout=10000)
-		
-		username_field = await page.query_selector("input[name='username']")
-		password_field = await page.query_selector("input[name='password']")
-		
-		if username_field and password_field:
-			await username_field.fill(test_email)
-			await password_field.fill(test_password)
-			
-			submit_btn = await page.query_selector("button[type='submit']")
-			if submit_btn:
-				await submit_btn.click()
-				await page.wait_for_url(f"{BASE_URL}/**", timeout=5000)
-				log("[OK] Logged in")
+
+        username_field = await page.query_selector("input[name='username']")
+        password_field = await page.query_selector("input[name='password']")
+
+        if username_field and password_field:
+            await username_field.fill(test_email)
+            await password_field.fill(test_password)
+
+            submit_btn = await page.query_selector("button[type='submit']")
+            if submit_btn:
+                await submit_btn.click()
+                await page.wait_for_url(f"{BASE_URL}/**", timeout=5000)
+                log("[OK] Logged in")
+
+        bookings_table = await page.query_selector("table")
         if bookings_table:
             log("[OK] Bookings table displayed")
         else:

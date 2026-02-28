@@ -112,7 +112,7 @@ def build_filters_vm(request, properties_qs) -> FiltersVM:
     
     This is called by search view to generate server-driven filters.
     """
-    from django.db.models import Q, Count
+    from django.db.models import Q, Count, Min, Max
     
     # Get min/max prices from available properties
     price_stats = properties_qs.aggregate(

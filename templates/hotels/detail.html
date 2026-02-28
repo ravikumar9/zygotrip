@@ -1,243 +1,208 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-<section class="section section-soft">
-  <div class="ota-container">
-    <!-- Property Header -->
-    <div class="mb-12">
-      <div class="d-flex gap-4 mb-6">
-        <span class="tag">Verified & Approved</span>
-        <span class="badge badge-success">⭐ 4.8</span>
-      </div>
-      <h1 class="mb-4">{{ property.name }}</h1>
-      <p class="text-lg text-secondary" >📍 {{ property.address }}, {{ property.city }}, {{ property.country }}</p>
-    </div>
+{% block title %}{{ property.name }} | Zygotrip{% endblock %}
 
-    <!-- Property Details & Booking Form -->
-    <div class="grid md:grid-cols-3 gap-8">
-      <!-- Property Details (Left) -->
-      <div class="md:col-span-2">
-        <!-- About Section -->
-        <div class="card">
-          <h3 class="card-title">About This Property</h3>
-          <p >{{ property.description }}</p>
-          
-          {% if property.latitude and property.longitude %}
-          <div class="m-8">
-            <h4 class="mb-4">📍 Location</h4>
-            <div class="rounded-lg overflow-hidden d-flex align-center justify-center bg-tertiary" >
-              <iframe 
-                width="100%" 
-                height="100%" 
-                frameborder="0" 
-                class="border-none" 
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDummyKeyForProd&q={{ property.latitude }},{{ property.longitude }}&zoom=15"
-                allowfullscreen="" 
-                loading="lazy">
-              </iframe>
-            </div>
-            <p class="mt-4 text-secondary text-sm" >
-              {{ property.address }} • {{ property.city }}, {{ property.country }}
-            </p>
-          </div>
-          {% endif %}
-          
-          <h4 class="mt-8 mb-4">🏊 Amenities</h4>
-          <div class="grid grid-cols-2 gap-3 mb-8">
-            <label class="d-flex align-center gap-3 font-normal m-0" >
-              <span >🏊</span> <span>Swimming Pool</span>
-            </label>
-            <label class="d-flex align-center gap-3 font-normal m-0" >
-              <span >🍽️</span> <span>Restaurant</span>
-            </label>
-            <label class="d-flex align-center gap-3 font-normal m-0" >
-              <span >📶</span> <span>Free WiFi</span>
-            </label>
-            <label class="d-flex align-center gap-3 font-normal m-0" >
-              <span >🚗</span> <span>Parking</span>
-            </label>
-            <label class="d-flex align-center gap-3 font-normal m-0" >
-              <span >🎒</span> <span>Luggage Storage</span>
-            </label>
-            <label class="d-flex align-center gap-3 font-normal m-0" >
-              <span >💼</span> <span>Business Center</span>
-            </label>
-          </div>
-
-          <h4 class="mb-4">📋 House Rules</h4>
-          <ul class="text-secondary">
-            <li>Check-in: 2:00 PM</li>
-            <li>Check-out: 11:00 AM</li>
-            <li>Pets: Not allowed</li>
-            <li>Smoking: Designated areas only</li>
-          </ul>
-        </div>
-
-        <!-- Rooms Section -->
-        <div class="card mt-8">
-          <h3 class="card-title">🛏️ Available Rooms</h3>
-          <p class="mb-6 text-secondary" >Choose your perfect room</p>
-          
-          <div class="grid md:grid-cols-2 gap-6">
-            {% for room_type in property.rooms.all|dictsort:"name" %}
-              <div class="rounded-lg p-6 border" >
-                <div class="d-flex justify-between mb-4 align-start" >
-                  <div>
-                    <h4 class="m-2">{{ room_type.name }}</h4>
-                    <p class="text-sm m-0 text-secondary" >{{ room_type.get_bed_type_display }}</p>
-                  </div>
-                  {% if room_type.images.first %}
-                    <div class="rounded-lg" ></div>
-                  {% else %}
-                    <div class="rounded-lg" ></div>
-                  {% endif %}
-                </div>
-                <p class="m-3 text-secondary text-sm" >{{ room_type.room_size_sqm|default:"25" }}m² • Max {{ room_type.max_guests }} guests</p>
-                {% if room_type.amenities.all %}
-                  <div class="d-flex flex-wrap gap-2 m-4">
-                    {% for amenity in room_type.amenities.all|slice:":4" %}
-                      <span class="badge badge-info text-xs">{{ amenity.name }}</span>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-              </div>
-            {% empty %}
-              <p class="text-muted">No room types configured yet. Contact property owner.</p>
-            {% endfor %}
-          </div>
-        </div>
-
-        <!-- Meals Section -->
-        <div class="card mt-8">
-          <h3 class="card-title">🍽️ Meal Plans Available</h3>
-          <p class="mb-6 text-secondary" >Add meals to your stay</p>
-          
-          <div class="grid md:grid-cols-2 gap-6">
-            {% for meal in property.meals.all|dictsort:"name" %}
-              <div class="border rounded-lg p-6 bg-secondary" >
-                <div class="d-flex align-center gap-3 mb-4">
-                  <span >{{ meal.icon|default:"🍽️" }}</span>
-                  <div>
-                    <h4 class="m-1">{{ meal.name }}</h4>
-                  </div>
-                </div>
-                <p class="m-3 text-secondary text-sm" >{{ meal.description|default:"Delicious meal option for your stay" }}</p>
-                <div class="pt-4 border-top">
-                  <p class="d-flex justify-between m-2 align-center">
-                    <strong class="text-lg" >{{ meal.name }} — ₹{{ meal.price|default:"500" }}</strong>
-                  </p>
-                </div>
-              </div>
-            {% empty %}
-              <p class="text-muted">No meal plans configured yet. Property provides standard breakfast.</p>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-
-      <!-- Booking Form (Right) -->
-      <div>
-        <div class="card">
-          <h3 class="card-title">🌍 Reserve Your Stay</h3>
-          <p class="mb-6 text-secondary" >Complete your booking in 3 steps</p>
-
-          <form method="post">
-            {% csrf_token %}
-            
-            <div class="form-group">
-              <label>🛏️ Room Type</label>
-              {{ form.room_type }}
-            </div>
-
-            <div class="form-group">
-              <label>🍽️ Meal Plan (Optional)</label>
-              {{ form.meal_plan }}
-              <p class="form-hint">Add meals to enhance your stay</p>
-            </div>
-
-            <div class="form-group">
-              <label>📅 Check In</label>
-              {{ form.check_in }}
-            </div>
-
-            <div class="form-group">
-              <label>📅 Check Out</label>
-              {{ form.check_out }}
-            </div>
-
-            <div class="form-group">
-              <label>🏠 Number of Rooms</label>
-              {{ form.quantity }}
-              <p class="form-hint">How many rooms do you need?</p>
-            </div>
-
-            <div class="form-group">
-              <label>👤 Guest Name</label>
-              {{ form.guest_full_name }}
-            </div>
-
-            <div class="form-group">
-              <label>🎂 Guest Age</label>
-              {{ form.guest_age }}
-            </div>
-
-            <div class="form-group">
-              <label>📧 Email Address</label>
-              {{ form.guest_email }}
-              <p class="form-hint">Confirmation will be sent here</p>
-            </div>
-
-            <div class="form-group">
-              <label>🎟️ Promo Code (Optional)</label>
-              {{ form.promo_code }}
-              <p class="form-hint">Have a discount code?</p>
-            </div>
-
-            <div class="card bg-secondary p-4 mb-6 border" >
-              <p class="mb-2 font-semibold text-muted text-xs" >💰 Price Summary</p>
-              <div class="d-flex justify-between mb-2">
-                <span class="text-secondary">Nights</span>
-                <strong id="price-preview-nights">0</strong>
-              </div>
-              <div class="d-flex justify-between pt-3 border-top">
-                <span class="font-semibold">Total</span>
-                <strong id="price-preview-total" class="text-lg" >₹0</strong>
-              </div>
-            </div>
-
-            <button type="submit" class="button button-accent button-block button-lg mb-4">
-              ✓ Proceed to Booking
-            </button>
-            <p class="text-center text-muted text-sm" >
-              🛡️ Secure booking • ✓ No charges yet
-            </p>
-          </form>
-        </div>
-
-        <!-- Trust Indicators -->
-        <div class="card mt-4">
-          <div class="d-flex gap-3 mb-4">
-            <span >🛡️</span>
-            <div>
-              <h4 class="m-2">Payment Protection</h4>
-              <p class="text-sm m-0">Secure transactions with buyer protection</p>
-            </div>
-          </div>
-          <div class="d-flex gap-3">
-            <span >✓</span>
-            <div>
-              <h4 class="m-2">Verified Property</h4>
-              <p class="text-sm m-0">Admin-approved with transparent pricing</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<script type="application/json" id="room-prices-data">{{ room_prices_json|safe }}</script>
-<script type="application/json" id="meal-prices-data">{{ meal_prices_json|safe }}</script>
-<script src="{% static 'js/hotel-detail.js' %}"></script>
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/details.css' %}" />
 {% endblock %}
+
+{% block content %}
+<div class="hotel-detail" data-page="hotel-detail" data-property-rating="{{ property.rating|default:0 }}" data-property-type="{{ property.property_type|lower|cut:' ' }}">
+  {% include "hotels/components/gallery_component.html" %}
+
+  <section class="hotel-detail__header container" id="overview">
+    <div class="hotel-detail__title">
+      <div class="hotel-detail__title-row">
+        <h1 class="heading-xl">{{ property.name }}</h1>
+        {% include "ui/components/rating_badge.html" with rating=property.rating reviews=property.review_count %}
+      </div>
+      {% if property.star_category %}
+        <div style="color: #f59e0b; font-size: 1rem; margin-bottom: 0.5rem;">
+          {% for i in "x"|ljust:property.star_category %}⭐{% endfor %} {{ property.star_category }}-Star {{ property.property_type }}
+        </div>
+      {% endif %}
+      <div class="hotel-detail__meta">
+        <span class="hotel-detail__location">
+          <span class="hotel-detail__location-icon" aria-hidden="true">📍</span>
+          <span>{{ property.address }}, {{ property.city }}, {{ property.country }}</span>
+        </span>
+        <span class="hotel-detail__reviews">{{ property.review_count }} reviews</span>
+      </div>
+      <div class="hotel-detail__trust trust-badges" role="list">
+        {% if property.is_trending %}
+          <span class="trust-badge trust-badge-scarcity" role="listitem"><span class="badge-icon">🔥</span><span class="badge-text">Trending</span></span>
+        {% endif %}
+        {% if property.has_free_cancellation %}
+          <span class="trust-badge trust-badge-flexibility" role="listitem"><span class="badge-icon">✓</span><span class="badge-text">Free cancellation</span></span>
+        {% endif %}
+        <span class="trust-badge trust-badge-quality" role="listitem"><span class="badge-icon">✔</span><span class="badge-text">Verified stay</span></span>
+        <span class="trust-badge trust-badge-location" role="listitem"><span class="badge-icon">📌</span><span class="badge-text">Prime location</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="hotel-detail__layout container" aria-label="Hotel detail">
+    <div class="hotel-detail__main">
+      {% include "hotels/components/tabs_component.html" %}
+
+      <section class="hotel-section reveal-on-scroll" id="overview" data-tab-content>
+        <div class="hotel-section__header">
+          <h2 class="heading-lg">Overview</h2>
+          <p class="body">{{ property.description }}</p>
+        </div>
+        <div class="hotel-highlights">
+          {% for offer in property.offers.all|slice:":4" %}
+            <div class="hotel-highlight">
+              <div class="hotel-highlight__title">{{ offer.title }}</div>
+              <div class="hotel-highlight__meta">Valid until {{ offer.valid_until }}</div>
+            </div>
+          {% empty %}
+            <div class="hotel-highlight">
+              <div class="hotel-highlight__title">Flexible stays</div>
+              <div class="hotel-highlight__meta">Free cancellation up to {{ property.cancellation_hours }} hours</div>
+            </div>
+            <div class="hotel-highlight">
+              <div class="hotel-highlight__title">Great location</div>
+              <div class="hotel-highlight__meta">Close to {{ property.landmark|default:property.city }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="hotel-section reveal-on-scroll" id="rooms" data-tab-content>
+        <div class="hotel-section__header hotel-section__header--split">
+          <div>
+            <h2 class="heading-lg">Rooms</h2>
+            <p class="body">Select a room that matches your stay and preferences.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" type="button" data-filter-toggle>
+            Filters
+          </button>
+        </div>
+
+        {% include "hotels/components/filters_panel.html" %}
+
+        <div class="room-grid" data-room-grid>
+          {% for room_type in property.room_types.all|dictsort:"name" %}
+            {% include "hotels/components/room_card.html" with room=room_type %}
+          {% empty %}
+            <div class="hotel-empty-state">No rooms available for the selected dates.</div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="hotel-section reveal-on-scroll" id="amenities" data-tab-content>
+        <div class="hotel-section__header">
+          <h2 class="heading-lg">Amenities</h2>
+          <p class="body">Everything you need for a comfortable stay.</p>
+        </div>
+        <div class="amenities-grid">
+          {% for amenity in property.amenities.all %}
+            <div class="amenity-item">
+              <span class="amenity-item__icon" aria-hidden="true">{{ amenity.icon|default:"•" }}</span>
+              <span class="amenity-item__label">{{ amenity.name }}</span>
+            </div>
+          {% empty %}
+            <div class="hotel-empty-state">Amenities information will appear here.</div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="hotel-section reveal-on-scroll" id="policies" data-tab-content>
+        <div class="hotel-section__header">
+          <h2 class="heading-lg">Policies</h2>
+          <p class="body">Know before you book.</p>
+        </div>
+        {% include "hotels/components/accordion_component.html" %}
+      </section>
+
+      <section class="hotel-section reveal-on-scroll" id="reviews" data-tab-content>
+        <div class="hotel-section__header">
+          <h2 class="heading-lg">Reviews</h2>
+          <p class="body">Verified guest feedback.</p>
+        </div>
+        <div class="review-summary">
+          <div class="review-summary__score">
+            <div class="review-score">{{ property.rating|floatformat:1 }}</div>
+            <div class="review-count">{{ property.review_count }} reviews</div>
+          </div>
+          <div class="review-summary__details">
+            <div class="review-detail">Cleanliness: {{ property.rating_breakdown.first.cleanliness|default:property.rating }}</div>
+            <div class="review-detail">Service: {{ property.rating_breakdown.first.service|default:property.rating }}</div>
+            <div class="review-detail">Location: {{ property.rating_breakdown.first.location|default:property.rating }}</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="hotel-detail__sidebar" aria-label="Booking summary">
+      <div class="booking-card" data-booking-card>
+        <div class="booking-card__header">
+          <div class="booking-card__price">
+            <span class="booking-card__amount">₹{{ property.base_price|default:0 }}</span>
+            <span class="booking-card__unit">/ night</span>
+          </div>
+          <div class="booking-card__tax">Includes taxes and fees</div>
+        </div>
+
+        <div class="booking-card__scarcity">
+          {% include "ui/components/scarcity_badge.html" with text="Limited rooms at this price" type="warning" %}
+        </div>
+
+        <form method="get" action="{% url 'hotels:booking' %}" class="booking-form" data-booking-form>
+          <input type="hidden" name="property" value="{{ property.slug }}" />
+          <div class="booking-form__group">
+            <label class="booking-form__label" for="id_room_type">Room type</label>
+            <select name="room_type" id="id_room_type" class="booking-form__select" required>
+              <option value="">Select a room</option>
+              {% for room in property.room_types.all %}
+                <option value="{{ room.id }}">{{ room.name }} - ₹{{ room.base_price }}/night</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="booking-form__row">
+            <div class="booking-form__group">
+              <label class="booking-form__label" for="id_check_in">Check in</label>
+              <input type="date" name="checkin" id="id_check_in" class="booking-form__input" value="{{ detail_params.checkin }}" required />
+            </div>
+            <div class="booking-form__group">
+              <label class="booking-form__label" for="id_check_out">Check out</label>
+              <input type="date" name="checkout" id="id_check_out" class="booking-form__input" value="{{ detail_params.checkout }}" required />
+            </div>
+          </div>
+          <div class="booking-form__row">
+            <div class="booking-form__group">
+              <label class="booking-form__label" for="id_rooms">Rooms</label>
+              <input type="number" name="rooms" id="id_rooms" class="booking-form__input" value="{{ detail_params.rooms|default:1 }}" min="1" max="10" required />
+            </div>
+            <div class="booking-form__group">
+              <label class="booking-form__label" for="id_adults">Adults</label>
+              <input type="number" name="adults" id="id_adults" class="booking-form__input" value="{{ detail_params.adults|default:1 }}" min="1" max="10" required />
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg primary-button" type="submit">
+            Continue to Book
+          </button>
+        </form>
+      </div>
+    </aside>
+  </section>
+
+  {% include "hotels/components/mobile_bar.html" %}
+</div>
+
+<script defer src="{% static 'js/details.js' %}"></script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

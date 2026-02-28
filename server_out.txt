@@ -1,0 +1,142 @@
+============================================================
+[DEV] RUNNING IN SAFE DEV MODE (LOCAL TESTING)
+============================================================
+[OK] SSL redirect disabled
+[OK] Secure cookies disabled
+[OK] HSTS disabled
+[OK] Celery eager execution enabled
+============================================================
+INFO:     127.0.0.1:49970 - "GET /register/property-owner/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52390 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54314 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54109 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53129 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59607 - "GET /static/js/components.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52390 - "GET /static/js/components/autocomplete.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54314 - "GET /static/js/components/ui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59085 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59085 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59085 - "POST /register/property-owner/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59085 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52390 - "POST /register/property-owner/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52390 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59085 - "GET /register/property-owner/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59085 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53129 - "POST /register/property-owner/ HTTP/1.1" 302 Found
+INFO:     127.0.0.1:53129 - "GET /owner/dashboard/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53129 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54314 - "GET /accounts/logout/ HTTP/1.1" 302 Found
+INFO:     127.0.0.1:54314 - "GET /login/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54314 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54314 - "GET /accounts/login/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53129 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59607 - "POST /accounts/login/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54109 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54314 - "GET /accounts/login/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53129 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54109 - "POST /accounts/login/ HTTP/1.1" 302 Found
+INFO:     127.0.0.1:54109 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54109 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59607 - "GET /owner/dashboard/properties/add/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59607 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54109 - "POST /owner/dashboard/properties/add/ HTTP/1.1" 302 Found
+INFO:     127.0.0.1:54109 - "GET /owner/dashboard/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53129 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/img/globe.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59085 - "GET /owner/dashboard/properties/97/rooms/add/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59607 - "GET /static/css/base.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/css/system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59085 - "GET /static/css/design-system.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54314 - "GET /static/css/components.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53129 - "GET /static/css/layout.css?v=professional20260227v2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54109 - "GET /static/js/components.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52390 - "GET /static/js/components/ui.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/js/components/autocomplete.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59607 - "GET /static/img/globe.svg HTTP/1.1" 200 OK

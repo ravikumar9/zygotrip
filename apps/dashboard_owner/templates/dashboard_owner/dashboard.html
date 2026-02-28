@@ -6,7 +6,7 @@
   <section class="section">
     <div class="section-header">
       <h1 class="page-title">Property Owner Dashboard</h1>
-      <a href="{% url 'dashboard_owner:add_property' %}" class="btn primary">+ Add New Property</a>
+      <a href="{% url 'dashboard_owner:add_property' %}" class="btn btn-primary primary-button">+ Add New Property</a>
     </div>
 
     {% if messages %}
@@ -31,16 +31,16 @@
 
             <div class="p-4">
               <h3 class="text-lg font-semibold mb-2">{{ property.name }}</h3>
-              <p class="text-sm text-secondary mb-3">{{ property.city }}, {{ property.country }}</p>
+              <p class="text-sm mb-3">{{ property.city }}, {{ property.country }}</p>
 
               <div class="property-actions mb-4">
-                <a href="{% url 'dashboard_owner:add_property_image' property.id %}" class="btn ghost btn-sm">Gallery</a>
-                <a href="{% url 'dashboard_owner:add_room' property.id %}" class="btn ghost btn-sm">Rooms</a>
-                <a href="{% url 'dashboard_owner:add_meal' property.id %}" class="btn ghost btn-sm">Meals</a>
-                <a href="{% url 'dashboard_owner:add_offer' property.id %}" class="btn ghost btn-sm">Offers</a>
+                <a href="{% url 'dashboard_owner:add_property_image' property.id %}" class="btn btn-ghost btn-sm">Gallery</a>
+                <a href="{% url 'dashboard_owner:add_room' property.id %}" class="btn btn-ghost btn-sm">Rooms</a>
+                <a href="{% url 'dashboard_owner:add_meal' property.id %}" class="btn btn-ghost btn-sm">Meals</a>
+                <a href="{% url 'dashboard_owner:add_offer' property.id %}" class="btn btn-ghost btn-sm">Offers</a>
               </div>
 
-              <p class="text-xs text-secondary">
+              <p class="text-xs">
               0 rooms • 0 meal plans
               </p>
             </div>
@@ -50,48 +50,23 @@
     {% else %}
       <div class="card text-center py-12">
         <h3 class="text-lg font-semibold mb-2">No Properties Yet</h3>
-        <p class="text-secondary mb-4">Start by adding your first property to get started.</p>
-        <a href="{% url 'dashboard_owner:add_property' %}" class="btn primary">Add Property</a>
+        <p class="mb-4">Start by adding your first property to get started.</p>
+        <a href="{% url 'dashboard_owner:add_property' %}" class="btn btn-primary primary-button">Add Property</a>
       </div>
     {% endif %}
   </section>
 </div>
 
-<style>
-.property-card {
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
 
-.property-image {
-  width: 100%;
-  height: 200px;
-  background: var(--bg-light);
-  overflow: hidden;
-}
-
-.property-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.property-image .placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-light);
-  color: var(--text-secondary);
-}
-
-.property-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-</style>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+

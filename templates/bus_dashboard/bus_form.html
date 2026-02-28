@@ -8,8 +8,30 @@
       <form method="post">
         {% csrf_token %}
         <div class="mb-4">
+          <label class="auth-label">Bus Number</label>
+          <input type="text" name="bus_number" required />
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Bus Type</label>
+          <select name="bus_type" required>
+            <option value="">Select type</option>
+            <option value="ac">AC</option>
+            <option value="sleeper">Sleeper</option>
+            <option value="semi_sleeper">Semi Sleeper</option>
+            <option value="seater">Seater</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Total Seats</label>
+          <input type="number" name="total_seats" required />
+        </div>
+        <div class="mb-4">
+          <label class="auth-label">Route</label>
+          <input type="text" name="route" placeholder="City A to City B" required />
+        </div>
+        <div class="mb-4">
           <label class="auth-label">Registration Number</label>
-          <input type="text" name="registration_number" required />
+          <input type="text" name="registration_number" />
         </div>
         <div class="mb-4">
           <label class="auth-label">Operator Name</label>
@@ -53,3 +75,14 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+

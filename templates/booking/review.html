@@ -4,20 +4,14 @@
 {% block content %}
 <section class="section">
   <div class="ota-container">
-    <h1 class="mb-12">Review Your Booking</h1>
+    <div class="booking-header">
+      <h1 class="mb-12">Review Your Booking</h1>
+      <span class="booking-status-badge" data-status="{{ booking.status }}">{{ booking.get_status_display }}</span>
+    </div>
 
     <!-- Booking Timer -->
     {% if booking.timer_expires_at %}
-    <div class="booking-timer" data-booking-timer data-expires-at="{{ booking.timer_expires_at|date:'c' }}" data-booking-id="{{ booking.uuid }}">
-      <div class="booking-timer-label">
-        <span>⏰ Time Remaining:</span>
-      </div>
-      <div class="booking-timer-display">
-        <span data-timer-minutes>10</span>
-        <span class="booking-timer-separator">:</span>
-        <span data-timer-seconds>00</span>
-      </div>
-    </div>
+      <span id="timer" data-time="{{ booking.timer_seconds }}"></span>
     {% endif %}
 
     <div class="grid md:grid-cols-3 gap-8">
@@ -27,25 +21,25 @@
           <h3 class="card-title">Booking Details</h3>
           
           <!-- Property Info -->
-          <div class="p-6 rounded-lg mb-8 bg-tertiary" >
+          <div class="p-6 rounded-lg mb-8" >
             <h4 class="m-2">{{ booking.property.name }}</h4>
-            <p class="m-4 text-secondary" >{{ booking.property.city }}, {{ booking.property.country }}</p>
+            <p class="m-4" >{{ booking.property.city }}, {{ booking.property.country }}</p>
             
             <div class="d-grid gap-4 mt-4" >
               <div>
-                <p class="m-2 text-xs text-muted" >Check In</p>
+                <p class="m-2 text-xs" >Check In</p>
                 <p class="font-semibold m-0">{{ booking.check_in }}</p>
               </div>
               <div>
-                <p class="m-2 text-xs text-muted" >Check Out</p>
+                <p class="m-2 text-xs" >Check Out</p>
                 <p class="font-semibold m-0">{{ booking.check_out }}</p>
               </div>
               <div>
-                <p class="m-2 text-xs text-muted" >Duration</p>
+                <p class="m-2 text-xs" >Duration</p>
                 <p class="font-semibold m-0">{{ nights }} night{{ nights|pluralize }}</p>
               </div>
               <div>
-                <p class="m-2 text-xs text-muted" >Rooms</p>
+                <p class="m-2 text-xs" >Rooms</p>
                 <p class="font-semibold m-0">{{ booking.quantity }}</p>
               </div>
             </div>
@@ -54,16 +48,16 @@
           <!-- Guest Info -->
           <h4 class="m-6">Guest Information</h4>
           <div class="d-grid gap-4 mb-8" >
-            <div class="p-4 rounded bg-tertiary" >
-              <p class="m-2 text-xs text-muted" >Name</p>
+            <div class="p-4 rounded" >
+              <p class="m-2 text-xs" >Name</p>
               <p class="font-semibold m-0">{{ booking.guest_name }}</p>
             </div>
-            <div class="p-4 rounded bg-tertiary" >
-              <p class="m-2 text-xs text-muted" >Email</p>
+            <div class="p-4 rounded" >
+              <p class="m-2 text-xs" >Email</p>
               <p class="font-semibold text-sm m-0">{{ booking.guest_email }}</p>
             </div>
-            <div class="p-4 rounded bg-tertiary" >
-              <p class="m-2 text-xs text-muted" >Phone</p>
+            <div class="p-4 rounded" >
+              <p class="m-2 text-xs" >Phone</p>
               <p class="font-semibold text-sm m-0">{{ booking.guest_phone|default:"N/A" }}</p>
             </div>
           </div>
@@ -116,12 +110,12 @@
 
           <form method="post">
             {% csrf_token %}
-            <button type="submit" class="button button-accent button-block button-lg">
-              Proceed to Payment
+            <button type="submit" class="button button-accent button-block button-lg" style="font-size:16px;font-weight:700;letter-spacing:0.02em;">
+              ✅ Proceed to Payment →
             </button>
           </form>
 
-          <p class="text-center mt-4 text-muted text-sm" >
+          <p class="text-center mt-4 text-sm" >
             ✓ You won't be charged until you confirm payment
           </p>
         </div>
@@ -130,6 +124,17 @@
   </div>
 </section>
 <script src="{% static 'js/booking-review.js' %}"></script>
-<script src="{% static 'js/booking-timer.js' %}"></script>
+<script src="{% static 'js/timer.js' %}"></script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

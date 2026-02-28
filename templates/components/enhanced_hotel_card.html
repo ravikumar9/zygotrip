@@ -1,6 +1,6 @@
 {% load static %}
 <!-- Enhanced Hotel Card Component - OTA-Grade Layout -->
-<div class="hotel-card">
+<div class="hotel-card" data-hotel-card>
   <div class="hotel-card__media">
     {% if hotel.image_url %}
       <img src="{{ hotel.image_url }}" alt="{{ hotel.name }}" class="hotel-card__image" loading="lazy" />
@@ -18,7 +18,7 @@
 
     {% if hotel.rooms_left and hotel.rooms_left <= 3 %}
       <div class="hotel-card__scarcity">
-        {% include "ui/components/scarcity_badge.html" with text="Only "|add:hotel.rooms_left|add:" rooms left" %}
+        {% include "ui/components/scarcity_badge.html" with text="Only"|add:hotel.rooms_left|add:" rooms left" %}
       </div>
     {% endif %}
   </div>
@@ -79,6 +79,18 @@
     {% endif %}
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

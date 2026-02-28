@@ -1,10 +1,17 @@
 from django.apps import apps
+from django.core.exceptions import FieldDoesNotExist
 from django.shortcuts import get_object_or_404
 
 
 def get_owner_properties(user):
     property_model = apps.get_model('hotels', 'Property')
-    return property_model.objects.filter(owner=user, is_active=True).prefetch_related('room_types', 'images', 'offers')
+    filters = {"owner": user}
+    try:
+        property_model._meta.get_field('is_active')
+        filters["is_active"] = True
+    except FieldDoesNotExist:
+        pass
+    return property_model.objects.filter(**filters).prefetch_related('room_types', 'images', 'offers')
 
 
 def get_property_or_404(property_id, user):

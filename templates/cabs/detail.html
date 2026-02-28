@@ -52,14 +52,14 @@
             <span class="badge badge-success">Active</span>
           </div>
 
-          <div class="p-4 rounded mb-6 bg-secondary" >
+          <div class="p-4 rounded mb-6" >
             <div class="d-flex justify-between align-center">
               <div>
-                <p class="mb-1 text-secondary text-sm" >Rate per km</p>
+                <p class="mb-1 text-sm" >Rate per km</p>
                 <strong class="text-2xl" >₹{{ cab.system_price_per_km }}</strong>
               </div>
               <div>
-                <p class="mb-1 text-secondary text-sm" >Base Fare</p>
+                <p class="mb-1 text-sm" >Base Fare</p>
                 <strong class="text-xl">₹50</strong>
               </div>
             </div>
@@ -70,19 +70,19 @@
             <h3 class="mb-3 font-semibold">Specifications</h3>
             <div class="d-grid gap-4" >
               <div>
-                <p class="text-sm text-secondary" >Seats</p>
+                <p class="text-sm" >Seats</p>
                 <p class="font-semibold">{{ cab.get_seats_display }}</p>
               </div>
               <div>
-                <p class="text-sm text-secondary" >Fuel Type</p>
+                <p class="text-sm" >Fuel Type</p>
                 <p class="font-semibold">{{ cab.get_fuel_type_display }}</p>
               </div>
               <div>
-                <p class="text-sm text-secondary" >Owner Price</p>
+                <p class="text-sm" >Owner Price</p>
                 <p class="font-semibold">₹{{ cab.base_price_per_km }}/km</p>
               </div>
               <div>
-                <p class="text-sm text-secondary" >Platform Margin</p>
+                <p class="text-sm" >Platform Margin</p>
                 <p class="font-semibold">₹{{ cab.system_price_per_km|add:"-"|add:cab.base_price_per_km }}</p>
               </div>
             </div>
@@ -96,7 +96,7 @@
                 {% for slot in availability %}
                   <div class="p-2 border rounded text-center" >
                     <p class="m-1 text-xs">{{ slot.date|date:"d" }}</p>
-                    <p class="text-xs text-secondary" >{{ slot.date|date:"M" }}</p>
+                    <p class="text-xs" >{{ slot.date|date:"M" }}</p>
                   </div>
                 {% endfor %}
               </div>
@@ -108,7 +108,7 @@
             <a href="/cabs/{{ cab.id }}/book/" class="button button-primary button-block p-4">Book Now</a>
           {% else %}
             <a href="/accounts/login/?next=/cabs/{{ cab.id }}/book/" class="button button-secondary button-block p-4">Login to Book</a>
-            <p class="text-center mb-2 text-secondary" >
+            <p class="text-center mb-2" >
               Login to book this cab
             </p>
           {% endif %}
@@ -118,4 +118,15 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

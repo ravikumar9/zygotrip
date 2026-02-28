@@ -1,3 +1,41 @@
+from django.db import models
+from django.utils.text import slugify
+
+
+class SearchIndex(models.Model):
+    TYPE_CITY = "city"
+    TYPE_AREA = "area"
+    TYPE_PROPERTY = "property"
+
+    TYPE_CHOICES = [
+        (TYPE_CITY, "City"),
+        (TYPE_AREA, "Area"),
+        (TYPE_PROPERTY, "Property"),
+    ]
+
+    name = models.CharField(max_length=200)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    property_count = models.IntegerField(null=True, blank=True)
+    slug = models.SlugField(max_length=220)
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["type", "name"]),
+            models.Index(fields=["slug"]),
+        ]
+        unique_together = ["type", "slug"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)[:220]
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.type}: {self.name}"
+
+
 # No models in search app - uses other app models
 class SearchResult:
     """

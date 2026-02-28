@@ -16,99 +16,25 @@ from .selectors import (
 	get_cab_availability,
 )
 from .services import get_best_coupon, create_cab_booking, set_system_price, update_cab_details, deactivate_cab
+from .ota_selectors import get_ota_context
 
 
 def cab_list(request):
+	"""LIST CABS: Backend-driven OTA listing
+	
+	Uses get_ota_context() from ota_selectors.py
+	Enforces all 8 OTA rules for consistent filtering
 	"""
-	Cab listing with server-side filtering
-	"""
-	# Search
-	search_query = request.GET.get('q', '') or ''
-
-	# City filter
-	selected_cities = request.GET.getlist('city') or []
-	if selected_cities:
-		cabs = cabs.filter(city__in=selected_cities)
-
-	# Seats filter
-	selected_seats = request.GET.getlist('seats') or []
-	if selected_seats:
-		try:
-			selected_seats = [int(s) for s in selected_seats]
-		except (ValueError, TypeError):
-			selected_seats = []
-
-	# Fuel type filter
-	selected_fuels = request.GET.getlist('fuel_type') or []
-
-	# Price filter
-	max_price = request.GET.get('max_price') or ''
-	min_price = request.GET.get('min_price') or ''
-	max_price_val = None
-	min_price_val = None
-	try:
-		from decimal import InvalidOperation
-		if max_price:
-			max_price_val = Decimal(str(max_price).strip())
-		if min_price:
-			min_price_val = Decimal(str(min_price).strip())
-	except (ValueError, TypeError, InvalidOperation):
-		max_price = ''
-		min_price = ''
-		max_price_val = None
-		min_price_val = None
-
-	# Sorting
-	sort_by = request.GET.get('sort', '').strip()
-	filters = {
-		'search_query': search_query,
-		'selected_cities': selected_cities,
-		'selected_seats': selected_seats,
-		'selected_fuels': selected_fuels,
-		'max_price_val': max_price_val,
-		'min_price_val': min_price_val,
-		'sort_by': sort_by,
-	}
-	cabs = get_cab_queryset(filters)
-
-	# Pagination
-	page = request.GET.get('page') or 1
-	page_obj = paginate_cabs(cabs, page)
-
-	# Apply data contract serialization
-	cards = CabRenderReadySerializer.serialize_listing_cards(page_obj.object_list)
-
-	context = {
-		'page_obj': page_obj,
-		'cards': cards,
-		'cabs': list(page_obj.object_list),
-		'form': CabFilterForm(),
-		'_test_marker': 'CAB_LIST_VIEW_MODIFIED_SUCCESS_12345',
-		'filter_labels': ['Vehicle Type', 'Seating Capacity', 'Price Range'],
-		'filters': {
-			'search_query': search_query,
-			'selected_cities': selected_cities,
-			'selected_seats': selected_seats,
-			'selected_fuels': selected_fuels,
-			'max_price': max_price or '500',
-			'min_price': min_price or '0',
-			'sort_by': sort_by,
-		},
-		'pagination': {
-			'page_obj': page_obj,
-			'page': page_obj.number,
-			'num_pages': page_obj.paginator.num_pages,
-			'has_previous': page_obj.has_previous(),
-			'has_next': page_obj.has_next(),
-			'previous_page_number': page_obj.previous_page_number() if page_obj.has_previous() else None,
-			'next_page_number': page_obj.next_page_number() if page_obj.has_next() else None,
-		},
-		'meta': {
-			'total_results': page_obj.paginator.count,
-		},
-		'page_title': 'Cabs - Zygotrip',
-		'empty_state': len(cards) == 0,
-	}
+	context = get_ota_context(request)
+	
+	# Ensure all required context fields are present
+	context.setdefault('empty_state', True)
+	context.setdefault('total_count', 0)
+	context.setdefault('filter_options', {})
+	context.setdefault('selected_filters', {})
+	context.setdefault('current_sort', 'popular')
+	context.setdefault('page_title', 'Cabs - Zygotrip')
+	
 	return render(request, 'cabs/list.html', context)
 
 

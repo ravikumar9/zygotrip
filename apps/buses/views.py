@@ -13,56 +13,24 @@ from .selectors import (
     get_available_seats,
 )
 from .services import ensure_bus_seats, create_bus_booking, ensure_default_bus_type
+from .ota_selectors import get_ota_context
 
 def list_buses(request):
-    from_city = request.GET.get('from_city', '').strip()
-    to_city = request.GET.get('to_city', '').strip()
-    journey_date = request.GET.get('date', '').strip()
-    search_query = request.GET.get('q', '').strip()
-
-    sort_by = request.GET.get('sort', '').strip()
-    filters = {
-        'from_city': from_city,
-        'to_city': to_city,
-        'journey_date': journey_date,
-        'search_query': search_query,
-        'sort_by': sort_by,
-    }
-    buses = get_bus_queryset(filters)
-    page = request.GET.get('page', '1')
-    page_obj = paginate_buses(buses, page)
-
-    # Apply data contract serialization
-    cards = BusRenderReadySerializer.serialize_listing_cards(page_obj.object_list)
-
-    context = {
-        'cards': cards,
-        'buses': list(page_obj.object_list),
-        'from_city': from_city,
-        'to_city': to_city,
-        'journey_date': journey_date,
-        'search_query': search_query,
-        'sort_by': sort_by,
-        'filter_labels': ['Bus Type', 'Departure Time', 'Operator'],
-        'pagination': {
-            'page_obj': page_obj,
-            'page': page_obj.number,
-            'num_pages': page_obj.paginator.num_pages,
-            'has_previous': page_obj.has_previous(),
-            'has_next': page_obj.has_next(),
-            'previous_page_number': page_obj.previous_page_number() if page_obj.has_previous() else None,
-            'next_page_number': page_obj.next_page_number() if page_obj.has_next() else None,
-        },
-        'filters': {
-            'from_city': from_city,
-            'to_city': to_city,
-            'journey_date': journey_date,
-            'search_query': search_query,
-            'sort_by': sort_by,
-        },
-        'page_title': 'Bus Tickets - Zygotrip',
-        'empty_state': len(cards) == 0,
-    }
+    """LIST BUSES: Backend-driven OTA listing
+    
+    Uses get_ota_context() from ota_selectors.py
+    Enforces all 8 OTA rules for consistent filtering
+    """
+    context = get_ota_context(request)
+    
+    # Ensure all required context fields are present
+    context.setdefault('empty_state', True)
+    context.setdefault('total_count', 0)
+    context.setdefault('filter_options', {})
+    context.setdefault('selected_filters', {})
+    context.setdefault('current_sort', 'popular')
+    context.setdefault('page_title', 'Bus Tickets - Zygotrip')
+    
     return render(request, 'buses/list.html', context)
 
 def bus_detail(request, bus_id):

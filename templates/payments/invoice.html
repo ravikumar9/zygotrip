@@ -23,11 +23,11 @@
         <!-- Invoice Details -->
         <div class="d-grid gap-8 p-8 border-top border-bottom mb-8" >
           <div>
-            <p class="m-2 text-xs text-muted" >Invoice Number</p>
+            <p class="m-2 text-xs" >Invoice Number</p>
             <p class="font-semibold m-0 text-lg" >{{ invoice.uuid }}</p>
           </div>
           <div class="text-right">
-            <p class="m-2 text-xs text-muted" >Issue Date</p>
+            <p class="m-2 text-xs" >Issue Date</p>
             <p class="font-semibold m-0">{{ invoice.issued_at|date:"M d, Y" }}</p>
           </div>
         </div>
@@ -35,36 +35,36 @@
         <!-- Billing Information -->
         <div class="d-grid gap-8 mb-8" >
           <div>
-            <h4 class="m-4 text-xs text-muted" >Bill To</h4>
+            <h4 class="m-4 text-xs" >Bill To</h4>
             <p class="font-semibold m-2">{{ invoice.booking.user.full_name }}</p>
-            <p class="m-0 text-secondary" >{{ invoice.booking.user.email }}</p>
+            <p class="m-0" >{{ invoice.booking.user.email }}</p>
           </div>
           <div>
-            <h4 class="m-4 text-xs text-muted" >Property</h4>
+            <h4 class="m-4 text-xs" >Property</h4>
             <p class="font-semibold m-2">{{ invoice.booking.property.name }}</p>
-            <p class="m-0 text-secondary" >{{ invoice.booking.property.address }}</p>
-            <p class="m-0 text-secondary" >{{ invoice.booking.property.city }}, {{ invoice.booking.property.country }}</p>
+            <p class="m-0" >{{ invoice.booking.property.address }}</p>
+            <p class="m-0" >{{ invoice.booking.property.city }}, {{ invoice.booking.property.country }}</p>
           </div>
         </div>
 
         <!-- Booking Details -->
-        <div class="p-6 rounded-lg mb-8 bg-tertiary" >
+        <div class="p-6 rounded-lg mb-8" >
           <h4 class="m-4">Booking Details</h4>
           <div class="d-grid gap-4" >
             <div>
-              <p class="m-2 text-sm text-muted" >Check In</p>
+              <p class="m-2 text-sm" >Check In</p>
               <p class="font-semibold m-0">{{ invoice.booking.check_in }}</p>
             </div>
             <div>
-              <p class="m-2 text-sm text-muted" >Check Out</p>
+              <p class="m-2 text-sm" >Check Out</p>
               <p class="font-semibold m-0">{{ invoice.booking.check_out }}</p>
             </div>
             <div>
-              <p class="m-2 text-sm text-muted" >Rooms</p>
+              <p class="m-2 text-sm" >Rooms</p>
               <p class="font-semibold m-0">{{ invoice.booking.quantity }}</p>
             </div>
             <div>
-              <p class="m-2 text-sm text-muted" >Booking Reference</p>
+              <p class="m-2 text-sm" >Booking Reference</p>
               <p class="font-semibold m-0">{{ invoice.booking.uuid|truncatechars:12 }}</p>
             </div>
           </div>
@@ -127,4 +127,15 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

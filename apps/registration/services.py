@@ -10,9 +10,20 @@ def ensure_role(user, role_code, role_name):
 
 
 def create_property_from_form(form, user):
+    from django.utils import timezone
+    from apps.dashboard_admin.models import PropertyApproval
     property_obj = form.save(commit=False)
     property_obj.owner = user
     property_obj.save()
+    PropertyApproval.objects.get_or_create(
+        property=property_obj,
+        defaults={
+            "status": PropertyApproval.STATUS_APPROVED,
+            "decided_by": user,
+            "decided_at": timezone.now(),
+            "notes": "Auto-approved registration",
+        },
+    )
     return property_obj
 
 

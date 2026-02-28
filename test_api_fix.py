@@ -43,7 +43,7 @@ request = factory.get('/api/search/hotels/', {'q': 'delhi', 'page': '1'})
 
 # Simulate the search_hotels view
 from apps.hotels.models import Property
-from django.paginator import Paginator
+from django.core.paginator import Paginator
 
 hotels = Property.objects.filter(
     name__icontains='delhi'

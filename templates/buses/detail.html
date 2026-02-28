@@ -14,22 +14,22 @@
           <h2 class="card-title">{{ bus.operator_name }} - {{ bus.from_city }} to {{ bus.to_city }}</h2>
           
           <div class="mb-8">
-            <p class="m-0 text-secondary" >
+            <p class="m-0" >
               <span class="font-semibold">Departure:</span> {{ bus.departure_time }} 
               | <span class="font-semibold">Arrival:</span> {{ bus.arrival_time }}
             </p>
           </div>
 
           <!-- Seat Layout Grid -->
-          <div class="p-8 rounded-lg mb-8 bg-tertiary" >
+          <div class="p-8 rounded-lg mb-8" >
             <h3 class="m-6">Select Your Seats</h3>
             
             <div class="d-grid gap-2 mb-6" >
               {% for row, seats in seats_by_row.items %}
-                {% if forloop.first %}<div class="font-semibold text-muted text-xs" >Row {{ row }}</div>{% endif %}
+                {% if forloop.first %}<div class="font-semibold text-xs" >Row {{ row }}</div>{% endif %}
                 {% for seat in seats %}
                   <button 
-                    class="seat-button bg-gray p-3 rounded font-semibold text-xs" 
+                    class="seat-button p-3 rounded font-semibold text-xs" 
                     {% if seat.state != 'available' %}disabled{% endif %}
                     title="{% if seat.is_ladies_seat %}Ladies Seat - {% endif %}{{ seat.get_state_display }}"
                   >
@@ -42,19 +42,19 @@
             <!-- Legend -->
             <div class="d-flex gap-6 flex-wrap text-sm">
               <div class="d-flex align-center gap-2">
-                <div class="rounded bg-white border" ></div>
+                <div class="rounded border" ></div>
                 <span>Available</span>
               </div>
               <div class="d-flex align-center gap-2">
-                <div class="rounded bg-ladies border" ></div>
+                <div class="rounded  border" ></div>
                 <span>Ladies Only</span>
               </div>
               <div class="d-flex align-center gap-2">
-                <div class="rounded bg-gray border" ></div>
+                <div class="rounded border" ></div>
                 <span>Booked</span>
               </div>
               <div class="d-flex align-center gap-2">
-                <div class="rounded bg-white border" ></div>
+                <div class="rounded border" ></div>
                 <span>Selected</span>
               </div>
             </div>
@@ -62,7 +62,7 @@
 
           <!-- Amenities -->
           {% if amenities %}
-            <div class="p-6 rounded-lg bg-secondary" >
+            <div class="p-6 rounded-lg" >
               <h4 class="m-4">Amenities</h4>
               <div class="d-flex flex-wrap gap-3">
                 {% for amenity in amenities %}
@@ -76,7 +76,7 @@
 
       <!-- Price Summary (Sidebar) -->
       <div>
-        <div class="card sticky" >
+        <div class="card sticky" data-price-per-seat="{{ bus.price_per_seat|default:0 }}">
           <h3 class="card-title">Booking Summary</h3>
           
           <div class="mb-6 pb-6 border-bottom">
@@ -105,8 +105,8 @@
             </div>
           </div>
 
-          <div class="p-4 rounded-lg mb-6 bg-accent" >
-            <p class="m-2 text-sm text-muted" >Total Amount</p>
+          <div class="p-4 rounded-lg mb-6" >
+            <p class="m-2 text-sm" >Total Amount</p>
             <p class="font-bold text-2xl m-0" >₹<span id="total">0</span></p>
           </div>
 
@@ -131,7 +131,8 @@
 
   function updatePrice() {
     const selectedSeats = document.querySelectorAll('.seat-button[style*="border-color: var(--color-accent)"]').length;
-    const pricePerSeat = {{ bus.price_per_seat }};
+    const priceContainer = document.querySelector('[data-price-per-seat]');
+    const pricePerSeat = Number(priceContainer?.dataset.pricePerSeat || 0);
     const subtotal = selectedSeats * pricePerSeat;
     const serviceFee = 50;
     const gst = Math.round(subtotal * 0.05);
@@ -144,4 +145,15 @@
   }
 </script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

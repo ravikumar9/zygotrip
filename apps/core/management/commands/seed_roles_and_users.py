@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.apps import apps
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.db.utils import OperationalError
 
 User = apps.get_model('accounts', 'User')
 Role = apps.get_model('accounts', 'Role')
@@ -9,7 +10,10 @@ Permission = apps.get_model('accounts', 'Permission')
 RolePermission = apps.get_model('accounts', 'RolePermission')
 UserRole = apps.get_model('accounts', 'UserRole')
 Wallet = apps.get_model('wallet', 'Wallet')
-WalletTransaction = apps.get_model('wallet', 'WalletTransaction')
+try:
+    WalletTransaction = apps.get_model('wallet', 'WalletTransaction')
+except LookupError:
+    WalletTransaction = None
 
 
 class Command(BaseCommand):
@@ -208,22 +212,25 @@ class Command(BaseCommand):
             role = Role.objects.get(code=role_code)
             UserRole.objects.get_or_create(user=user, role=role)
             
-            # Create or update wallet
-            wallet, wallet_created = Wallet.objects.get_or_create(
-                user=user,
-                defaults={'balance': wallet_initial}
-            )
-            
-            if wallet_created:
-                # Log initial wallet funding
-                WalletTransaction.objects.create(
-                    wallet=wallet,
-                    transaction_type='credit',
-                    amount=wallet_initial,
-                    description='Initial wallet funding',
-                    reference_id=f'INIT-{user.id}',
-                    status='completed'
+            # Create or update wallet (skip if wallet tables not migrated)
+            try:
+                wallet, wallet_created = Wallet.objects.get_or_create(
+                    user=user,
+                    defaults={'balance': wallet_initial}
                 )
+
+                if wallet_created and WalletTransaction is not None:
+                    # Log initial wallet funding
+                    WalletTransaction.objects.create(
+                        wallet=wallet,
+                        transaction_type='credit',
+                        amount=wallet_initial,
+                        description='Initial wallet funding',
+                        reference_id=f'INIT-{user.id}',
+                        status='completed'
+                    )
+            except OperationalError:
+                self.stdout.write('  ⚠ Wallet tables missing; skipping wallet seed')
             
             status = '(created)' if created else '(exists)'
-            self.stdout.write(f'  ✓ User: {user.email} [{role.name}] wallet: ₹{wallet.balance} {status}')
+            self.stdout.write(f'  ✓ User: {user.email} [{role.name}] {status}')

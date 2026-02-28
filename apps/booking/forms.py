@@ -32,8 +32,16 @@ class BookingCreateForm(forms.Form):
         self.fields['check_out'].widget.attrs['required'] = 'required'
         
         if property_obj:
-            self.fields['room_type'].queryset = property_obj.room_types.filter(is_active=True)
-            self.fields['meal_plan'].queryset = property_obj.meal_plans.filter(is_active=True)
+            room_types = property_obj.room_types.all()
+            if hasattr(RoomType, 'is_active'):
+                room_types = room_types.filter(is_active=True)
+            self.fields['room_type'].queryset = room_types
+
+            if hasattr(property_obj, 'meal_plans'):
+                meal_plans = property_obj.meal_plans.all()
+                if meal_plans.model and hasattr(meal_plans.model, 'is_active'):
+                    meal_plans = meal_plans.filter(is_active=True)
+                self.fields['meal_plan'].queryset = meal_plans
     
     def clean_check_in(self):
         """Backend validation for check-in date"""

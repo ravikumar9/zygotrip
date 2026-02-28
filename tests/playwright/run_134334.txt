@@ -1,0 +1,59 @@
+﻿
+Running 1 test using 1 worker
+
+[1A[2K[1/1] [chromium] ΓÇ║ tests\playwright\hotel_e2e_full_flow.spec.js:71:3 ΓÇ║ ZygoTrip Hotel Full E2E ΓÇ║ end-to-end: register owner ├óΓÇáΓÇÖ create property ├óΓÇáΓÇÖ approve ├óΓÇáΓÇÖ book with wallet
+[1A[2K[chromium] ΓÇ║ tests\playwright\hotel_e2e_full_flow.spec.js:71:3 ΓÇ║ ZygoTrip Hotel Full E2E ΓÇ║ end-to-end: register owner ├óΓÇáΓÇÖ create property ├óΓÇáΓÇÖ approve ├óΓÇáΓÇÖ book with wallet
+
+=== STEP 1: Registration validation ===
+
+[1A[2K  [1a] Mismatched passwords error: true
+
+[1A[2K  [1b] Weak password error: true
+
+[1A[2K
+=== STEP 2: Register property-owner ===
+
+[1A[2K  Registered owner_e2e_419004@test.com -> https://127.0.0.1:8000/owner/dashboard/
+
+[1A[2K
+=== STEP 3: Login validation ===
+
+[1A[2K  [3] Wrong password -> error: true
+
+[1A[2K
+=== STEP 4: Owner creates property ===
+
+[1A[2K    Logged in as owner_e2e_419004@test.com
+
+[1A[2K  Property created!
+
+[1A[2K
+=== STEP 5: Find property ID ===
+
+[1A[2K  Property ID: 98
+
+[1A[2K
+=== STEP 6: Add room type ===
+
+[1A[2K  1) [chromium] ΓÇ║ tests\playwright\hotel_e2e_full_flow.spec.js:71:3 ΓÇ║ ZygoTrip Hotel Full E2E ΓÇ║ end-to-end: register owner ├óΓÇáΓÇÖ create property ├óΓÇáΓÇÖ approve ├óΓÇáΓÇÖ book with wallet 
+
+    [31mTest timeout of 600000ms exceeded.[39m
+
+    Error: locator.click: Target page, context or browser has been closed
+
+      233 |
+      234 |     await ss(page, '06_form_filled');
+    > 235 |     await page.locator('button[type="submit"]').first().click();
+          |                                                         ^
+      236 |     await page.waitForURL(`${BASE}/owner/dashboard/`, { timeout: 15000 });
+      237 |     console.log('  Room type created!');
+      238 |
+        at C:\Users\ravi9\Downloads\Zy\zygotrip\tests\playwright\hotel_e2e_full_flow.spec.js:235:57
+
+    Error Context: test-results\playwright-hotel_e2e_full_-5902c-pprove-├óΓÇáΓÇÖ-book-with-wallet-chromium\error-context.md
+
+
+[1A[2K  Slow test file: [chromium] ΓÇ║ tests\playwright\hotel_e2e_full_flow.spec.js (10.0m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  1 failed
+    [chromium] ΓÇ║ tests\playwright\hotel_e2e_full_flow.spec.js:71:3 ΓÇ║ ZygoTrip Hotel Full E2E ΓÇ║ end-to-end: register owner ├óΓÇáΓÇÖ create property ├óΓÇáΓÇÖ approve ├óΓÇáΓÇÖ book with wallet 

@@ -20,12 +20,23 @@
                 {{ secondary_action_label|default:"View Popular Cities" }}
             </a>
         {% else %}
-            <a href="/hotels/" class="ui-button ui-button--ghost ui-button--md">
+            <a href="{% url 'hotels:list' %}" class="ui-button ui-button--ghost ui-button--md">
                 View All Hotels
             </a>
         {% endif %}
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

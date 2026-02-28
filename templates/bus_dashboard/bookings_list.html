@@ -9,15 +9,26 @@
         {% for booking in bookings %}
           <div class="card">
             <h3 class="card-title">Booking #{{ booking.id }}</h3>
-            <p class="text-muted">{{ booking.bus.registration_number }} - {{ booking.status }}</p>
+            <p class="">{{ booking.bus.registration_number }} - {{ booking.status }}</p>
           </div>
         {% endfor %}
       </div>
     {% else %}
       <div class="card text-center p-6">
-        <p class="text-muted">No bookings yet.</p>
+        <p class="">No bookings yet.</p>
       </div>
     {% endif %}
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+

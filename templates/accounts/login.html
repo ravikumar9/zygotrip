@@ -5,7 +5,7 @@
   <div class="container auth-container">
     <div class="card auth-card">
       <h1 class="text-center mb-2">Welcome Back</h1>
-      <p class="text-center text-muted mb-6">Sign in to access your bookings and account</p>
+      <p class="text-center mb-6">Sign in to access your bookings and account</p>
 
       <form method="post">
         {% csrf_token %}
@@ -23,7 +23,7 @@
           <label class="auth-label">Email Address</label>
           {{ form.username }}
           {% if form.username.errors %}
-            <p style="color: var(--error); font-size: 13px; margin-top: 4px;">{{ form.username.errors.0 }}</p>
+            <p class="form-error">{{ form.username.errors.0 }}</p>
           {% endif %}
         </div>
 
@@ -31,7 +31,7 @@
           <label class="auth-label">Password</label>
           {{ form.password }}
           {% if form.password.errors %}
-            <p style="color: var(--error); font-size: 13px; margin-top: 4px;">{{ form.password.errors.0 }}</p>
+            <p class="form-error">{{ form.password.errors.0 }}</p>
           {% endif %}
         </div>
 
@@ -39,7 +39,7 @@
           Sign In
         </button>
 
-        <p class="text-center text-muted mb-2">
+        <p class="text-center mb-2">
           New to Zygotrip?
         </p>
         <a href="/register/" class="btn btn-secondary w-full">
@@ -49,7 +49,7 @@
 
       <!-- Security Note -->
       <div class="mt-6 pt-4 auth-note">
-        <p class="text-muted auth-note-text">
+        <p class="auth-note-text">
           Your login is secure and encrypted
         </p>
       </div>
@@ -57,3 +57,14 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+

@@ -13,6 +13,8 @@ async function login(page, email, password = 'Test@123') {
 
 test('auth: login and logout', async ({ page }) => {
   await login(page, users.customer);
+  // Open the user dropdown menu first
+  await page.click('button.dropdown-trigger');
   await expect(page.getByText('Logout')).toBeVisible();
   await page.getByText('Logout').click();
   await expect(page.getByRole('link', { name: 'Login', exact: true })).toBeVisible();

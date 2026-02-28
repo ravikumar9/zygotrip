@@ -1,9 +1,13 @@
+import builtins
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from django.conf import settings
 from apps.hotels.validators import validate_https_image_url
 from apps.core.models import TimeStampedModel
+
+# Import approval models
+from apps.hotels.approval_models import AutoApprovalSettings, PendingPropertyChange
 
 
 class Property(TimeStampedModel):
@@ -29,10 +33,24 @@ class Property(TimeStampedModel):
 	rating = models.DecimalField(max_digits=3, decimal_places=1, default=0)
 	review_count = models.IntegerField(default=0, help_text="Total reviews")
 	popularity_score = models.IntegerField(default=0, help_text="Booking velocity + search rank")
+	star_category = models.IntegerField(
+		default=3,
+		choices=[(i, f"{i} Star") for i in range(1, 6)],
+		help_text="Star rating category (1-5 stars)"
+	)
 	
 	# Geo coordinates (REQUIRED for distance sorting)
 	latitude = models.DecimalField(max_digits=9, decimal_places=6)
 	longitude = models.DecimalField(max_digits=9, decimal_places=6)
+	# Google Maps / Places API fields
+	place_id = models.CharField(
+		max_length=200, blank=True,
+		help_text="Google Maps Place ID for autocomplete and map widget"
+	)
+	formatted_address = models.CharField(
+		max_length=500, blank=True,
+		help_text="Full formatted address string from Google Places API"
+	)
 	
 	# PRICING: Moved to RoomType model (domain-driven design)
 	# Property pricing is now COMPUTED from room types, not stored
@@ -46,6 +64,40 @@ class Property(TimeStampedModel):
 	# POLICY SIGNALS (filter criteria)
 	has_free_cancellation = models.BooleanField(default=True)
 	cancellation_hours = models.IntegerField(default=24, help_text="Free cancellation window")
+	
+	# ==========================================
+	# PHASE 4-6: VENDOR & COMMISSION CONTROL (NEW)
+	# ==========================================
+	status = models.CharField(
+		max_length=20,
+		choices=[
+			('pending', 'Pending Approval'),
+			('approved', 'Approved'),
+			('rejected', 'Rejected'),
+			('suspended', 'Suspended'),
+		],
+		default='pending',
+		help_text="Approval status by admin"
+	)
+	
+	commission_percentage = models.DecimalField(
+		max_digits=5,
+		decimal_places=2,
+		default=10.00,
+		help_text="Commission percentage owed to platform on each booking"
+	)
+	
+	agreement_file = models.FileField(
+		upload_to='agreements/',
+		null=True,
+		blank=True,
+		help_text="Auto-generated agreement PDF"
+	)
+	
+	agreement_signed = models.BooleanField(
+		default=False,
+		help_text="Owner has accepted the agreement"
+	)
 	
 	def get_distance_from(self, lat, lng):
 		"""Calculate distance from given coordinates (km)"""
@@ -63,19 +115,18 @@ class Property(TimeStampedModel):
 	@property
 	def base_price(self):
 		"""
-		COMPUTED PROPERTY: Returns minimum room price
-		Pricing is now sourced from RoomType model (domain-driven design)
-		This property provides backward compatibility for existing code
+		COMPUTED PROPERTY: Returns minimum room price.
+
+		PERFORMANCE WARNING: This property fires one SQL query per call.
+		In list views, always use the `min_room_price` annotation from
+		ota_visible_properties() instead of accessing this property.
+
+		This property exists only for single-object detail views.
 		"""
+		# Short-circuit: if annotated value already attached, use it (zero queries)
+		if hasattr(self, 'min_room_price') and self.min_room_price is not None:
+			return self.min_room_price
 		from django.db.models import Min
-		import logging
-		
-		logger = logging.getLogger(__name__)
-		logger.warning(
-			f"DEPRECATION: Property.base_price accessed for {self.name}. "
-			"Migrate to using room_types queryset with annotations."
-		)
-		
 		min_price = self.room_types.aggregate(Min('base_price'))['base_price__min']
 		return min_price if min_price is not None else 0
 	
@@ -103,11 +154,30 @@ class Property(TimeStampedModel):
 	def __str__(self):
 		return self.name
 
+	class Meta:
+		# Composite index for the canonical public listing query:
+		# .filter(status='approved', agreement_signed=True)
+		indexes = [
+			models.Index(
+				fields=['status', 'agreement_signed'],
+				name='property_public_listing_idx',
+			),
+			models.Index(fields=['status'], name='property_status_idx'),
+			models.Index(fields=['city'], name='property_city_fk_idx'),
+			models.Index(fields=['rating'], name='property_rating_idx'),
+			models.Index(fields=['is_trending'], name='property_trending_idx'),
+			models.Index(fields=['has_free_cancellation'], name='property_free_cancel_idx'),
+			models.Index(fields=['property_type'], name='property_type_idx'),
+			# For sorting by popularity (bookings_today + updated_at)
+			models.Index(fields=['-bookings_today', '-updated_at'], name='property_popularity_idx'),
+		]
+
 
 class PropertyImage(TimeStampedModel):
 	"""Property images with featured flag"""
 	property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='images')
-	image_url = models.URLField()
+	image = models.ImageField(upload_to='hotels/', blank=True, null=True)
+	image_url = models.URLField(blank=True, null=True)
 	caption = models.CharField(max_length=200, blank=True)
 	is_featured = models.BooleanField(default=False)
 	display_order = models.IntegerField(default=0)
@@ -116,8 +186,11 @@ class PropertyImage(TimeStampedModel):
 		ordering = ['-is_featured', 'display_order']
 
 	def clean(self):
-		"""Validate image URL has proper extension"""
-		validate_https_image_url(self.image_url)
+		"""Validate image URL has proper extension or image upload present."""
+		if not self.image and not self.image_url:
+			raise ValidationError({'image_url': 'Provide an image upload or image URL.'})
+		if self.image_url:
+			validate_https_image_url(self.image_url)
 
 	def save(self, *args, **kwargs):
 		self.full_clean()
@@ -128,34 +201,16 @@ class PropertyImage(TimeStampedModel):
 	def __str__(self):
 		return f"{self.property.name} - Image {self.id}"
 
+	@builtins.property
+	def resolved_url(self):
+		"""Prefer uploaded image, fallback to URL string."""
+		if self.image and hasattr(self.image, 'url'):
+			return self.image.url
+		return self.image_url or ""
 
-class PropertyOffer(TimeStampedModel):
-	"""Promotional offers and discounts"""
-	property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='offers')
-	title = models.CharField(max_length=200)
-	description = models.TextField()
-	discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-	discount_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-	valid_from = models.DateField()
-	valid_until = models.DateField()
-	is_active = models.BooleanField(default=True)
-	code = models.CharField(max_length=50, unique=True)
 
-	def clean(self):
-		"""Validate date range and discount values"""
-		if self.valid_from and self.valid_until and self.valid_from > self.valid_until:
-			raise ValidationError('valid_from must be before valid_until')
-		if self.discount_percentage and (self.discount_percentage < 0 or self.discount_percentage > 90):
-			raise ValidationError({'discount_percentage': 'Discount percentage must be between 0 and 90'})
-		if self.discount_amount and self.discount_amount < 0:
-			raise ValidationError({'discount_amount': 'Discount amount cannot be negative'})
-
-	def save(self, *args, **kwargs):
-		self.full_clean()
-		super().save(*args, **kwargs)
-
-	def __str__(self):
-		return f"{self.property.name} - {self.title}"
+# PropertyOffer model moved to apps.offers app for better organization
+# Use: from apps.offers.models import Offer, PropertyOffer
 
 
 class RatingAggregate(TimeStampedModel):
@@ -190,17 +245,32 @@ class RatingAggregate(TimeStampedModel):
 
 
 class Category(TimeStampedModel):
-	"""Property categories for filtering"""
-	name = models.CharField(max_length=100, unique=True)
+	"""Property categories for filtering and destination themes"""
+	name = models.CharField(max_length=100, unique=True, help_text="e.g., Beach Vacations, Mountains Calling")
 	slug = models.SlugField(unique=True)
 	description = models.TextField(blank=True)
 	icon = models.CharField(max_length=40, blank=True)
+	image = models.ImageField(
+		upload_to='destination_categories/', 
+		blank=True, null=True,
+		help_text="Category hero image for landing page"
+	)
+	display_order = models.IntegerField(default=0, help_text="Lower numbers appear first")
 
 	class Meta:
 		verbose_name_plural = 'Categories'
+		ordering = ['display_order', 'name']
 
 	def __str__(self):
 		return self.name
+	
+	def get_properties(self):
+		"""Get properties tagged with this category"""
+		return Property.objects.filter(
+			categories__category=self,
+			status='approved',
+			agreement_signed=True
+		).distinct()
 
 
 class PropertyCategory(TimeStampedModel):
@@ -236,3 +306,40 @@ class PropertyAmenity(TimeStampedModel):
 
 	def __str__(self):
 		return f"{self.property.name} - {self.name}"
+
+
+class RecentSearch(models.Model):
+	"""Track recent hotel searches for personalization"""
+	
+	user = models.ForeignKey(
+		settings.AUTH_USER_MODEL, on_delete=models.CASCADE, 
+		null=True, blank=True, related_name='hotel_searches'
+	)
+	session_key = models.CharField(
+		max_length=100, blank=True, 
+		help_text="Session ID for anonymous users"
+	)
+	
+	# Search parameters
+	search_text = models.CharField(max_length=255, default='', blank=True, help_text="Location search text")
+	checkin = models.DateField(null=True, blank=True)
+	checkout = models.DateField(null=True, blank=True)
+	adults = models.IntegerField(default=1)
+	children = models.IntegerField(default=0)
+	rooms = models.IntegerField(default=1)
+	
+	# Metadata
+	created_at = models.DateTimeField(auto_now_add=True)
+	
+	class Meta:
+		ordering = ['-created_at']
+		verbose_name = "Recent Hotel Search"
+		verbose_name_plural = "Recent Hotel Searches"
+		indexes = [
+			models.Index(fields=['-created_at']),
+			models.Index(fields=['user', '-created_at']),
+			models.Index(fields=['session_key', '-created_at']),
+		]
+	
+	def __str__(self):
+		return f"{self.search_text or 'Any'} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"

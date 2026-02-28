@@ -66,6 +66,7 @@ class HotelCardVM:
     # Metadata
     property_type: str = 'hotel'
     cta_url: str = ''
+    relevance_score: float = 0.0
     
     def __post_init__(self):
         """Initialize with safe defaults."""

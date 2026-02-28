@@ -6,7 +6,8 @@
     <div class="text-center p-16">
       <div class="mb-6" >✅</div>
       <h1 class="mb-4" >Booking Confirmed!</h1>
-      <p class="mb-12 text-secondary text-lg">
+      <div class="booking-status-badge" data-status="{{ booking.status }}">{{ booking.get_status_display }}</div>
+      <p class="mb-12 text-lg">
         Your reservation has been successfully booked. A confirmation email has been sent.
       </p>
 
@@ -16,16 +17,16 @@
           <h3 class="card-title">Booking Details</h3>
           
           <div class="mb-6">
-            <p class="m-2 text-xs text-muted" >Property</p>
+            <p class="m-2 text-xs" >Property</p>
             <p class="font-semibold m-0 text-lg">{{ booking.property.name }}</p>
           </div>
 
           <div class="mb-6">
-            <p class="m-2 text-xs text-muted" >Confirmation #</p>
+            <p class="m-2 text-xs" >Confirmation #</p>
             <p class="font-semibold m-0" >{{ booking.uuid }}</p>
           </div>
 
-          <div class="p-4 rounded-lg mb-6 bg-tertiary" >
+          <div class="p-4 rounded-lg mb-6" >
             <div class="d-flex justify-between mb-3">
               <span>Check In:</span>
               <strong>{{ booking.check_in }}</strong>
@@ -40,7 +41,7 @@
             </div>
           </div>
 
-          <div class="p-4 rounded-lg bg-accent" >
+          <div class="p-4 rounded-lg" >
             <p class="text-sm m-0" >Total Paid: <strong>₹{{ booking.total_amount }}</strong></p>
           </div>
         </div>
@@ -53,7 +54,7 @@
             <div >📧</div>
             <div>
               <h4 class="m-2">Confirmation Email</h4>
-              <p class="text-sm m-0 text-secondary" >Check your email for full booking details</p>
+              <p class="text-sm m-0" >Check your email for full booking details</p>
             </div>
           </div>
 
@@ -61,7 +62,7 @@
             <div >📋</div>
             <div>
               <h4 class="m-2">Invoice Available</h4>
-              <p class="text-sm m-0 text-secondary" >View your invoice in your profile</p>
+              <p class="text-sm m-0" >View your invoice in your profile</p>
             </div>
           </div>
 
@@ -69,7 +70,7 @@
             <div >🏨</div>
             <div>
               <h4 class="m-2">Hotel Confirmation</h4>
-              <p class="text-sm m-0 text-secondary" >The property will send check-in details separately</p>
+              <p class="text-sm m-0" >The property will send check-in details separately</p>
             </div>
           </div>
         </div>
@@ -84,4 +85,15 @@
   </div>
 </section>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

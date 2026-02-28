@@ -8,6 +8,10 @@ RULES:
 3. Filters are modular and reusable
 4. All filters support querystring parsing
 5. Caching is handled in services.py
+
+PHASE 7: PUBLIC LISTING FILTERS
+- Only approved + agreement_signed properties are visible to public
+- Pending and rejected properties are hidden from listings/search
 """
 
 from typing import Optional, List, Dict, Any
@@ -21,6 +25,85 @@ logger = logging.getLogger(__name__)
 
 def _has_relation(model, relation_name):
     return any(field.name == relation_name for field in model._meta.get_fields())
+
+
+# ============================================================================
+# PHASE 7: PUBLIC LISTING VISIBILITY FILTERS (NEW)
+# ============================================================================
+
+def get_public_properties_queryset(base_queryset=None):
+	"""
+	Get properties visible to the public/travelers.
+	Only returns properties that are:
+	1. Approved status
+	2. Agreement signed
+	3. Active
+	
+	Args:
+		base_queryset: Optional initial queryset to filter (default: all Properties)
+	
+	Returns:
+		Filtered queryset with public-only properties
+	"""
+	if base_queryset is None:
+		from apps.hotels.models import Property
+		base_queryset = Property.objects.all()
+	
+	return base_queryset.filter(
+		status='approved',
+		agreement_signed=True,
+		is_active=True
+	)
+
+
+def get_pending_approvals_for_admin(owner=None):
+	"""
+	Get properties pending admin approval.
+	Optionally filter by specific owner.
+	"""
+	from apps.hotels.models import Property
+	queryset = Property.objects.filter(status='pending')
+	
+	if owner:
+		queryset = queryset.filter(owner=owner)
+	
+	return queryset
+
+
+def get_vendor_properties(vendor):
+	"""Get all properties owned by a specific vendor (for dashboard)"""
+	from apps.hotels.models import Property
+	return Property.objects.filter(owner=vendor)
+
+
+def get_pending_owner_action_properties(vendor):
+	"""
+	Get vendor's properties that are approved but awaiting owner action.
+	(Agreement not yet signed by owner)
+	"""
+	from apps.hotels.models import Property
+	return Property.objects.filter(
+		owner=vendor,
+		status='approved',
+		agreement_file__isnull=False,
+		agreement_signed=False
+	)
+
+
+def get_vendor_active_listings(vendor):
+	"""Get vendor's properties that are publicly visible"""
+	return get_public_properties_queryset(
+		get_vendor_properties(vendor)
+	)
+
+
+def get_vendor_inactive_properties(vendor):
+	"""Get vendor's properties not yet public"""
+	from apps.hotels.models import Property
+	return Property.objects.filter(owner=vendor).exclude(
+		status='approved',
+		agreement_signed=True
+	)
 
 
 # ============================================================================

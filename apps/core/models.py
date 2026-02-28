@@ -60,5 +60,81 @@ class OperationLog(TimeStampedModel):
 		return f"{self.get_operation_type_display()} - {self.get_status_display()} @ {self.timestamp}"
 
 
+# ==========================================
+# PHASE 5: PLATFORM SETTINGS FOR COMMISSIONS (NEW)
+# ==========================================
+class PlatformSettings(TimeStampedModel):
+	"""
+	Admin-configurable platform settings for commissions and policies
+	This model should have at most one instance (enforced via migrations)
+	"""
+	
+	# Default commission percentages for each vendor type
+	default_property_commission = models.DecimalField(
+		max_digits=5,
+		decimal_places=2,
+		default=10.00,
+		help_text="Default commission % for hotel/property owners"
+	)
+	
+	default_cab_commission = models.DecimalField(
+		max_digits=5,
+		decimal_places=2,
+		default=15.00,
+		help_text="Default commission % for cab owners"
+	)
+	
+	default_bus_commission = models.DecimalField(
+		max_digits=5,
+		decimal_places=2,
+		default=12.00,
+		help_text="Default commission % for bus operators"
+	)
+	
+	default_package_commission = models.DecimalField(
+		max_digits=5,
+		decimal_places=2,
+		default=20.00,
+		help_text="Default commission % for package providers"
+	)
+	
+	# Global settings
+	require_agreement_signature = models.BooleanField(
+		default=True,
+		help_text="Require vendor to sign agreement before listing is public"
+	)
+	
+	platform_name = models.CharField(
+		max_length=100,
+		default='Zygotrip',
+		help_text="Platform name for agreements and communications"
+	)
+	
+	support_email = models.EmailField(
+		default='support@zygotrip.com',
+		help_text="Support email for vendor communications"
+	)
+	
+	# Platform fees
+	service_fee_percent = models.DecimalField(
+		max_digits=5,
+		decimal_places=2,
+		default=10.00,
+		help_text="Service fee % applied to bookings (e.g., 10.00 for 10%)"
+	)
+	
+	class Meta:
+		verbose_name_plural = "Platform Settings"
+	
+	def __str__(self):
+		return f"{self.platform_name} Settings"
+	
+	@classmethod
+	def get_settings(cls):
+		"""Get or create the singleton settings instance"""
+		settings, _ = cls.objects.get_or_create(pk=1)
+		return settings
+
+
 # Import observability models for migration generation
 from .observability import SystemMetrics, InventoryHealthCheck, PerformanceLog

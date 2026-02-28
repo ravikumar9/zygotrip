@@ -12,7 +12,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from apps.accounts.permissions import role_required
 from apps.accounts.selectors import user_has_role
-from .models import Bus, BusBooking, BusBookingPassenger, BusSeat
+from .models import Bus, BusBooking, BusBookingPassenger, BusSeat, BusType
 
 
 @login_required
@@ -58,15 +58,27 @@ def bus_create(request):
     """
     if request.method == 'POST':
         try:
-            registration_number = request.POST.get('registration_number')
-            operator_name = request.POST.get('operator_name')
+            registration_number = request.POST.get('registration_number') or request.POST.get('bus_number')
+            operator_name = request.POST.get('operator_name') or request.user.full_name or request.user.email
             from_city = request.POST.get('from_city')
             to_city = request.POST.get('to_city')
-            departure_time = request.POST.get('departure_time')
-            arrival_time = request.POST.get('arrival_time')
-            price_per_seat = Decimal(request.POST.get('price_per_seat'))
-            available_seats = int(request.POST.get('available_seats'))
-            if not all([registration_number, operator_name, from_city, to_city, departure_time, arrival_time]):
+            route = request.POST.get('route')
+            if route and (not from_city or not to_city):
+                parts = [part.strip() for part in route.split('to', 1)]
+                if len(parts) == 2:
+                    from_city, to_city = parts
+            departure_time = request.POST.get('departure_time') or '09:00'
+            arrival_time = request.POST.get('arrival_time') or '18:00'
+            price_per_seat = Decimal(request.POST.get('price_per_seat') or '499')
+            available_seats = int(request.POST.get('available_seats') or request.POST.get('total_seats') or 40)
+
+            bus_type_id = request.POST.get('bus_type_id')
+            if not bus_type_id:
+                bus_type_name = request.POST.get('bus_type')
+                bus_type = BusType.objects.filter(name=bus_type_name).first() if bus_type_name else BusType.objects.first()
+                bus_type_id = bus_type.id if bus_type else None
+
+            if not all([registration_number, operator_name, from_city, to_city]):
                 raise ValueError('All required fields must be provided.')
             if price_per_seat <= 0 or available_seats <= 0:
                 raise ValueError('Price and available seats must be greater than zero.')
@@ -74,7 +86,7 @@ def bus_create(request):
                 bus = Bus.objects.create(
                     operator=request.user,
                     registration_number=registration_number,
-                    bus_type_id=request.POST.get('bus_type_id'),
+                    bus_type_id=bus_type_id,
                     operator_name=operator_name,
                     from_city=from_city,
                     to_city=to_city,
